@@ -1,0 +1,383 @@
+(function () {
+    var addressStr = window.location.href;
+    var formAPI = (addressStr.indexOf('https') != -1) ? "https://formsys.101.com/api/pptglobal/" : "http://formsys.101.com/api/pptglobal/";
+    var noShare = !localStorage.getItem('shareFB');
+    var open=Tool.getUrlParam('open');
+    function buildDataItem() {
+
+        Tool.templateHTML('newItem', $('.sec-1'), {
+            items: toolDatas.subjectTools,
+            source: 'subjectTools'
+        })
+        Tool.templateHTML('newItem', $('.sec-2'), {
+            items: toolDatas.interactiveExercise,
+            source: 'interactiveExercise'
+        })
+        Tool.templateHTML('popItem', $('#iframe1'), {
+            items: toolDatas.subjectTools,
+            source: 'subjectTools'
+        })
+        Tool.templateHTML('popItem', $('#iframe2'), {
+            items: toolDatas.interactiveExercise,
+            source: 'interactiveExercise'
+        })
+
+        if (noShare) {
+            $('.item-list .item , .iframe-list .item').each(function () {
+                var $this = $(this);
+                if ($this.data('lock')) {
+                    $this.addClass('forbid').data('forbid', true);
+
+                }
+
+
+            })
+
+        }
+
+        $('.com-tabNav .item').on('click', function () {
+            var $item = $(this),
+                _index = $item.index(),
+                $target = $('.com-tabCnt .cnt:eq(' + _index + ')');
+            $item.addClass('on').siblings().removeClass('on');
+            $target.addClass('on').siblings().removeClass('on');
+        });
+
+
+        $('.com-tabCnt .item').on('click', function () {
+            var $item = $(this);
+            var isforbid = $item.data('forbid');
+            var $modal = $($item.parents('.cnt').data('open'));
+            if (!isforbid) {
+                var souece = $item.data('source');
+                var tagTitle = $item.data('index');
+                var arr = tagTitle.split('-');
+                var data = toolDatas[souece][arr[0]].data;
+                var frameSrc = data[arr[1]].frameSrc
+                $('iframe', $modal).attr('src', frameSrc);
+                $('.item[title=' + tagTitle + ']', $modal).addClass('on');
+                $modal.addClass('on');
+                Tool.gtagtrackEvent('工具页', '点击图标', '点图标 - 展开使用工具')
+
+            }
+
+        })
+
+        $('.iframe-list .item').on('click', function () {
+
+            var $item = $(this);
+            var $frame = $item.parents('.pop-toolMain').find('iframe');
+            var $noShare = $item.parents('.pop-toolMain').find('.shareWrap');
+            var isforbid = $item.data('forbid');
+            $item.addClass('on').siblings().removeClass('on');
+            if (!isforbid) {
+                var souece = $item.data('source');
+                var tagTitle = $item.attr('title');
+                var arr = tagTitle.split('-');
+                var data = toolDatas[souece][arr[0]].data;
+                var frameSrc = data[arr[1]].frameSrc;
+                $frame.attr('src', frameSrc)
+                $noShare.hide();
+            } else {
+                $noShare.show();
+            }
+
+        })
+        $('.modal-tool .close').on('click', function () {
+            var $this = $(this);
+            var $modal = $this.parents('.modal-tool').removeClass('on')
+            $('.item', $modal).removeClass('on')
+        })
+
+    }
+
+
+    //问卷调查
+    function ASQ() {
+        var $askDialog = $('.ask-dialog');
+        var $askQues1 = $('#askQues1');
+        var $askQues2 = $('#askQues2');
+        var $askQues3 = $('#askQues3');
+        var $askQues4 = $('#askQues4');
+        var $formErrorTip = $('.fromError');
+
+        var timeOut;
+        var postData = {};
+        $('#btnAsk').on('click', function () {
+            $('.ask-start').hide();
+            $('.ask-ques1').fadeIn();
+
+        })
+        // $('#btnAsk').trigger('click')
+
+        $('.close', $askDialog).on('click', function () {
+            $askDialog.hide();
+            $('.ask-start').show().siblings().hide();
+            $('.close', $askDialog).show();
+            $formErrorTip.hide();
+        })
+        $('#downloadAsk').on('click', function () {
+            timeOut = setTimeout(function () {
+                $askDialog.show();
+                clearTimeout(timeOut);
+            }, 1000)
+
+        })
+        $('[name=askSystem]').on('click', function () {
+            var value = $('#askSystemOther').val();
+            var len = $('[name=askSystem]:checked').length;
+            if (value == '' && len == 0) {
+                $('#askSystemOther-error').show()
+            } else {
+                $('#askSystemOther-error').hide()
+            }
+        })
+        $('[name=askBrowser]').on('click', function () {
+            var value = $('#askBrowserOther').val();
+            var len = $('[name=askBrowser]:checked').length;
+            if (value == '' && len == 0) {
+                $('#askBrowserOther-error').show()
+            } else {
+                $('#askBrowserOther-error').hide()
+            }
+        })
+        jQuery.validator.addMethod('checkSystem', function (value, element) {
+            var len = $('[name=askSystem]:checked').length;
+            if (value == '' && len == 0) return false;
+            return true;
+
+        }, 'Please select or enter your operating system')
+        jQuery.validator.addMethod('checkBrowser', function (value, element) {
+            var len = $('[name=askBrowser]:checked').length;
+            if (value == '' && len == 0) return false;
+            return true;
+
+        }, 'Please select or enter your browser')
+
+        $askQues1.validate({
+
+            rules: {
+                askFrom: {
+                    required: true,
+                },
+                askSystemOther: {
+                    checkSystem: true,
+                },
+                askBrowserOther: {
+                    checkBrowser: true,
+                }
+
+            },
+            submitHandler: function () {
+                $('.ask-ques1').hide();
+                $('.ask-ques2').fadeIn();
+                var askSystemText = '';
+                var askBrowserText = '';
+
+                $('[name=askSystem]:checked').each(function () {
+                    var _text = $(this).val();
+                    askSystemText += _text + ';';
+                })
+                askSystemText = $('#askSystemOther').val() ? askSystemText + $('#askSystemOther').val() : askSystemText;
+                $('[name=askBrowser]:checked').each(function () {
+                    var _text = $(this).val();
+
+                    askBrowserText += _text + ';';
+
+                })
+                askBrowserText = $('#askBrowserOther').val() ? askBrowserText + $('#askBrowserOther').val() : askBrowserText;
+
+                postData.askFrom = $('#askFrom').val();
+                postData.askSystem = askSystemText;
+                postData.askBrowser = askBrowserText;
+
+
+                console.log(postData)
+            }
+        })
+        $askQues2.validate({
+            rules: {
+                loadSeep: {
+                    required: true,
+                },
+
+            },
+            submitHandler: function () {
+
+                postData.loadSeep = $('[name=loadSeep]:checked').val();
+                $('.ask-ques2').hide();
+                $('.ask-ques3').fadeIn();
+
+                console.log(postData)
+
+            }
+        })
+        $askQues3.validate({
+            rules: {
+                webBase: {
+                    required: true,
+                },
+
+            },
+            submitHandler: function () {
+                postData.webBase = $('[name=webBase]:checked').val();
+                $('.ask-ques3').hide();
+                $('.ask-end').fadeIn();
+
+                console.log(postData)
+
+            }
+        })
+        $askQues4.validate({
+            rules: {
+                askEmail: {
+                    isEmail: true
+                },
+            },
+            submitHandler: function () {
+                postData.askEmail = $('#askEmail').val();
+                var url = formAPI + 'class101downloadexp';
+                var data = JSON.stringify(postData);
+                console.log(postData)
+                Tool.getData(url, "POST", data, function (data) {
+                    $('.ask-end').hide();
+                    $('.ask-success').fadeIn();
+                    $formErrorTip.hide();
+
+                }, function (error) {
+                    $formErrorTip.show();
+                })
+
+
+
+            }
+        })
+        $('.ask-end .white-btn').on('click', function () {
+            $('#sendPost').trigger('click')
+        })
+
+    }
+
+    //邮箱订阅
+    function emailTouch() {
+        var $toolEmailForm = $('#toolEmailForm');
+        var url = formAPI + 'class101touchemail';
+        $('#touchEmail').on('focus', function () {
+            $('.commit-error').hide();
+        })
+        $toolEmailForm.validate({
+            messages:{
+                touchEmail:{
+                    required:  'Please enter your email. '
+                }
+              
+            },
+            rules: {
+                touchEmail: {
+                    required: true,
+                    isEmail: true
+                }
+            },
+            submitHandler: function () {
+                var data = JSON.stringify({
+                    touchEmail: $.trim($('#touchEmail').val())
+                });
+
+                Tool.getData(url, "POST", data, function () {
+                    var $successRes = $('.successRes');
+                    var timeOut = null;
+                    $successRes.fadeIn();
+                    timeOut = setTimeout(function () {
+                        $successRes.fadeOut();
+                        clearTimeout(timeOut)
+                    }, 3000)
+                    Tool.gtagtrackEvent('工具页', '点击图标', '点击图标-订阅邮件')
+                    $('#touchEmail').val('')
+                    $('.commit-error').hide();
+                }, function () {
+                    $('.commit-error').show();
+                })
+
+            }
+
+        })
+
+    }
+    //分享成功
+    function shareSuccess() {
+        if (window.localStorage && localStorage.getItem('shareFB')) {//已经分享
+            noShare = false;
+            $('.forbid').removeClass('forbid').data('forbid', false);
+
+        }
+    }
+    //分享FB
+    function FBshare() {
+        shareSuccess();
+
+        $('[rel=shareFb]').each(function () {
+           
+            var $this = $(this);
+            $this.on('click', function () {
+
+                var type = $this.data('type')
+                var url = ''
+                Tool.gtagtrackEvent('工具页', '点击图标', '点分享按钮 - 分享到FB')
+                switch (type) {
+                    case 'Mathematics':
+                        url = '//gcdncs.101.com/v0.1/static/edit_99/tmcms/class101/images/pc/tools/post-math.jpg';
+                        break;
+                    case 'Physics':
+
+                        url = '//gcdncs.101.com/v0.1/static/edit_99/tmcms/class101/images/pc/tools/post-physics.jpg';
+                        break;
+                    default:
+                        url = '//gcdncs.101.com/v0.1/static/edit_99/tmcms/class101/images/pc/tools/-post-inter.jpg';
+                        break
+                }
+                $('meta:last').attr('content', url)
+                FB.ui(
+                    {
+                        method: 'share',
+                        href: location.href.split("#")[0],
+                        // href: 'https://www.baidu.com/',
+                        display: 'popup'
+                    },
+                    function (response) {
+                        if (response && !response.error_message) {//分享成功
+                            window.localStorage && localStorage.setItem('shareFB', true);
+                            shareSuccess();
+                           
+
+                        } else {
+                            console.log('Error while posting.');
+                            
+                            // $('.forbid').removeClass('forbid').data('forbid',false);
+                        }
+                    }
+                )
+                return false;
+
+            })
+        })
+
+
+    }
+   
+    function init() {
+        buildDataItem();
+        Tool.askForm($('#downloadAsk'),'工具页');
+        Tool.emailTouch('工具页');
+        FBshare();
+        if(open && open=='inter'){
+            $('.com-tabNav .item:eq(1)').addClass('on').siblings().removeClass('on');
+            $('.com-tabCnt .cnt:eq(1)').addClass('on').siblings().removeClass('on');
+        
+        }
+
+
+    }
+    init();
+
+
+})();

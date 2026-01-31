@@ -1,0 +1,4788 @@
+var global_params_is_all_org=0;
+var callback_sso_count=0;
+var elearning_1="e.101.com";
+var elearning_2="xue.101.com";
+(function(ucQuery){
+		ucQuery.getDeviceId=function getDeviceId(){
+				var promise = new Promise(function (resolve, reject) {
+                        new Fingerprint2().get(function(result, components){
+							var deviceId=ucQuery.getOSAndBrowserKey()+"/"+result;
+							  var deviceId_temp = BASE64.encoder(getMD5Value(deviceId));
+							  deviceId=deviceId_temp.charAt(2)+"w"+deviceId;
+							  resolve(deviceId);
+						});
+				});
+				return promise;
+		}
+
+		ucQuery.getOSAndBrowserKey=function getOSAndBrowserKey(){
+			var os = navigator.platform;
+			var userAgent = navigator.userAgent;
+			var info  = "";
+			var tempArray  = "";
+			if(os.indexOf("Win") > -1){
+				if(userAgent.indexOf("Windows NT 5.0") > -1){
+					info += "Win2000";
+				}else if(userAgent.indexOf("Windows NT 5.1") > -1){
+					info += "WinXP";
+				}else if(userAgent.indexOf("Windows NT 5.2") > -1){
+					info += "Win2003";
+				}else if(userAgent.indexOf("Windows NT 6.0") > -1){
+					info += "WindowsVista";
+				}else if(userAgent.indexOf("Windows NT 6.1") > -1 || userAgent.indexOf("Windows 7") > -1){
+					info += "Win7";
+				}else if(userAgent.indexOf("Windows 8") > -1){
+					info += "Win8";
+				}else{
+					info += "Other";
+				}
+			}else if(os.indexOf("Mac") >-1){
+				info += "Mac";
+			}else if(os.indexOf("X11") >-1){
+				info += "Unix";
+			}else if(os.indexOf("Linux") >-1){
+				info += "Linux";
+			}else{
+				info += "Other";
+			}
+			info += "/";if(/[Ff]irefox(\/\d+\.\d+)/.test(userAgent)){
+				tempArray = /([Ff]irefox)\/(\d+\.\d+)/.exec(userAgent);
+				info += tempArray[1] + tempArray[2];
+			}else if(/MSIE \d+\.\d+/.test(userAgent)){
+				tempArray = /MS(IE) (\d+\.\d+)/.exec(userAgent);
+				info += tempArray[1] + tempArray[2];
+			}else if(/[Cc]hrome\/\d+/.test(userAgent)){
+				tempArray = /([Cc]hrome)\/(\d+)/.exec(userAgent);
+				info += tempArray[1] + tempArray[2];
+			}else if(/[Vv]ersion\/\d+\.\d+\.\d+(\.\d)* *[Ss]afari/.test(userAgent)){
+				tempArray = /[Vv]ersion\/(\d+\.\d+\.\d+)(\.\d)* *([Ss]afari)/.exec(userAgent);
+				info +=  tempArray[3] + tempArray[1];
+			}else if(/[Oo]pera.+[Vv]ersion\/\d+\.\d+/.test(userAgent)){
+				tempArray = /([Oo]pera).+[Vv]ersion\/(\d+)\.\d+/.exec(userAgent);
+				info +=  tempArray[1] + tempArray[2];
+			}else{
+				info += "unknown";
+			}
+			if(info.indexOf("IE")>-1){
+				return "windows_IE";
+			}
+			return info;
+		};
+
+})(this.ucQuery || (this.ucQuery = {}));
+
+!function(e,t,i){"use strict";"function"==typeof define&&define.amd?define(i):"undefined"!=typeof module&&module.exports?module.exports=i():t.exports?t.exports=i():t[e]=i()}("Fingerprint2",this,function(){"use strict";Array.prototype.indexOf||(Array.prototype.indexOf=function(e,t){var i;if(null==this)throw new TypeError("'this' is null or undefined");var a=Object(this),r=a.length>>>0;if(0===r)return-1;var n=+t||0;if(Math.abs(n)===1/0&&(n=0),n>=r)return-1;for(i=Math.max(n>=0?n:r-Math.abs(n),0);i<r;){if(i in a&&a[i]===e)return i;i++}return-1});var e=function(t){if(!(this instanceof e))return new e(t);var i={swfContainerId:"fingerprintjs2",swfPath:"flash/compiled/FontList.swf",detectScreenOrientation:!0,sortPluginsFor:[/palemoon/i],userDefinedFonts:[]};this.options=this.extend(t,i),this.nativeForEach=Array.prototype.forEach,this.nativeMap=Array.prototype.map};return e.prototype={extend:function(e,t){if(null==e)return t;for(var i in e)null!=e[i]&&t[i]!==e[i]&&(t[i]=e[i]);return t},log:function(e){window.console&&console.log(e)},get:function(e){var t=[];t=this.userAgentKey(t),t=this.languageKey(t),t=this.colorDepthKey(t),t=this.pixelRatioKey(t),t=this.hardwareConcurrencyKey(t),t=this.screenResolutionKey(t),t=this.availableScreenResolutionKey(t),t=this.timezoneOffsetKey(t),t=this.sessionStorageKey(t),t=this.localStorageKey(t),t=this.indexedDbKey(t),t=this.addBehaviorKey(t),t=this.openDatabaseKey(t),t=this.cpuClassKey(t),t=this.platformKey(t),t=this.doNotTrackKey(t),t=this.pluginsKey(t),t=this.canvasKey(t),t=this.webglKey(t),t=this.adBlockKey(t),t=this.hasLiedLanguagesKey(t),t=this.hasLiedResolutionKey(t),t=this.hasLiedOsKey(t),t=this.hasLiedBrowserKey(t),t=this.touchSupportKey(t);var i=this;this.fontsKey(t,function(t){var a=[];i.each(t,function(e){var t=e.value;"undefined"!=typeof e.value.join&&(t=e.value.join(";")),a.push(t)});var r=i.x64hash128(a.join("~~~"),31);return e(r,t)})},userAgentKey:function(e){return this.options.excludeUserAgent||e.push({key:"user_agent",value:this.getUserAgent()}),e},getUserAgent:function(){return navigator.userAgent},languageKey:function(e){return this.options.excludeLanguage||e.push({key:"language",value:navigator.language||navigator.userLanguage||navigator.browserLanguage||navigator.systemLanguage||""}),e},colorDepthKey:function(e){return this.options.excludeColorDepth||e.push({key:"color_depth",value:screen.colorDepth||-1}),e},pixelRatioKey:function(e){return this.options.excludePixelRatio||e.push({key:"pixel_ratio",value:this.getPixelRatio()}),e},getPixelRatio:function(){return window.devicePixelRatio||""},screenResolutionKey:function(e){return this.options.excludeScreenResolution?e:this.getScreenResolution(e)},getScreenResolution:function(e){var t;return t=this.options.detectScreenOrientation&&screen.height>screen.width?[screen.height,screen.width]:[screen.width,screen.height],"undefined"!=typeof t&&e.push({key:"resolution",value:t}),e},availableScreenResolutionKey:function(e){return this.options.excludeAvailableScreenResolution?e:this.getAvailableScreenResolution(e)},getAvailableScreenResolution:function(e){var t;return screen.availWidth&&screen.availHeight&&(t=this.options.detectScreenOrientation?screen.availHeight>screen.availWidth?[screen.availHeight,screen.availWidth]:[screen.availWidth,screen.availHeight]:[screen.availHeight,screen.availWidth]),"undefined"!=typeof t&&e.push({key:"available_resolution",value:t}),e},timezoneOffsetKey:function(e){return this.options.excludeTimezoneOffset||e.push({key:"timezone_offset",value:(new Date).getTimezoneOffset()}),e},sessionStorageKey:function(e){return!this.options.excludeSessionStorage&&this.hasSessionStorage()&&e.push({key:"session_storage",value:1}),e},localStorageKey:function(e){return!this.options.excludeSessionStorage&&this.hasLocalStorage()&&e.push({key:"local_storage",value:1}),e},indexedDbKey:function(e){return!this.options.excludeIndexedDB&&this.hasIndexedDB()&&e.push({key:"indexed_db",value:1}),e},addBehaviorKey:function(e){return document.body&&!this.options.excludeAddBehavior&&document.body.addBehavior&&e.push({key:"add_behavior",value:1}),e},openDatabaseKey:function(e){return!this.options.excludeOpenDatabase&&window.openDatabase&&e.push({key:"open_database",value:1}),e},cpuClassKey:function(e){return this.options.excludeCpuClass||e.push({key:"cpu_class",value:this.getNavigatorCpuClass()}),e},platformKey:function(e){return this.options.excludePlatform||e.push({key:"navigator_platform",value:this.getNavigatorPlatform()}),e},doNotTrackKey:function(e){return this.options.excludeDoNotTrack||e.push({key:"do_not_track",value:this.getDoNotTrack()}),e},canvasKey:function(e){return!this.options.excludeCanvas&&this.isCanvasSupported()&&e.push({key:"canvas",value:this.getCanvasFp()}),e},webglKey:function(e){return this.options.excludeWebGL?e:this.isWebGlSupported()?(e.push({key:"webgl",value:this.getWebglFp()}),e):e},adBlockKey:function(e){return this.options.excludeAdBlock||e.push({key:"adblock",value:this.getAdBlock()}),e},hasLiedLanguagesKey:function(e){return this.options.excludeHasLiedLanguages||e.push({key:"has_lied_languages",value:this.getHasLiedLanguages()}),e},hasLiedResolutionKey:function(e){return this.options.excludeHasLiedResolution||e.push({key:"has_lied_resolution",value:this.getHasLiedResolution()}),e},hasLiedOsKey:function(e){return this.options.excludeHasLiedOs||e.push({key:"has_lied_os",value:this.getHasLiedOs()}),e},hasLiedBrowserKey:function(e){return this.options.excludeHasLiedBrowser||e.push({key:"has_lied_browser",value:this.getHasLiedBrowser()}),e},fontsKey:function(e,t){return this.options.excludeJsFonts?this.flashFontsKey(e,t):this.jsFontsKey(e,t)},flashFontsKey:function(e,t){return this.options.excludeFlashFonts?t(e):this.hasSwfObjectLoaded()&&this.hasMinFlashInstalled()?"undefined"==typeof this.options.swfPath?t(e):void this.loadSwfAndDetectFonts(function(i){e.push({key:"swf_fonts",value:i.join(";")}),t(e)}):t(e)},jsFontsKey:function(e,t){var i=this;return setTimeout(function(){var a=["monospace","sans-serif","serif"],r=["Andale Mono","Arial","Arial Black","Arial Hebrew","Arial MT","Arial Narrow","Arial Rounded MT Bold","Arial Unicode MS","Bitstream Vera Sans Mono","Book Antiqua","Bookman Old Style","Calibri","Cambria","Cambria Math","Century","Century Gothic","Century Schoolbook","Comic Sans","Comic Sans MS","Consolas","Courier","Courier New","Garamond","Geneva","Georgia","Helvetica","Helvetica Neue","Impact","Lucida Bright","Lucida Calligraphy","Lucida Console","Lucida Fax","LUCIDA GRANDE","Lucida Handwriting","Lucida Sans","Lucida Sans Typewriter","Lucida Sans Unicode","Microsoft Sans Serif","Monaco","Monotype Corsiva","MS Gothic","MS Outlook","MS PGothic","MS Reference Sans Serif","MS Sans Serif","MS Serif","MYRIAD","MYRIAD PRO","Palatino","Palatino Linotype","Segoe Print","Segoe Script","Segoe UI","Segoe UI Light","Segoe UI Semibold","Segoe UI Symbol","Tahoma","Times","Times New Roman","Times New Roman PS","Trebuchet MS","Verdana","Wingdings","Wingdings 2","Wingdings 3"],n=["Abadi MT Condensed Light","Academy Engraved LET","ADOBE CASLON PRO","Adobe Garamond","ADOBE GARAMOND PRO","Agency FB","Aharoni","Albertus Extra Bold","Albertus Medium","Algerian","Amazone BT","American Typewriter","American Typewriter Condensed","AmerType Md BT","Andalus","Angsana New","AngsanaUPC","Antique Olive","Aparajita","Apple Chancery","Apple Color Emoji","Apple SD Gothic Neo","Arabic Typesetting","ARCHER","ARNO PRO","Arrus BT","Aurora Cn BT","AvantGarde Bk BT","AvantGarde Md BT","AVENIR","Ayuthaya","Bandy","Bangla Sangam MN","Bank Gothic","BankGothic Md BT","Baskerville","Baskerville Old Face","Batang","BatangChe","Bauer Bodoni","Bauhaus 93","Bazooka","Bell MT","Bembo","Benguiat Bk BT","Berlin Sans FB","Berlin Sans FB Demi","Bernard MT Condensed","BernhardFashion BT","BernhardMod BT","Big Caslon","BinnerD","Blackadder ITC","BlairMdITC TT","Bodoni 72","Bodoni 72 Oldstyle","Bodoni 72 Smallcaps","Bodoni MT","Bodoni MT Black","Bodoni MT Condensed","Bodoni MT Poster Compressed","Bookshelf Symbol 7","Boulder","Bradley Hand","Bradley Hand ITC","Bremen Bd BT","Britannic Bold","Broadway","Browallia New","BrowalliaUPC","Brush Script MT","Californian FB","Calisto MT","Calligrapher","Candara","CaslonOpnface BT","Castellar","Centaur","Cezanne","CG Omega","CG Times","Chalkboard","Chalkboard SE","Chalkduster","Charlesworth","Charter Bd BT","Charter BT","Chaucer","ChelthmITC Bk BT","Chiller","Clarendon","Clarendon Condensed","CloisterBlack BT","Cochin","Colonna MT","Constantia","Cooper Black","Copperplate","Copperplate Gothic","Copperplate Gothic Bold","Copperplate Gothic Light","CopperplGoth Bd BT","Corbel","Cordia New","CordiaUPC","Cornerstone","Coronet","Cuckoo","Curlz MT","DaunPenh","Dauphin","David","DB LCD Temp","DELICIOUS","Denmark","DFKai-SB","Didot","DilleniaUPC","DIN","DokChampa","Dotum","DotumChe","Ebrima","Edwardian Script ITC","Elephant","English 111 Vivace BT","Engravers MT","EngraversGothic BT","Eras Bold ITC","Eras Demi ITC","Eras Light ITC","Eras Medium ITC","EucrosiaUPC","Euphemia","Euphemia UCAS","EUROSTILE","Exotc350 Bd BT","FangSong","Felix Titling","Fixedsys","FONTIN","Footlight MT Light","Forte","FrankRuehl","Fransiscan","Freefrm721 Blk BT","FreesiaUPC","Freestyle Script","French Script MT","FrnkGothITC Bk BT","Fruitger","FRUTIGER","Futura","Futura Bk BT","Futura Lt BT","Futura Md BT","Futura ZBlk BT","FuturaBlack BT","Gabriola","Galliard BT","Gautami","Geeza Pro","Geometr231 BT","Geometr231 Hv BT","Geometr231 Lt BT","GeoSlab 703 Lt BT","GeoSlab 703 XBd BT","Gigi","Gill Sans","Gill Sans MT","Gill Sans MT Condensed","Gill Sans MT Ext Condensed Bold","Gill Sans Ultra Bold","Gill Sans Ultra Bold Condensed","Gisha","Gloucester MT Extra Condensed","GOTHAM","GOTHAM BOLD","Goudy Old Style","Goudy Stout","GoudyHandtooled BT","GoudyOLSt BT","Gujarati Sangam MN","Gulim","GulimChe","Gungsuh","GungsuhChe","Gurmukhi MN","Haettenschweiler","Harlow Solid Italic","Harrington","Heather","Heiti SC","Heiti TC","HELV","Herald","High Tower Text","Hiragino Kaku Gothic ProN","Hiragino Mincho ProN","Hoefler Text","Humanst 521 Cn BT","Humanst521 BT","Humanst521 Lt BT","Imprint MT Shadow","Incised901 Bd BT","Incised901 BT","Incised901 Lt BT","INCONSOLATA","Informal Roman","Informal011 BT","INTERSTATE","IrisUPC","Iskoola Pota","JasmineUPC","Jazz LET","Jenson","Jester","Jokerman","Juice ITC","Kabel Bk BT","Kabel Ult BT","Kailasa","KaiTi","Kalinga","Kannada Sangam MN","Kartika","Kaufmann Bd BT","Kaufmann BT","Khmer UI","KodchiangUPC","Kokila","Korinna BT","Kristen ITC","Krungthep","Kunstler Script","Lao UI","Latha","Leelawadee","Letter Gothic","Levenim MT","LilyUPC","Lithograph","Lithograph Light","Long Island","Lydian BT","Magneto","Maiandra GD","Malayalam Sangam MN","Malgun Gothic","Mangal","Marigold","Marion","Marker Felt","Market","Marlett","Matisse ITC","Matura MT Script Capitals","Meiryo","Meiryo UI","Microsoft Himalaya","Microsoft JhengHei","Microsoft New Tai Lue","Microsoft PhagsPa","Microsoft Tai Le","Microsoft Uighur","Microsoft YaHei","Microsoft Yi Baiti","MingLiU","MingLiU_HKSCS","MingLiU_HKSCS-ExtB","MingLiU-ExtB","Minion","Minion Pro","Miriam","Miriam Fixed","Mistral","Modern","Modern No. 20","Mona Lisa Solid ITC TT","Mongolian Baiti","MONO","MoolBoran","Mrs Eaves","MS LineDraw","MS Mincho","MS PMincho","MS Reference Specialty","MS UI Gothic","MT Extra","MUSEO","MV Boli","Nadeem","Narkisim","NEVIS","News Gothic","News GothicMT","NewsGoth BT","Niagara Engraved","Niagara Solid","Noteworthy","NSimSun","Nyala","OCR A Extended","Old Century","Old English Text MT","Onyx","Onyx BT","OPTIMA","Oriya Sangam MN","OSAKA","OzHandicraft BT","Palace Script MT","Papyrus","Parchment","Party LET","Pegasus","Perpetua","Perpetua Titling MT","PetitaBold","Pickwick","Plantagenet Cherokee","Playbill","PMingLiU","PMingLiU-ExtB","Poor Richard","Poster","PosterBodoni BT","PRINCETOWN LET","Pristina","PTBarnum BT","Pythagoras","Raavi","Rage Italic","Ravie","Ribbon131 Bd BT","Rockwell","Rockwell Condensed","Rockwell Extra Bold","Rod","Roman","Sakkal Majalla","Santa Fe LET","Savoye LET","Sceptre","Script","Script MT Bold","SCRIPTINA","Serifa","Serifa BT","Serifa Th BT","ShelleyVolante BT","Sherwood","Shonar Bangla","Showcard Gothic","Shruti","Signboard","SILKSCREEN","SimHei","Simplified Arabic","Simplified Arabic Fixed","SimSun","SimSun-ExtB","Sinhala Sangam MN","Sketch Rockwell","Skia","Small Fonts","Snap ITC","Snell Roundhand","Socket","Souvenir Lt BT","Staccato222 BT","Steamer","Stencil","Storybook","Styllo","Subway","Swis721 BlkEx BT","Swiss911 XCm BT","Sylfaen","Synchro LET","System","Tamil Sangam MN","Technical","Teletype","Telugu Sangam MN","Tempus Sans ITC","Terminal","Thonburi","Traditional Arabic","Trajan","TRAJAN PRO","Tristan","Tubular","Tunga","Tw Cen MT","Tw Cen MT Condensed","Tw Cen MT Condensed Extra Bold","TypoUpright BT","Unicorn","Univers","Univers CE 55 Medium","Univers Condensed","Utsaah","Vagabond","Vani","Vijaya","Viner Hand ITC","VisualUI","Vivaldi","Vladimir Script","Vrinda","Westminster","WHITNEY","Wide Latin","ZapfEllipt BT","ZapfHumnst BT","ZapfHumnst Dm BT","Zapfino","Zurich BlkEx BT","Zurich Ex BT","ZWAdobeF"];i.options.extendedJsFonts&&(r=r.concat(n)),r=r.concat(i.options.userDefinedFonts);var o="mmmmmmmmmmlli",s="72px",l=document.getElementsByTagName("body")[0],h=document.createElement("div"),u=document.createElement("div"),d={},c={},g=function(){var e=document.createElement("span");return e.style.position="absolute",e.style.left="-9999px",e.style.fontSize=s,e.style.lineHeight="normal",e.innerHTML=o,e},p=function(e,t){var i=g();return i.style.fontFamily="'"+e+"',"+t,i},f=function(){for(var e=[],t=0,i=a.length;t<i;t++){var r=g();r.style.fontFamily=a[t],h.appendChild(r),e.push(r)}return e},m=function(){for(var e={},t=0,i=r.length;t<i;t++){for(var n=[],o=0,s=a.length;o<s;o++){var l=p(r[t],a[o]);u.appendChild(l),n.push(l)}e[r[t]]=n}return e},T=function(e){for(var t=!1,i=0;i<a.length;i++)if(t=e[i].offsetWidth!==d[a[i]]||e[i].offsetHeight!==c[a[i]])return t;return t},S=f();l.appendChild(h);for(var x=0,v=a.length;x<v;x++)d[a[x]]=S[x].offsetWidth,c[a[x]]=S[x].offsetHeight;var M=m();l.appendChild(u);for(var E=[],A=0,y=r.length;A<y;A++)T(M[r[A]])&&E.push(r[A]);l.removeChild(u),l.removeChild(h),e.push({key:"js_fonts",value:E}),t(e)},1)},pluginsKey:function(e){return this.options.excludePlugins||(this.isIE()?this.options.excludeIEPlugins||e.push({key:"ie_plugins",value:this.getIEPlugins()}):e.push({key:"regular_plugins",value:this.getRegularPlugins()})),e},getRegularPlugins:function(){for(var e=[],t=0,i=navigator.plugins.length;t<i;t++)e.push(navigator.plugins[t]);return this.pluginsShouldBeSorted()&&(e=e.sort(function(e,t){return e.name>t.name?1:e.name<t.name?-1:0})),this.map(e,function(e){var t=this.map(e,function(e){return[e.type,e.suffixes].join("~")}).join(",");return[e.name,e.description,t].join("::")},this)},getIEPlugins:function(){var e=[];if(Object.getOwnPropertyDescriptor&&Object.getOwnPropertyDescriptor(window,"ActiveXObject")||"ActiveXObject"in window){var t=["AcroPDF.PDF","Adodb.Stream","AgControl.AgControl","DevalVRXCtrl.DevalVRXCtrl.1","MacromediaFlashPaper.MacromediaFlashPaper","Msxml2.DOMDocument","Msxml2.XMLHTTP","PDF.PdfCtrl","QuickTime.QuickTime","QuickTimeCheckObject.QuickTimeCheck.1","RealPlayer","RealPlayer.RealPlayer(tm) ActiveX Control (32-bit)","RealVideo.RealVideo(tm) ActiveX Control (32-bit)","Scripting.Dictionary","SWCtl.SWCtl","Shell.UIHelper","ShockwaveFlash.ShockwaveFlash","Skype.Detection","TDCCtl.TDCCtl","WMPlayer.OCX","rmocx.RealPlayer G2 Control","rmocx.RealPlayer G2 Control.1"];e=this.map(t,function(e){try{return new ActiveXObject(e),e}catch(t){return null}})}return navigator.plugins&&(e=e.concat(this.getRegularPlugins())),e},pluginsShouldBeSorted:function(){for(var e=!1,t=0,i=this.options.sortPluginsFor.length;t<i;t++){var a=this.options.sortPluginsFor[t];if(navigator.userAgent.match(a)){e=!0;break}}return e},touchSupportKey:function(e){return this.options.excludeTouchSupport||e.push({key:"touch_support",value:this.getTouchSupport()}),e},hardwareConcurrencyKey:function(e){return this.options.excludeHardwareConcurrency||e.push({key:"hardware_concurrency",value:this.getHardwareConcurrency()}),e},hasSessionStorage:function(){try{return!!window.sessionStorage}catch(e){return!0}},hasLocalStorage:function(){try{return!!window.localStorage}catch(e){return!0}},hasIndexedDB:function(){try{return!!window.indexedDB}catch(e){return!0}},getHardwareConcurrency:function(){return navigator.hardwareConcurrency?navigator.hardwareConcurrency:"unknown"},getNavigatorCpuClass:function(){return navigator.cpuClass?navigator.cpuClass:"unknown"},getNavigatorPlatform:function(){return navigator.platform?navigator.platform:"unknown"},getDoNotTrack:function(){return navigator.doNotTrack?navigator.doNotTrack:navigator.msDoNotTrack?navigator.msDoNotTrack:window.doNotTrack?window.doNotTrack:"unknown"},getTouchSupport:function(){var e=0,t=!1;"undefined"!=typeof navigator.maxTouchPoints?e=navigator.maxTouchPoints:"undefined"!=typeof navigator.msMaxTouchPoints&&(e=navigator.msMaxTouchPoints);try{document.createEvent("TouchEvent"),t=!0}catch(i){}var a="ontouchstart"in window;return[e,t,a]},getCanvasFp:function(){var e=[],t=document.createElement("canvas");t.width=2e3,t.height=200,t.style.display="inline";var i=t.getContext("2d");return i.rect(0,0,10,10),i.rect(2,2,6,6),e.push("canvas winding:"+(i.isPointInPath(5,5,"evenodd")===!1?"yes":"no")),i.textBaseline="alphabetic",i.fillStyle="#f60",i.fillRect(125,1,62,20),i.fillStyle="#069",this.options.dontUseFakeFontInCanvas?i.font="11pt Arial":i.font="11pt no-real-font-123",i.fillText("Cwm fjordbank glyphs vext quiz, \ud83d\ude03",2,15),i.fillStyle="rgba(102, 204, 0, 0.2)",i.font="18pt Arial",i.fillText("Cwm fjordbank glyphs vext quiz, \ud83d\ude03",4,45),i.globalCompositeOperation="multiply",i.fillStyle="rgb(255,0,255)",i.beginPath(),i.arc(50,50,50,0,2*Math.PI,!0),i.closePath(),i.fill(),i.fillStyle="rgb(0,255,255)",i.beginPath(),i.arc(100,50,50,0,2*Math.PI,!0),i.closePath(),i.fill(),i.fillStyle="rgb(255,255,0)",i.beginPath(),i.arc(75,100,50,0,2*Math.PI,!0),i.closePath(),i.fill(),i.fillStyle="rgb(255,0,255)",i.arc(75,75,75,0,2*Math.PI,!0),i.arc(75,75,25,0,2*Math.PI,!0),i.fill("evenodd"),e.push("canvas fp:"+t.toDataURL()),e.join("~")},getWebglFp:function(){var e,t=function(t){return e.clearColor(0,0,0,1),e.enable(e.DEPTH_TEST),e.depthFunc(e.LEQUAL),e.clear(e.COLOR_BUFFER_BIT|e.DEPTH_BUFFER_BIT),"["+t[0]+", "+t[1]+"]"},i=function(e){var t,i=e.getExtension("EXT_texture_filter_anisotropic")||e.getExtension("WEBKIT_EXT_texture_filter_anisotropic")||e.getExtension("MOZ_EXT_texture_filter_anisotropic");return i?(t=e.getParameter(i.MAX_TEXTURE_MAX_ANISOTROPY_EXT),0===t&&(t=2),t):null};if(e=this.getWebglCanvas(),!e)return null;var a=[],r="attribute vec2 attrVertex;varying vec2 varyinTexCoordinate;uniform vec2 uniformOffset;void main(){varyinTexCoordinate=attrVertex+uniformOffset;gl_Position=vec4(attrVertex,0,1);}",n="precision mediump float;varying vec2 varyinTexCoordinate;void main() {gl_FragColor=vec4(varyinTexCoordinate,0,1);}",o=e.createBuffer();e.bindBuffer(e.ARRAY_BUFFER,o);var s=new Float32Array([-.2,-.9,0,.4,-.26,0,0,.732134444,0]);e.bufferData(e.ARRAY_BUFFER,s,e.STATIC_DRAW),o.itemSize=3,o.numItems=3;var l=e.createProgram(),h=e.createShader(e.VERTEX_SHADER);e.shaderSource(h,r),e.compileShader(h);var u=e.createShader(e.FRAGMENT_SHADER);e.shaderSource(u,n),e.compileShader(u),e.attachShader(l,h),e.attachShader(l,u),e.linkProgram(l),e.useProgram(l),l.vertexPosAttrib=e.getAttribLocation(l,"attrVertex"),l.offsetUniform=e.getUniformLocation(l,"uniformOffset"),e.enableVertexAttribArray(l.vertexPosArray),e.vertexAttribPointer(l.vertexPosAttrib,o.itemSize,e.FLOAT,!1,0,0),e.uniform2f(l.offsetUniform,1,1),e.drawArrays(e.TRIANGLE_STRIP,0,o.numItems),null!=e.canvas&&a.push(e.canvas.toDataURL()),a.push("extensions:"+e.getSupportedExtensions().join(";")),a.push("webgl aliased line width range:"+t(e.getParameter(e.ALIASED_LINE_WIDTH_RANGE))),a.push("webgl aliased point size range:"+t(e.getParameter(e.ALIASED_POINT_SIZE_RANGE))),a.push("webgl alpha bits:"+e.getParameter(e.ALPHA_BITS)),a.push("webgl antialiasing:"+(e.getContextAttributes().antialias?"yes":"no")),a.push("webgl blue bits:"+e.getParameter(e.BLUE_BITS)),a.push("webgl depth bits:"+e.getParameter(e.DEPTH_BITS)),a.push("webgl green bits:"+e.getParameter(e.GREEN_BITS)),a.push("webgl max anisotropy:"+i(e)),a.push("webgl max combined texture image units:"+e.getParameter(e.MAX_COMBINED_TEXTURE_IMAGE_UNITS)),a.push("webgl max cube map texture size:"+e.getParameter(e.MAX_CUBE_MAP_TEXTURE_SIZE)),a.push("webgl max fragment uniform vectors:"+e.getParameter(e.MAX_FRAGMENT_UNIFORM_VECTORS)),a.push("webgl max render buffer size:"+e.getParameter(e.MAX_RENDERBUFFER_SIZE)),a.push("webgl max texture image units:"+e.getParameter(e.MAX_TEXTURE_IMAGE_UNITS)),a.push("webgl max texture size:"+e.getParameter(e.MAX_TEXTURE_SIZE)),a.push("webgl max varying vectors:"+e.getParameter(e.MAX_VARYING_VECTORS)),a.push("webgl max vertex attribs:"+e.getParameter(e.MAX_VERTEX_ATTRIBS)),a.push("webgl max vertex texture image units:"+e.getParameter(e.MAX_VERTEX_TEXTURE_IMAGE_UNITS)),a.push("webgl max vertex uniform vectors:"+e.getParameter(e.MAX_VERTEX_UNIFORM_VECTORS)),a.push("webgl max viewport dims:"+t(e.getParameter(e.MAX_VIEWPORT_DIMS))),a.push("webgl red bits:"+e.getParameter(e.RED_BITS)),a.push("webgl renderer:"+e.getParameter(e.RENDERER)),a.push("webgl shading language version:"+e.getParameter(e.SHADING_LANGUAGE_VERSION)),a.push("webgl stencil bits:"+e.getParameter(e.STENCIL_BITS)),a.push("webgl vendor:"+e.getParameter(e.VENDOR)),a.push("webgl version:"+e.getParameter(e.VERSION));try{var d=e.getExtension("WEBGL_debug_renderer_info");d&&(a.push("webgl unmasked vendor:"+e.getParameter(d.UNMASKED_VENDOR_WEBGL)),a.push("webgl unmasked renderer:"+e.getParameter(d.UNMASKED_RENDERER_WEBGL)))}catch(c){}return e.getShaderPrecisionFormat?(a.push("webgl vertex shader high float precision:"+e.getShaderPrecisionFormat(e.VERTEX_SHADER,e.HIGH_FLOAT).precision),a.push("webgl vertex shader high float precision rangeMin:"+e.getShaderPrecisionFormat(e.VERTEX_SHADER,e.HIGH_FLOAT).rangeMin),a.push("webgl vertex shader high float precision rangeMax:"+e.getShaderPrecisionFormat(e.VERTEX_SHADER,e.HIGH_FLOAT).rangeMax),a.push("webgl vertex shader medium float precision:"+e.getShaderPrecisionFormat(e.VERTEX_SHADER,e.MEDIUM_FLOAT).precision),a.push("webgl vertex shader medium float precision rangeMin:"+e.getShaderPrecisionFormat(e.VERTEX_SHADER,e.MEDIUM_FLOAT).rangeMin),a.push("webgl vertex shader medium float precision rangeMax:"+e.getShaderPrecisionFormat(e.VERTEX_SHADER,e.MEDIUM_FLOAT).rangeMax),a.push("webgl vertex shader low float precision:"+e.getShaderPrecisionFormat(e.VERTEX_SHADER,e.LOW_FLOAT).precision),a.push("webgl vertex shader low float precision rangeMin:"+e.getShaderPrecisionFormat(e.VERTEX_SHADER,e.LOW_FLOAT).rangeMin),a.push("webgl vertex shader low float precision rangeMax:"+e.getShaderPrecisionFormat(e.VERTEX_SHADER,e.LOW_FLOAT).rangeMax),a.push("webgl fragment shader high float precision:"+e.getShaderPrecisionFormat(e.FRAGMENT_SHADER,e.HIGH_FLOAT).precision),a.push("webgl fragment shader high float precision rangeMin:"+e.getShaderPrecisionFormat(e.FRAGMENT_SHADER,e.HIGH_FLOAT).rangeMin),a.push("webgl fragment shader high float precision rangeMax:"+e.getShaderPrecisionFormat(e.FRAGMENT_SHADER,e.HIGH_FLOAT).rangeMax),a.push("webgl fragment shader medium float precision:"+e.getShaderPrecisionFormat(e.FRAGMENT_SHADER,e.MEDIUM_FLOAT).precision),a.push("webgl fragment shader medium float precision rangeMin:"+e.getShaderPrecisionFormat(e.FRAGMENT_SHADER,e.MEDIUM_FLOAT).rangeMin),a.push("webgl fragment shader medium float precision rangeMax:"+e.getShaderPrecisionFormat(e.FRAGMENT_SHADER,e.MEDIUM_FLOAT).rangeMax),a.push("webgl fragment shader low float precision:"+e.getShaderPrecisionFormat(e.FRAGMENT_SHADER,e.LOW_FLOAT).precision),a.push("webgl fragment shader low float precision rangeMin:"+e.getShaderPrecisionFormat(e.FRAGMENT_SHADER,e.LOW_FLOAT).rangeMin),a.push("webgl fragment shader low float precision rangeMax:"+e.getShaderPrecisionFormat(e.FRAGMENT_SHADER,e.LOW_FLOAT).rangeMax),a.push("webgl vertex shader high int precision:"+e.getShaderPrecisionFormat(e.VERTEX_SHADER,e.HIGH_INT).precision),a.push("webgl vertex shader high int precision rangeMin:"+e.getShaderPrecisionFormat(e.VERTEX_SHADER,e.HIGH_INT).rangeMin),a.push("webgl vertex shader high int precision rangeMax:"+e.getShaderPrecisionFormat(e.VERTEX_SHADER,e.HIGH_INT).rangeMax),a.push("webgl vertex shader medium int precision:"+e.getShaderPrecisionFormat(e.VERTEX_SHADER,e.MEDIUM_INT).precision),a.push("webgl vertex shader medium int precision rangeMin:"+e.getShaderPrecisionFormat(e.VERTEX_SHADER,e.MEDIUM_INT).rangeMin),a.push("webgl vertex shader medium int precision rangeMax:"+e.getShaderPrecisionFormat(e.VERTEX_SHADER,e.MEDIUM_INT).rangeMax),a.push("webgl vertex shader low int precision:"+e.getShaderPrecisionFormat(e.VERTEX_SHADER,e.LOW_INT).precision),a.push("webgl vertex shader low int precision rangeMin:"+e.getShaderPrecisionFormat(e.VERTEX_SHADER,e.LOW_INT).rangeMin),a.push("webgl vertex shader low int precision rangeMax:"+e.getShaderPrecisionFormat(e.VERTEX_SHADER,e.LOW_INT).rangeMax),a.push("webgl fragment shader high int precision:"+e.getShaderPrecisionFormat(e.FRAGMENT_SHADER,e.HIGH_INT).precision),a.push("webgl fragment shader high int precision rangeMin:"+e.getShaderPrecisionFormat(e.FRAGMENT_SHADER,e.HIGH_INT).rangeMin),a.push("webgl fragment shader high int precision rangeMax:"+e.getShaderPrecisionFormat(e.FRAGMENT_SHADER,e.HIGH_INT).rangeMax),a.push("webgl fragment shader medium int precision:"+e.getShaderPrecisionFormat(e.FRAGMENT_SHADER,e.MEDIUM_INT).precision),a.push("webgl fragment shader medium int precision rangeMin:"+e.getShaderPrecisionFormat(e.FRAGMENT_SHADER,e.MEDIUM_INT).rangeMin),a.push("webgl fragment shader medium int precision rangeMax:"+e.getShaderPrecisionFormat(e.FRAGMENT_SHADER,e.MEDIUM_INT).rangeMax),a.push("webgl fragment shader low int precision:"+e.getShaderPrecisionFormat(e.FRAGMENT_SHADER,e.LOW_INT).precision),a.push("webgl fragment shader low int precision rangeMin:"+e.getShaderPrecisionFormat(e.FRAGMENT_SHADER,e.LOW_INT).rangeMin),a.push("webgl fragment shader low int precision rangeMax:"+e.getShaderPrecisionFormat(e.FRAGMENT_SHADER,e.LOW_INT).rangeMax),a.join("~")):a.join("~")},getAdBlock:function(){var e=document.createElement("div");e.innerHTML="&nbsp;",e.className="adsbox";var t=!1;try{document.body.appendChild(e),t=0===document.getElementsByClassName("adsbox")[0].offsetHeight,document.body.removeChild(e)}catch(i){t=!1}return t},getHasLiedLanguages:function(){if("undefined"!=typeof navigator.languages)try{var e=navigator.languages[0].substr(0,2);if(e!==navigator.language.substr(0,2))return!0}catch(t){return!0}return!1},getHasLiedResolution:function(){return screen.width<screen.availWidth||screen.height<screen.availHeight},getHasLiedOs:function(){var e,t=navigator.userAgent.toLowerCase(),i=navigator.oscpu,a=navigator.platform.toLowerCase();e=t.indexOf("windows phone")>=0?"Windows Phone":t.indexOf("win")>=0?"Windows":t.indexOf("android")>=0?"Android":t.indexOf("linux")>=0?"Linux":t.indexOf("iphone")>=0||t.indexOf("ipad")>=0?"iOS":t.indexOf("mac")>=0?"Mac":"Other";var r;if(r="ontouchstart"in window||navigator.maxTouchPoints>0||navigator.msMaxTouchPoints>0,r&&"Windows Phone"!==e&&"Android"!==e&&"iOS"!==e&&"Other"!==e)return!0;if("undefined"!=typeof i){if(i=i.toLowerCase(),i.indexOf("win")>=0&&"Windows"!==e&&"Windows Phone"!==e)return!0;if(i.indexOf("linux")>=0&&"Linux"!==e&&"Android"!==e)return!0;if(i.indexOf("mac")>=0&&"Mac"!==e&&"iOS"!==e)return!0;if(0===i.indexOf("win")&&0===i.indexOf("linux")&&i.indexOf("mac")>=0&&"other"!==e)return!0}return a.indexOf("win")>=0&&"Windows"!==e&&"Windows Phone"!==e||((a.indexOf("linux")>=0||a.indexOf("android")>=0||a.indexOf("pike")>=0)&&"Linux"!==e&&"Android"!==e||((a.indexOf("mac")>=0||a.indexOf("ipad")>=0||a.indexOf("ipod")>=0||a.indexOf("iphone")>=0)&&"Mac"!==e&&"iOS"!==e||(0===a.indexOf("win")&&0===a.indexOf("linux")&&a.indexOf("mac")>=0&&"other"!==e||"undefined"==typeof navigator.plugins&&"Windows"!==e&&"Windows Phone"!==e)))},getHasLiedBrowser:function(){var e,t=navigator.userAgent.toLowerCase(),i=navigator.productSub;if(e=t.indexOf("firefox")>=0?"Firefox":t.indexOf("opera")>=0||t.indexOf("opr")>=0?"Opera":t.indexOf("chrome")>=0?"Chrome":t.indexOf("safari")>=0?"Safari":t.indexOf("trident")>=0?"Internet Explorer":"Other",("Chrome"===e||"Safari"===e||"Opera"===e)&&"20030107"!==i)return!0;var a=eval.toString().length;if(37===a&&"Safari"!==e&&"Firefox"!==e&&"Other"!==e)return!0;if(39===a&&"Internet Explorer"!==e&&"Other"!==e)return!0;if(33===a&&"Chrome"!==e&&"Opera"!==e&&"Other"!==e)return!0;var r;try{throw"a"}catch(n){try{n.toSource(),r=!0}catch(o){r=!1}}return!(!r||"Firefox"===e||"Other"===e)},isCanvasSupported:function(){var e=document.createElement("canvas");return!(!e.getContext||!e.getContext("2d"))},isWebGlSupported:function(){if(!this.isCanvasSupported())return!1;var e,t=document.createElement("canvas");try{e=t.getContext&&(t.getContext("webgl")||t.getContext("experimental-webgl"))}catch(i){e=!1}return!!window.WebGLRenderingContext&&!!e},isIE:function(){return"Microsoft Internet Explorer"===navigator.appName||!("Netscape"!==navigator.appName||!/Trident/.test(navigator.userAgent))},hasSwfObjectLoaded:function(){return"undefined"!=typeof window.swfobject},hasMinFlashInstalled:function(){return swfobject.hasFlashPlayerVersion("9.0.0")},addFlashDivNode:function(){var e=document.createElement("div");e.setAttribute("id",this.options.swfContainerId),document.body.appendChild(e)},loadSwfAndDetectFonts:function(e){var t="___fp_swf_loaded";window[t]=function(t){e(t)};var i=this.options.swfContainerId;this.addFlashDivNode();var a={onReady:t},r={allowScriptAccess:"always",menu:"false"};swfobject.embedSWF(this.options.swfPath,i,"1","1","9.0.0",!1,a,r,{})},getWebglCanvas:function(){var e=document.createElement("canvas"),t=null;try{t=e.getContext("webgl")||e.getContext("experimental-webgl")}catch(i){}return t||(t=null),t},each:function(e,t,i){if(null!==e)if(this.nativeForEach&&e.forEach===this.nativeForEach)e.forEach(t,i);else if(e.length===+e.length){for(var a=0,r=e.length;a<r;a++)if(t.call(i,e[a],a,e)==={})return}else for(var n in e)if(e.hasOwnProperty(n)&&t.call(i,e[n],n,e)==={})return},map:function(e,t,i){var a=[];return null==e?a:this.nativeMap&&e.map===this.nativeMap?e.map(t,i):(this.each(e,function(e,r,n){a[a.length]=t.call(i,e,r,n)}),a)},x64Add:function(e,t){e=[e[0]>>>16,65535&e[0],e[1]>>>16,65535&e[1]],t=[t[0]>>>16,65535&t[0],t[1]>>>16,65535&t[1]];var i=[0,0,0,0];return i[3]+=e[3]+t[3],i[2]+=i[3]>>>16,i[3]&=65535,i[2]+=e[2]+t[2],i[1]+=i[2]>>>16,i[2]&=65535,i[1]+=e[1]+t[1],i[0]+=i[1]>>>16,i[1]&=65535,i[0]+=e[0]+t[0],i[0]&=65535,[i[0]<<16|i[1],i[2]<<16|i[3]]},x64Multiply:function(e,t){e=[e[0]>>>16,65535&e[0],e[1]>>>16,65535&e[1]],t=[t[0]>>>16,65535&t[0],t[1]>>>16,65535&t[1]];var i=[0,0,0,0];return i[3]+=e[3]*t[3],i[2]+=i[3]>>>16,i[3]&=65535,i[2]+=e[2]*t[3],i[1]+=i[2]>>>16,i[2]&=65535,i[2]+=e[3]*t[2],i[1]+=i[2]>>>16,i[2]&=65535,i[1]+=e[1]*t[3],i[0]+=i[1]>>>16,i[1]&=65535,i[1]+=e[2]*t[2],i[0]+=i[1]>>>16,i[1]&=65535,i[1]+=e[3]*t[1],i[0]+=i[1]>>>16,i[1]&=65535,i[0]+=e[0]*t[3]+e[1]*t[2]+e[2]*t[1]+e[3]*t[0],i[0]&=65535,[i[0]<<16|i[1],i[2]<<16|i[3]]},x64Rotl:function(e,t){return t%=64,32===t?[e[1],e[0]]:t<32?[e[0]<<t|e[1]>>>32-t,e[1]<<t|e[0]>>>32-t]:(t-=32,[e[1]<<t|e[0]>>>32-t,e[0]<<t|e[1]>>>32-t])},x64LeftShift:function(e,t){return t%=64,0===t?e:t<32?[e[0]<<t|e[1]>>>32-t,e[1]<<t]:[e[1]<<t-32,0]},x64Xor:function(e,t){return[e[0]^t[0],e[1]^t[1]]},x64Fmix:function(e){return e=this.x64Xor(e,[0,e[0]>>>1]),e=this.x64Multiply(e,[4283543511,3981806797]),e=this.x64Xor(e,[0,e[0]>>>1]),e=this.x64Multiply(e,[3301882366,444984403]),e=this.x64Xor(e,[0,e[0]>>>1]);
+},x64hash128:function(e,t){e=e||"",t=t||0;for(var i=e.length%16,a=e.length-i,r=[0,t],n=[0,t],o=[0,0],s=[0,0],l=[2277735313,289559509],h=[1291169091,658871167],u=0;u<a;u+=16)o=[255&e.charCodeAt(u+4)|(255&e.charCodeAt(u+5))<<8|(255&e.charCodeAt(u+6))<<16|(255&e.charCodeAt(u+7))<<24,255&e.charCodeAt(u)|(255&e.charCodeAt(u+1))<<8|(255&e.charCodeAt(u+2))<<16|(255&e.charCodeAt(u+3))<<24],s=[255&e.charCodeAt(u+12)|(255&e.charCodeAt(u+13))<<8|(255&e.charCodeAt(u+14))<<16|(255&e.charCodeAt(u+15))<<24,255&e.charCodeAt(u+8)|(255&e.charCodeAt(u+9))<<8|(255&e.charCodeAt(u+10))<<16|(255&e.charCodeAt(u+11))<<24],o=this.x64Multiply(o,l),o=this.x64Rotl(o,31),o=this.x64Multiply(o,h),r=this.x64Xor(r,o),r=this.x64Rotl(r,27),r=this.x64Add(r,n),r=this.x64Add(this.x64Multiply(r,[0,5]),[0,1390208809]),s=this.x64Multiply(s,h),s=this.x64Rotl(s,33),s=this.x64Multiply(s,l),n=this.x64Xor(n,s),n=this.x64Rotl(n,31),n=this.x64Add(n,r),n=this.x64Add(this.x64Multiply(n,[0,5]),[0,944331445]);switch(o=[0,0],s=[0,0],i){case 15:s=this.x64Xor(s,this.x64LeftShift([0,e.charCodeAt(u+14)],48));case 14:s=this.x64Xor(s,this.x64LeftShift([0,e.charCodeAt(u+13)],40));case 13:s=this.x64Xor(s,this.x64LeftShift([0,e.charCodeAt(u+12)],32));case 12:s=this.x64Xor(s,this.x64LeftShift([0,e.charCodeAt(u+11)],24));case 11:s=this.x64Xor(s,this.x64LeftShift([0,e.charCodeAt(u+10)],16));case 10:s=this.x64Xor(s,this.x64LeftShift([0,e.charCodeAt(u+9)],8));case 9:s=this.x64Xor(s,[0,e.charCodeAt(u+8)]),s=this.x64Multiply(s,h),s=this.x64Rotl(s,33),s=this.x64Multiply(s,l),n=this.x64Xor(n,s);case 8:o=this.x64Xor(o,this.x64LeftShift([0,e.charCodeAt(u+7)],56));case 7:o=this.x64Xor(o,this.x64LeftShift([0,e.charCodeAt(u+6)],48));case 6:o=this.x64Xor(o,this.x64LeftShift([0,e.charCodeAt(u+5)],40));case 5:o=this.x64Xor(o,this.x64LeftShift([0,e.charCodeAt(u+4)],32));case 4:o=this.x64Xor(o,this.x64LeftShift([0,e.charCodeAt(u+3)],24));case 3:o=this.x64Xor(o,this.x64LeftShift([0,e.charCodeAt(u+2)],16));case 2:o=this.x64Xor(o,this.x64LeftShift([0,e.charCodeAt(u+1)],8));case 1:o=this.x64Xor(o,[0,e.charCodeAt(u)]),o=this.x64Multiply(o,l),o=this.x64Rotl(o,31),o=this.x64Multiply(o,h),r=this.x64Xor(r,o)}return r=this.x64Xor(r,[0,e.length]),n=this.x64Xor(n,[0,e.length]),r=this.x64Add(r,n),n=this.x64Add(n,r),r=this.x64Fmix(r),n=this.x64Fmix(n),r=this.x64Add(r,n),n=this.x64Add(n,r),("00000000"+(r[0]>>>0).toString(16)).slice(-8)+("00000000"+(r[1]>>>0).toString(16)).slice(-8)+("00000000"+(n[0]>>>0).toString(16)).slice(-8)+("00000000"+(n[1]>>>0).toString(16)).slice(-8)}},e.VERSION="1.5.0",e});
+
+(function(){
+	var BASE64_MAPPING = [
+		'A','B','C','D','E','F','G','H',
+		'I','J','K','L','M','N','O','P',
+		'Q','R','S','T','U','V','W','X',
+		'Y','Z','a','b','c','d','e','f',
+		'g','h','i','j','k','l','m','n',
+		'o','p','q','r','s','t','u','v',
+		'w','x','y','z','0','1','2','3',
+		'4','5','6','7','8','9','+','/'
+	];
+
+	/**
+	 *ascii convert to binary
+	 */
+	var _toBinary = function(ascii){
+		var binary = new Array();
+		while(ascii > 0){
+			var b = ascii%2;
+			ascii = Math.floor(ascii/2);
+			binary.push(b);
+		}
+		/*
+		var len = binary.length;
+		if(6-len > 0){
+			for(var i = 6-len ; i > 0 ; --i){
+				binary.push(0);
+			}
+		}*/
+		binary.reverse();
+		return binary;
+	};
+
+	/**
+	 *binary convert to decimal
+	 */
+	var _toDecimal  = function(binary){
+		var dec = 0;
+		var p = 0;
+		for(var i = binary.length-1 ; i >= 0 ; --i){
+			var b = binary[i];
+			if(b == 1){
+				dec += Math.pow(2 , p);
+			}
+			++p;
+		}
+		return dec;
+	};
+
+	/**
+	 *unicode convert to utf-8
+	 */
+	var _toUTF8Binary = function(c , binaryArray){
+		var mustLen = (8-(c+1)) + ((c-1)*6);
+		var fatLen = binaryArray.length;
+		var diff = mustLen - fatLen;
+		while(--diff >= 0){
+			binaryArray.unshift(0);
+		}
+		var binary = [];
+		var _c = c;
+		while(--_c >= 0){
+			binary.push(1);
+		}
+		binary.push(0);
+		var i = 0 , len = 8 - (c+1);
+		for(; i < len ; ++i){
+			binary.push(binaryArray[i]);
+		}
+
+		for(var j = 0 ; j < c-1 ; ++j){
+			binary.push(1);
+			binary.push(0);
+			var sum = 6;
+			while(--sum >= 0){
+				binary.push(binaryArray[i++]);
+			}
+		}
+		return binary;
+	};
+
+	var __BASE64 = {
+			/**
+			 *BASE64 Encode
+			 */
+			encoder:function(str){
+				var base64_Index = [];
+				var binaryArray = [];
+				for(var i = 0 , len = str.length ; i < len ; ++i){
+					var unicode = str.charCodeAt(i);
+					var _tmpBinary = _toBinary(unicode);
+					if(unicode < 0x80){
+						var _tmpdiff = 8 - _tmpBinary.length;
+						while(--_tmpdiff >= 0){
+							_tmpBinary.unshift(0);
+						}
+						binaryArray = binaryArray.concat(_tmpBinary);
+					}else if(unicode >= 0x80 && unicode <= 0x7FF){
+						binaryArray = binaryArray.concat(_toUTF8Binary(2 , _tmpBinary));
+					}else if(unicode >= 0x800 && unicode <= 0xFFFF){//UTF-8 3byte
+						binaryArray = binaryArray.concat(_toUTF8Binary(3 , _tmpBinary));
+					}else if(unicode >= 0x10000 && unicode <= 0x1FFFFF){//UTF-8 4byte
+						binaryArray = binaryArray.concat(_toUTF8Binary(4 , _tmpBinary));	
+					}else if(unicode >= 0x200000 && unicode <= 0x3FFFFFF){//UTF-8 5byte
+						binaryArray = binaryArray.concat(_toUTF8Binary(5 , _tmpBinary));
+					}else if(unicode >= 4000000 && unicode <= 0x7FFFFFFF){//UTF-8 6byte
+						binaryArray = binaryArray.concat(_toUTF8Binary(6 , _tmpBinary));
+					}
+				}
+
+				var extra_Zero_Count = 0;
+				for(var i = 0 , len = binaryArray.length ; i < len ; i+=6){
+					var diff = (i+6)-len;
+					if(diff == 2){
+						extra_Zero_Count = 2;
+					}else if(diff == 4){
+						extra_Zero_Count = 4;
+					}
+					//if(extra_Zero_Count > 0){
+					//	len += extra_Zero_Count+1;
+					//}
+					var _tmpExtra_Zero_Count = extra_Zero_Count;
+					while(--_tmpExtra_Zero_Count >= 0){
+						binaryArray.push(0);
+					}
+					base64_Index.push(_toDecimal(binaryArray.slice(i , i+6)));
+				}
+
+				var base64 = '';
+				for(var i = 0 , len = base64_Index.length ; i < len ; ++i){
+					base64 += BASE64_MAPPING[base64_Index[i]];
+				}
+
+				for(var i = 0 , len = extra_Zero_Count/2 ; i < len ; ++i){
+					base64 += '=';
+				}
+				return base64;
+			},
+			/**
+			 *BASE64  Decode for UTF-8 
+			 */
+			decoder : function(_base64Str){
+				var _len = _base64Str.length;
+				var extra_Zero_Count = 0;
+				/**
+				 *ï¿½ï¿½ï¿½ï¿½ï¿½Ú½ï¿½ï¿½ï¿½BASE64ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ò£¬²ï¿½ï¿½Ë¼ï¿½ï¿½ï¿½0
+				 */
+				if(_base64Str.charAt(_len-1) == '='){
+					//alert(_base64Str.charAt(_len-1));
+					//alert(_base64Str.charAt(_len-2));
+					if(_base64Str.charAt(_len-2) == '='){//ï¿½ï¿½ï¿½ï¿½ï¿½Èºï¿½Ëµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½4ï¿½ï¿½0
+						extra_Zero_Count = 4;
+						_base64Str = _base64Str.substring(0 , _len-2);
+					}else{//Ò»ï¿½ï¿½ï¿½Èºï¿½Ëµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½2ï¿½ï¿½0
+						extra_Zero_Count = 2;
+						_base64Str = _base64Str.substring(0 , _len - 1);
+					}
+				}
+
+				var binaryArray = [];
+				for(var i = 0 , len = _base64Str.length; i < len ; ++i){
+					var c = _base64Str.charAt(i);
+					for(var j = 0 , size = BASE64_MAPPING.length ; j < size ; ++j){
+						if(c == BASE64_MAPPING[j]){
+							var _tmp = _toBinary(j);
+							/*ï¿½ï¿½ï¿½ï¿½6Î»ï¿½Ä²ï¿½0*/
+							var _tmpLen = _tmp.length;
+							if(6-_tmpLen > 0){
+								for(var k = 6-_tmpLen ; k > 0 ; --k){
+									_tmp.unshift(0);
+								}
+							}
+							binaryArray = binaryArray.concat(_tmp);
+							break;
+						}
+					}
+				}
+
+				if(extra_Zero_Count > 0){
+					binaryArray = binaryArray.slice(0 , binaryArray.length - extra_Zero_Count);
+				}
+
+				var unicode = [];
+				var unicodeBinary = [];
+				for(var i = 0 , len = binaryArray.length ; i < len ; ){
+					if(binaryArray[i] == 0){
+						unicode=unicode.concat(_toDecimal(binaryArray.slice(i,i+8)));
+						i += 8;
+					}else{
+						var sum = 0;
+						while(i < len){
+							if(binaryArray[i] == 1){
+								++sum;
+							}else{
+								break;
+							}
+							++i;
+						}
+						unicodeBinary = unicodeBinary.concat(binaryArray.slice(i+1 , i+8-sum));
+						i += 8 - sum;
+						while(sum > 1){
+							unicodeBinary = unicodeBinary.concat(binaryArray.slice(i+2 , i+8));
+							i += 8;
+							--sum;
+						}
+						unicode = unicode.concat(_toDecimal(unicodeBinary));
+						unicodeBinary = [];
+					}
+				}
+				return unicode;
+			}
+	};
+
+	window.BASE64 = __BASE64;
+})();
+
+	'use strict';var hex_chr = "0123456789abcdef";function rhex(num) {var str = '';for (var j = 0; j <= 3; j++) str += hex_chr.charAt((num >> (j * 8 + 4)) & 0x0F) + hex_chr.charAt((num >> (j * 8)) & 0x0F);return str;}function str2blks_MD5(str) {var i;var nblk = ((str.length + 8) >> 6) + 1;var blks = new Array(nblk * 16);for (i = 0; i < nblk * 16; i++) blks[i] = 0;for (i = 0; i < str.length; i++) blks[i >> 2] |= str.charCodeAt(i) << ((i % 4) * 8);blks[i >> 2] |= 0x80 << ((i % 4) * 8);blks[nblk * 16 - 2] = str.length * 8;return blks;}function add(x, y) {var lsw = (x & 0xFFFF) + (y & 0xFFFF);var msw = (x >> 16) + (y >> 16) + (lsw >> 16);return (msw << 16) | (lsw & 0xFFFF);}function rol(num, cnt) {return (num << cnt) | (num >>> (32 - cnt));}function cmn(q, a, b, x, s, t) {return add(rol(add(add(a, q), add(x, t)), s), b);}function ff(a, b, c, d, x, s, t) {return cmn((b & c) | ((~b) & d), a, b, x, s, t);}function gg(a, b, c, d, x, s, t) {return cmn((b & d) | (c & (~d)), a, b, x, s, t);}function hh(a, b, c, d, x, s, t) {return cmn(b ^ c ^ d, a, b, x, s, t);}function ii(a, b, c, d, x, s, t) {return cmn(c ^ (b | (~d)), a, b, x, s, t);}function MD5(str) {var x = str2blks_MD5(str);var a = 1732584193;var b = -271733879;var c = -1732584194;var d = 271733878;for (var i = 0; i < x.length; i += 16) {var olda = a;var oldb = b;var oldc = c;var oldd = d;a = ff(a, b, c, d, x[i + 0], 7, -680876936);d = ff(d, a, b, c, x[i + 1], 12, -389564586);c = ff(c, d, a, b, x[i + 2], 17, 606105819);b = ff(b, c, d, a, x[i + 3], 22, -1044525330); a = ff(a, b, c, d, x[i + 4], 7, -176418897);d = ff(d, a, b, c, x[i + 5], 12, 1200080426);
+	    c = ff(c, d, a, b, x[i + 6], 17, -1473231341);b = ff(b, c, d, a, x[i + 7], 22, -45705983); a = ff(a, b, c, d, x[i + 8], 7, 1770035416);d = ff(d, a, b, c, x[i + 9], 12, -1958414417);
+	    c = ff(c, d, a, b, x[i + 10], 17, -42063);b = ff(b, c, d, a, x[i + 11], 22, -1990404162);a = ff(a, b, c, d, x[i + 12], 7, 1804603682);d = ff(d, a, b, c, x[i + 13], 12, -40341101);
+	    c = ff(c, d, a, b, x[i + 14], 17, -1502002290);b = ff(b, c, d, a, x[i + 15], 22, 1236535329);a = gg(a, b, c, d, x[i + 1], 5, -165796510); d = gg(d, a, b, c, x[i + 6], 9, -1069501632);
+	    c = gg(c, d, a, b, x[i + 11], 14, 643717713);b = gg(b, c, d, a, x[i + 0], 20, -373897302);a = gg(a, b, c, d, x[i + 5], 5, -701558691);
+	    d = gg(d, a, b, c, x[i + 10], 9, 38016083);c = gg(c, d, a, b, x[i + 15], 14, -660478335);b = gg(b, c, d, a, x[i + 4], 20, -405537848);
+	    a = gg(a, b, c, d, x[i + 9], 5, 568446438);d = gg(d, a, b, c, x[i + 14], 9, -1019803690);c = gg(c, d, a, b, x[i + 3], 14, -187363961);b = gg(b, c, d, a, x[i + 8], 20, 1163531501);
+	    a = gg(a, b, c, d, x[i + 13], 5, -1444681467);d = gg(d, a, b, c, x[i + 2], 9, -51403784);c = gg(c, d, a, b, x[i + 7], 14, 1735328473); b = gg(b, c, d, a, x[i + 12], 20, -1926607734); a = hh(a, b, c, d, x[i + 5], 4, -378558);
+	    d = hh(d, a, b, c, x[i + 8], 11, -2022574463); c = hh(c, d, a, b, x[i + 11], 16, 1839030562);b = hh(b, c, d, a, x[i + 14], 23, -35309556);
+	    a = hh(a, b, c, d, x[i + 1], 4, -1530992060);d = hh(d, a, b, c, x[i + 4], 11, 1272893353);c = hh(c, d, a, b, x[i + 7], 16, -155497632);b = hh(b, c, d, a, x[i + 10], 23, -1094730640);
+	    a = hh(a, b, c, d, x[i + 13], 4, 681279174);d = hh(d, a, b, c, x[i + 0], 11, -358537222);c = hh(c, d, a, b, x[i + 3], 16, -722521979);b = hh(b, c, d, a, x[i + 6], 23, 76029189);
+	    a = hh(a, b, c, d, x[i + 9], 4, -640364487);d = hh(d, a, b, c, x[i + 12], 11, -421815835);c = hh(c, d, a, b, x[i + 15], 16, 530742520);b = hh(b, c, d, a, x[i + 2], 23, -995338651);
+	    a = ii(a, b, c, d, x[i + 0], 6, -198630844);d = ii(d, a, b, c, x[i + 7], 10, 1126891415);c = ii(c, d, a, b, x[i + 14], 15, -1416354905);b = ii(b, c, d, a, x[i + 5], 21, -57434055);a = ii(a, b, c, d, x[i + 12], 6, 1700485571); d = ii(d, a, b, c, x[i + 3], 10, -1894986606);
+	    c = ii(c, d, a, b, x[i + 10], 15, -1051523);b = ii(b, c, d, a, x[i + 1], 21, -2054922799);a = ii(a, b, c, d, x[i + 8], 6, 1873313359);d = ii(d, a, b, c, x[i + 15], 10, -30611744); c = ii(c, d, a, b, x[i + 6], 15, -1560198380);b = ii(b, c, d, a, x[i + 13], 21, 1309151649);a = ii(a, b, c, d, x[i + 4], 6, -145523070);d = ii(d, a, b, c, x[i + 11], 10, -1120210379);c = ii(c, d, a, b, x[i + 2], 15, 718787259);b = ii(b, c, d, a, x[i + 9], 21, -343485551);a = add(a, olda);b = add(b, oldb); c = add(c, oldc);d = add(d, oldd);}return rhex(a) + rhex(b) + rhex(c) + rhex(d);}function getMD5Value(data) {var a = data;var b = '\xa3\xac\xa1\xa3'; var c = 'fdjf,jkgfkl';var s = a + b + c;return MD5(s);}
+	    
+try {
+	localStorage.ucsdk201705102046 = "ucsdk"
+} catch (d) {}(function() {
+	function d(a, b, d) {
+		a += -1 == a.indexOf("?") ? "?" : "&";
+		return a + (encodeURIComponent(b) + "=" + encodeURIComponent(d))
+	}
+	function a(a, b, d) {
+		a += -1 == a.indexOf("?") ? "?" : "&";
+		return a + (b + "=" + d)
+	}
+	function b(a) {
+		var b = "",
+			d, c;
+		for (c in a) d = c + "=" + a[c], b += d + "&";
+		return b.slice(0, b.length - 1)
+	}
+	var c = function(a) {
+			this.config = {
+				url: "",
+				type: "get",
+				async: !0,
+				dataType: "json",
+				contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+				data: {}
+			};
+			try {
+				this.start(a)
+			} catch (h) {}
+		},
+		f = null;
+	c.init = function(a) {
+		new c(a)
+	};
+	c.prototype = {
+		constructor: c,
+		createXHR: function() {
+			if ("undefined" != typeof XMLHttpRequest) return new XMLHttpRequest;
+			if ("undefined" != typeof ActiveXObject) {
+				if ("string" != typeof arguments.callee.activeXString) {
+					var a = ["MSXML2.XMLHttp.6.0", "MSXML2.XMLHttp.3.0", "MSXML2.XMLHttp"],
+						b, d;
+					b = 0;
+					for (d = a.length; b < d; b++) try {
+						new ActiveXObject(a[b]);
+						arguments.callee.activeXString = a[b];
+						break
+					} catch (l) {}
+				}
+				return new ActiveXObject(arguments.callee.activeXString)
+			}
+		},
+		start: function(c) {
+			f = new this.createXHR;
+			c.url && (this.config.url = c.url);
+			c.type && (this.config.type = c.type);
+			c.async && (this.config.async = c.async);
+			c.dataType && (this.config.dataType = c.dataType);
+			c.data && (this.config.data = c.data);
+			c.success && (this.config.success = c.success);
+			c.fail && (this.config.fail = c.fail);
+			c.beforeSend && c.beforeSend();
+			var e = function() {
+					4 == f.readyState && (200 <= f.status && 300 > f.status || 304 == f.status ? c.success && c.success(f.responseText) : c.fail && c.fail())
+				};
+			if ("json" == this.config.dataType || "JSON" == this.config.dataType) {
+				if ("GET" == this.config.type || "get" == this.config.type) {
+					for (var k in this.config.data) this.config.url = d(this.config.url, k, this.config.data[k]);
+					f.onreadystatechange = e;
+					f.open(this.config.type, this.config.url, this.config.async);
+					f.send(null)
+				}
+				if ("POST" == this.config.type || "post" == this.config.type) f.addEventListener("readystatechange", e), f.open(this.config.type, this.config.url, this.config.async), c.contentType && (this.config.contentType = c.contentType), f.setRequestHeader("Content-Type", this.config.contentType), f.send(b(this.config.data))
+			} else if ("jsonp" == this.config.dataType || "JSONP" == this.config.dataType) if ("GET" == this.config.type || "get" == this.config.type) {
+				if (c.url && c.callback) this.config.callback = c.callback;
+				else throw Error("params is illegal!");
+				var l = c.callback,
+					g = document.getElementsByTagName("head")[0];
+				this.config[this.config.callback] = l;
+				var r = document.createElement("script");
+				g.appendChild(r);
+				window[l] = function(a) {
+					g.removeChild(r);
+					clearTimeout(r.timer);
+					window[l] = null;
+					c.success && c.success(a)
+				};
+				c.time && (r.timer = setTimeout(function() {
+					g.removeChild(r);
+					c.fail && c.fail({
+						message: "over time"
+					});
+					window[l] = null
+				}, c.time));
+				this.config.url = this.config.url + "?callback=" + l;
+				e = this.config.data.sso_101_uc;
+				if (void 0 != e) if ("uc" == e) for (k in this.config.data) this.config.url = a(this.config.url, k, this.config.data[k]);
+				else for (k in this.config.data) this.config.url = d(this.config.url, k, this.config.data[k]);
+				else for (k in this.config.data) this.config.url = d(this.config.url, k, this.config.data[k]);
+				r.src = this.config.url
+			}
+		}
+	};
+	window.Ajax = c
+})();
+
+function GUcManagerHttpJsonp(d, a) {
+	for (var b = "", c = 0; 20 > c; c++) b += Math.floor(10 * Math.random());
+	var f = "jsonp" + (new Date).getTime() + b;
+	return new Promise(function(c, h) {
+		Ajax.init({
+			url: d,
+			type: "get",
+			dataType: "jsonp",
+			data: a,
+			callback: f,
+			time: "3000",
+			success: function(a) {
+				c(a)
+			},
+			fail: function(e) {
+				b = "";
+				for (e = 0; 20 > e; e++) b += Math.floor(10 * Math.random());
+				f = "callback" + (new Date).getTime() + b;
+				Ajax.init({
+					url: d,
+					type: "get",
+					dataType: "jsonp",
+					data: a,
+					callback: f,
+					time: "10000",
+					success: function(a) {
+						c(a)
+					},
+					fail: function(a) {
+						c("fail")
+					}
+				})
+			}
+		})
+	})
+}(function(d, a) {
+	if ("function" === typeof define && define.amd) define(["exports", "module"], a);
+	else if ("undefined" !== typeof exports && "undefined" !== typeof module) a(exports, module);
+	else {
+		var b = {
+			exports: {}
+		};
+		a(b.exports, b);
+		d.fetchJsonp = b.exports
+	}
+})(this, function(d, a) {
+	function b(a) {
+		try {
+			delete window[a]
+		} catch (e) {
+			window[a] = void 0
+		}
+	}
+	function c(a) {
+		a = document.getElementById(a);
+		document.getElementsByTagName("head")[0].removeChild(a)
+	}
+	a.exports = function(a) {
+		var d = 1 >= arguments.length || void 0 === arguments[1] ? {} : arguments[1],
+			f = a,
+			k = d.timeout || 5E3,
+			l = d.jsonpCallback || "callback",
+			g = void 0;
+		return new Promise(function(e, h) {
+			var q = d.jsonpCallbackFunction || "jsonp_" + Date.now() + "_" + Math.ceil(1E5 * Math.random()),
+				t = l + "_" + q;
+			window[q] = function(a) {
+				e({
+					ok: !0,
+					json: function() {
+						return Promise.resolve(a)
+					}
+				});
+				g && clearTimeout(g);
+				c(t);
+				b(q)
+			};
+			f += -1 === f.indexOf("?") ? "?" : "&";
+			var w = document.createElement("script");
+			w.setAttribute("src", "" + f + l + "=" + q);
+			w.id = t;
+			document.getElementsByTagName("head")[0].appendChild(w);
+			g = setTimeout(function() {
+				h(Error("JSONP request to " + a + " timed out"));
+				b(q);
+				c(t)
+			}, k)
+		})
+	}
+});
+
+function uc_console_log(d) {}
+function isRealUcComponentHost(d) {
+	var a = /^(?:(\w+):\/\/)?(?:(\w+):?(\w+)?@)?([^:\/\?#]+)(?::(\d+))?(\/[^\?#]+)?(?:\?([^#]+))?(?:#(\w+))?/.exec("http://" + d);
+	host = void 0 != a && void 0 != a[5] && "" != a[5] && null != a[5] ? a[4] + ":" + a[5] : a[4];
+	return d == host ? !0 : !1
+}
+function postMessageOther(d) {
+	if (void 0 == window.LS.get("is_reload") || "" == window.LS.get("is_reload") || null == window.LS.get("is_reload") || "1" != window.LS.get("is_reload")) {
+		d = window.LS.get("ucComponent_jsonpComponentItem");
+		if (void 0 == d || null == d || "null" == d || "" == d) d = ucComponent_jsonpComponentItem;
+		if (void 0 != d && null != d && "" != d && 0 <= d.indexOf(",")) {
+			d = d.split(",");
+			for (var a = 0; a < d.length; a++) if (3 < d[a].length) try {
+				for (var b = d[a]; 0 <= b.indexOf(".");) b = b.replace(".", ""), b = b.replace(":", ""), b = b.replace("/", ""), b = b.replace("#", "");
+				var c = /^(?:(\w+):\/\/)?(?:(\w+):?(\w+)?@)?([^:\/\?#]+)(?::(\d+))?(\/[^\?#]+)?(?:\?([^#]+))?(?:#(\w+))?/.exec("http://" + d[a]);
+				host = void 0 != c && void 0 != c[5] && "" != c[5] && null != c[5] ? c[4] + ":" + c[5] : c[4];
+				if (0 ==  host.indexOf("e.101.com") || -1 < host.indexOf("chinavrpark.com") || -1 < host.indexOf("xue.101.com") || -1 < host.indexOf("r.xue.101.com")) {
+					var f = new Image;
+					isRealUcComponentHost(d[a]) ? f.src = "http://" + d[a] + "/ucsso/account/logout" : f.src = "http://" + d[a] + "/account/logout"
+				}
+			} catch (e) {}
+		}
+		window.LS.set("is_reload", "1")
+	}
+}
+var CryptoJS = CryptoJS ||
+function(d, a) {
+	var b = {},
+		c = b.lib = {},
+		f = function() {},
+		e = c.Base = {
+			extend: function(a) {
+				f.prototype = this;
+				var b = new f;
+				a && b.mixIn(a);
+				b.hasOwnProperty("init") || (b.init = function() {
+					b.$super.init.apply(this, arguments)
+				});
+				b.init.prototype = b;
+				b.$super = this;
+				return b
+			},
+			create: function() {
+				var a = this.extend();
+				a.init.apply(a, arguments);
+				return a
+			},
+			init: function() {},
+			mixIn: function(a) {
+				for (var b in a) a.hasOwnProperty(b) && (this[b] = a[b]);
+				a.hasOwnProperty("toString") && (this.toString = a.toString)
+			},
+			clone: function() {
+				return this.init.prototype.extend(this)
+			}
+		},
+		h = c.WordArray = e.extend({
+			init: function(b, c) {
+				b = this.words = b || [];
+				this.sigBytes = c != a ? c : 4 * b.length
+			},
+			toString: function(a) {
+				return (a || l).stringify(this)
+			},
+			concat: function(a) {
+				var b = this.words,
+					c = a.words,
+					d = this.sigBytes;
+				a = a.sigBytes;
+				this.clamp();
+				if (d % 4) for (var f = 0; f < a; f++) b[d + f >>> 2] |= (c[f >>> 2] >>> 24 - f % 4 * 8 & 255) << 24 - (d + f) % 4 * 8;
+				else if (65535 < c.length) for (f = 0; f < a; f += 4) b[d + f >>> 2] = c[f >>> 2];
+				else b.push.apply(b, c);
+				this.sigBytes += a;
+				return this
+			},
+			clamp: function() {
+				var a = this.words,
+					b = this.sigBytes;
+				a[b >>> 2] &= 4294967295 << 32 - b % 4 * 8;
+				a.length = d.ceil(b / 4)
+			},
+			clone: function() {
+				var a = e.clone.call(this);
+				a.words = this.words.slice(0);
+				return a
+			},
+			random: function(a) {
+				for (var b = [], c = 0; c < a; c += 4) b.push(4294967296 * d.random() | 0);
+				return new h.init(b, a)
+			}
+		}),
+		k = b.enc = {},
+		l = k.Hex = {
+			stringify: function(a) {
+				var b = a.words;
+				a = a.sigBytes;
+				for (var c = [], d = 0; d < a; d++) {
+					var f = b[d >>> 2] >>> 24 - d % 4 * 8 & 255;
+					c.push((f >>> 4).toString(16));
+					c.push((f & 15).toString(16))
+				}
+				return c.join("")
+			},
+			parse: function(a) {
+				for (var b = a.length, c = [], d = 0; d < b; d += 2) c[d >>> 3] |= parseInt(a.substr(d, 2), 16) << 24 - d % 8 * 4;
+				return new h.init(c, b / 2)
+			}
+		},
+		g = k.Latin1 = {
+			stringify: function(a) {
+				var b = a.words;
+				a = a.sigBytes;
+				for (var c = [], d = 0; d < a; d++) c.push(String.fromCharCode(b[d >>> 2] >>> 24 - d % 4 * 8 & 255));
+				return c.join("")
+			},
+			parse: function(a) {
+				for (var b = a.length, c = [], d = 0; d < b; d++) c[d >>> 2] |= (a.charCodeAt(d) & 255) << 24 - d % 4 * 8;
+				return new h.init(c, b)
+			}
+		},
+		r = k.Utf8 = {
+			stringify: function(a) {
+				try {
+					return decodeURIComponent(escape(g.stringify(a)))
+				} catch (w) {
+					throw Error("Malformed UTF-8 data");
+				}
+			},
+			parse: function(a) {
+				return g.parse(unescape(encodeURIComponent(a)))
+			}
+		},
+		v = c.BufferedBlockAlgorithm = e.extend({
+			reset: function() {
+				this._data = new h.init;
+				this._nDataBytes = 0
+			},
+			_append: function(a) {
+				"string" == typeof a && (a = r.parse(a));
+				this._data.concat(a);
+				this._nDataBytes += a.sigBytes
+			},
+			_process: function(a) {
+				var b = this._data,
+					c = b.words,
+					f = b.sigBytes,
+					e = this.blockSize,
+					q = f / (4 * e),
+					q = a ? d.ceil(q) : d.max((q | 0) - this._minBufferSize, 0);
+				a = q * e;
+				f = d.min(4 * a, f);
+				if (a) {
+					for (var g = 0; g < a; g += e) this._doProcessBlock(c, g);
+					g = c.splice(0, a);
+					b.sigBytes -= f
+				}
+				return new h.init(g, f)
+			},
+			clone: function() {
+				var a = e.clone.call(this);
+				a._data = this._data.clone();
+				return a
+			},
+			_minBufferSize: 0
+		});
+	c.Hasher = v.extend({
+		cfg: e.extend(),
+		init: function(a) {
+			this.cfg = this.cfg.extend(a);
+			this.reset()
+		},
+		reset: function() {
+			v.reset.call(this);
+			this._doReset()
+		},
+		update: function(a) {
+			this._append(a);
+			this._process();
+			return this
+		},
+		finalize: function(a) {
+			a && this._append(a);
+			return this._doFinalize()
+		},
+		blockSize: 16,
+		_createHelper: function(a) {
+			return function(b, c) {
+				return (new a.init(c)).finalize(b)
+			}
+		},
+		_createHmacHelper: function(a) {
+			return function(b, c) {
+				return (new q.HMAC.init(a, c)).finalize(b)
+			}
+		}
+	});
+	var q = b.algo = {};
+	return b
+}(Math);
+(function(d) {
+	for (var a = CryptoJS, b = a.lib, c = b.WordArray, f = b.Hasher, b = a.algo, e = [], h = [], k = function(a) {
+			return 4294967296 * (a - (a | 0)) | 0
+		}, l = 2, g = 0; 64 > g;) {
+		var r;
+		a: {
+			r = l;
+			for (var v = d.sqrt(r), q = 2; q <= v; q++) if (!(r % q)) {
+				r = !1;
+				break a
+			}
+			r = !0
+		}
+		r && (8 > g && (e[g] = k(d.pow(l, .5))), h[g] = k(d.pow(l, 1 / 3)), g++);
+		l++
+	}
+	var t = [],
+		b = b.SHA256 = f.extend({
+			_doReset: function() {
+				this._hash = new c.init(e.slice(0))
+			},
+			_doProcessBlock: function(a, b) {
+				for (var c = this._hash.words, d = c[0], f = c[1], e = c[2], q = c[3], g = c[4], u = c[5], k = c[6], w = c[7], l = 0; 64 > l; l++) {
+					if (16 > l) t[l] = a[b + l] | 0;
+					else {
+						var v = t[l - 15],
+							r = t[l - 2];
+						t[l] = ((v << 25 | v >>> 7) ^ (v << 14 | v >>> 18) ^ v >>> 3) + t[l - 7] + ((r << 15 | r >>> 17) ^ (r << 13 | r >>> 19) ^ r >>> 10) + t[l - 16]
+					}
+					v = w + ((g << 26 | g >>> 6) ^ (g << 21 | g >>> 11) ^ (g << 7 | g >>> 25)) + (g & u ^ ~g & k) + h[l] + t[l];
+					r = ((d << 30 | d >>> 2) ^ (d << 19 | d >>> 13) ^ (d << 10 | d >>> 22)) + (d & f ^ d & e ^ f & e);
+					w = k;
+					k = u;
+					u = g;
+					g = q + v | 0;
+					q = e;
+					e = f;
+					f = d;
+					d = v + r | 0
+				}
+				c[0] = c[0] + d | 0;
+				c[1] = c[1] + f | 0;
+				c[2] = c[2] + e | 0;
+				c[3] = c[3] + q | 0;
+				c[4] = c[4] + g | 0;
+				c[5] = c[5] + u | 0;
+				c[6] = c[6] + k | 0;
+				c[7] = c[7] + w | 0
+			},
+			_doFinalize: function() {
+				var a = this._data,
+					b = a.words,
+					c = 8 * this._nDataBytes,
+					f = 8 * a.sigBytes;
+				b[f >>> 5] |= 128 << 24 - f % 32;
+				b[(f + 64 >>> 9 << 4) + 14] = d.floor(c / 4294967296);
+				b[(f + 64 >>> 9 << 4) + 15] = c;
+				a.sigBytes = 4 * b.length;
+				this._process();
+				return this._hash
+			},
+			clone: function() {
+				var a = f.clone.call(this);
+				a._hash = this._hash.clone();
+				return a
+			}
+		});
+	a.SHA256 = f._createHelper(b);
+	a.HmacSHA256 = f._createHmacHelper(b)
+})(Math);
+(function() {
+	var d = CryptoJS,
+		a = d.enc.Utf8;
+	d.algo.HMAC = d.lib.Base.extend({
+		init: function(b, c) {
+			b = this._hasher = new b.init;
+			"string" == typeof c && (c = a.parse(c));
+			var d = b.blockSize,
+				e = 4 * d;
+			c.sigBytes > e && (c = b.finalize(c));
+			c.clamp();
+			b = this._oKey = c.clone();
+			c = this._iKey = c.clone();
+			for (var h = b.words, k = c.words, l = 0; l < d; l++) h[l] ^= 1549556828, k[l] ^= 909522486;
+			b.sigBytes = c.sigBytes = e;
+			this.reset()
+		},
+		reset: function() {
+			var a = this._hasher;
+			a.reset();
+			a.update(this._iKey)
+		},
+		update: function(a) {
+			this._hasher.update(a);
+			return this
+		},
+		finalize: function(a) {
+			var b = this._hasher;
+			a = b.finalize(a);
+			b.reset();
+			return b.finalize(this._oKey.clone().concat(a))
+		}
+	})
+})();
+(function(d) {
+	window.define && define.amd ? define(["json"], d) : window.PM = window.JSON ? d(JSON) : {
+		send: function() {},
+		bind: function() {}
+	}
+})(function(d) {
+	var a = "postMessage" in window ? {
+		send: function(a, c, d) {
+			a.postMessage(c, d)
+		},
+		bind: function(a) {
+			var b = function(b) {
+					return a.call(this, b.data || "")
+				};
+			window.addEventListener ? window.addEventListener("message", b, !1) : window.attachEvent("onmessage", b)
+		}
+	} : function() {
+			var a = [],
+				c = [],
+				f = function() {
+					c.timer && (window.clearTimeout(c.timer), delete c.timer);
+					if (c.length) {
+						var a = +new Date,
+							b = c.lastCheck || 0;
+						a < b + 30 ? c.timer = window.setTimeout(f, b + 30 - a) : (c.lastCheck = a, a = c.shift(), a.win.name = a.msg, f())
+					}
+				};
+			window.setInterval(function() {
+				var b = unescape(window.name || "");
+				if (0 === b.indexOf("PM|")) {
+					window.name = "";
+					var c;
+					try {
+						c = d.parse(b.slice(3))
+					} catch (l) {
+						return
+					}
+					if (c && c.data && c.origin && ("*" === c.origin || 0 === location.href.toLowerCase().indexOf(c.origin.toLowerCase()))) for (var b = a.length, f = 0; f < b; f++) try {
+						a[f].call(window, c.data)
+					} catch (l) {}
+				}
+			}, 20);
+			return {
+				send: function(a, b, k) {
+					c.push({
+						win: a,
+						msg: escape("PM|" + d.stringify({
+							data: b,
+							origin: k
+						}))
+					});
+					f()
+				},
+				bind: function(b) {
+					a.push(b)
+				}
+			}
+		}();
+	window.PM = {
+		send: function(b, c, d, e) {
+			if (b && c && void 0 !== d && ("string" !== typeof b || (b = document.getElementById(b)))) {
+				try {
+					b.self !== b && (b = b.contentWindow)
+				} catch (h) {}
+				a.send(b, d, e || "*")
+			}
+		},
+		bind: function(b, c) {
+			b && "[object Function]" === Object.prototype.toString.call(c) && a.bind(function(a) {
+				a.type === b && c.call(this, a.data)
+			})
+		}
+	};
+	return window.PM
+});
+
+function UcComponentCrossDomainName(d, a, b, c) {
+	function f() {
+		1 === e.state ? (e.callback.call(e.iframe, e.iframe.contentWindow.name), e && (e.iframe.contentWindow.document.close(), e.iframe.contentWindow.close(), document.body.removeChild(e.iframe))) : 0 === e.state && (e.state = 1, e.iframe.contentWindow.location = e.agent)
+	}
+	if ("string" !== typeof d || "string" !== typeof a || "function" !== typeof b) throw "鍙傛暟閿欒";
+	this.state = 0;
+	this.target = d;
+	this.agent = a;
+	this.callback = b || Function;
+	this.security = c || !0;
+	this.iframe = document.createElement("iframe");
+	var e = this;
+	document.attachEvent ? this.iframe.attachEvent("onload", f) : document.addEventListener ? this.iframe.addEventListener("load", f, !1) : this.iframe.onload = f;
+	this.iframe.style.display = "none";
+	this.iframe.src = this.target;
+	document.body.appendChild(this.iframe)
+}(function() {
+	function d() {
+		return function() {
+			process.nextTick(e)
+		}
+	}
+	function a() {
+		return function() {
+			I(e)
+		}
+	}
+	function b() {
+		var a = 0,
+			b = new U(e),
+			c = document.createTextNode("");
+		b.observe(c, {
+			characterData: !0
+		});
+		return function() {
+			c.data = a = ++a % 2
+		}
+	}
+	function c() {
+		var a = new MessageChannel;
+		a.port1.onmessage = e;
+		return function() {
+			a.port2.postMessage(0)
+		}
+	}
+	function f() {
+		return function() {
+			setTimeout(e, 1)
+		}
+	}
+	function e() {
+		for (var a = 0; a < B; a += 2)(0, J[a])(J[a + 1]), J[a] = void 0, J[a + 1] = void 0;
+		B = 0
+	}
+	function h() {
+		try {
+			var b = require("vertx");
+			I = b.runOnLoop || b.runOnContext;
+			return a()
+		} catch (V) {
+			return f()
+		}
+	}
+	function k() {}
+	function l(a) {
+		try {
+			return a.then
+		} catch (V) {
+			return O.error = V, O
+		}
+	}
+	function g(a, b, c, d) {
+		try {
+			a.call(b, c, d)
+		} catch (Z) {
+			return Z
+		}
+	}
+	function r(a, b, c) {
+		m(function(a) {
+			var d = !1,
+				f = g(c, b, function(c) {
+					d || (d = !0, b !== c ? t(a, c) : u(a, c))
+				}, function(b) {
+					d || (d = !0, x(a, b))
+				}, "Settle: " + (a._label || " unknown promise"));
+			!d && f && (d = !0, x(a, f))
+		}, a)
+	}
+	function v(a, b) {
+		b._state === N ? u(a, b._result) : b._state === K ? x(a, b._result) : D(b, void 0, function(b) {
+			t(a, b)
+		}, function(b) {
+			x(a, b)
+		})
+	}
+	function q(a, b, c) {
+		b.constructor === a.constructor && c === Q && constructor.resolve === R ? v(a, b) : c === O ? x(a, O.error) : void 0 === c ? u(a, b) : "function" === typeof c ? r(a, b, c) : u(a, b)
+	}
+	function t(a, b) {
+		a === b ? x(a, new TypeError("You cannot resolve a promise with itself")) : "function" === typeof b || "object" === typeof b && null !== b ? q(a, b, l(b)) : u(a, b)
+	}
+	function w(a) {
+		a._onerror && a._onerror(a._result);
+		z(a)
+	}
+	function u(a, b) {
+		a._state === L && (a._result = b, a._state = N, 0 !== a._subscribers.length && m(z, a))
+	}
+	function x(a, b) {
+		a._state === L && (a._state = K, a._result = b, m(w, a))
+	}
+	function D(a, b, c, d) {
+		var f = a._subscribers,
+			e = f.length;
+		a._onerror = null;
+		f[e] = b;
+		f[e + N] = c;
+		f[e + K] = d;
+		0 === e && a._state && m(z, a)
+	}
+	function z(a) {
+		var b = a._subscribers,
+			c = a._state;
+		if (0 !== b.length) {
+			for (var d, f, e = a._result, g = 0; g < b.length; g += 3) d = b[g], f = b[g + c], d ? F(c, d, f, e) : f(e);
+			a._subscribers.length = 0
+		}
+	}
+	function M() {
+		this.error = null
+	}
+	function F(a, b, c, d) {
+		var f = "function" === typeof c,
+			e, g, q, h;
+		if (f) {
+			try {
+				e = c(d)
+			} catch (aa) {
+				S.error = aa, e = S
+			}
+			e === S ? (h = !0, g = e.error, e = null) : q = !0;
+			if (b === e) {
+				x(b, new TypeError("A promises callback cannot return that same promise."));
+				return
+			}
+		} else e = d, q = !0;
+		b._state === L && (f && q ? t(b, e) : h ? x(b, g) : a === N ? u(b, e) : a === K && x(b, e))
+	}
+	function A(a, b) {
+		try {
+			b(function(b) {
+				t(a, b)
+			}, function(b) {
+				x(a, b)
+			})
+		} catch (W) {
+			x(a, W)
+		}
+	}
+	function G(a) {
+		a[P] = X++;
+		a._state = void 0;
+		a._result = void 0;
+		a._subscribers = []
+	}
+	function y(a) {
+		this[P] = X++;
+		this._result = this._state = void 0;
+		this._subscribers = [];
+		if (k !== a) {
+			if ("function" !== typeof a) throw new TypeError("You must pass a resolver function as the first argument to the promise constructor");
+			if (this instanceof y) A(this, a);
+			else throw new TypeError("Failed to construct 'Promise': Please use the 'new' operator, this object constructor cannot be called as a function.");
+		}
+	}
+	function C(a, b) {
+		this._instanceConstructor = a;
+		this.promise = new a(k);
+		this.promise[P] || G(this.promise);
+		H(b) ? (this._input = b, this._remaining = this.length = b.length, this._result = Array(this.length), 0 === this.length ? u(this.promise, this._result) : (this.length = this.length || 0, this._enumerate(), 0 === this._remaining && u(this.promise, this._result))) : x(this.promise, Error("Array Methods must be provided an Array"))
+	}
+	var H = Array.isArray ? Array.isArray : function(a) {
+			return "[object Array]" === Object.prototype.toString.call(a)
+		},
+		B = 0,
+		I, E, m = function(a, b) {
+			J[B] = a;
+			J[B + 1] = b;
+			B += 2;
+			2 === B && (E ? E(e) : Y())
+		},
+		n = "undefined" !== typeof window ? window : void 0,
+		p = n || {},
+		U = p.MutationObserver || p.WebKitMutationObserver,
+		p = "undefined" === typeof self && "undefined" !== typeof process && "[object process]" === {}.toString.call(process),
+		ba = "undefined" !== typeof Uint8ClampedArray && "undefined" !== typeof importScripts && "undefined" !== typeof MessageChannel,
+		J = Array(1E3),
+		Y;
+	Y = p ? d() : U ? b() : ba ? c() : void 0 === n && "function" === typeof require ? h() : f();
+	var Q = function(a, b) {
+			var c = this,
+				d = new this.constructor(k);
+			void 0 === d[P] && G(d);
+			var f = c._state;
+			if (f) {
+				var e = arguments[f - 1];
+				m(function() {
+					F(f, d, e, c._result)
+				})
+			} else D(c, d, a, b);
+			return d
+		},
+		R = function(a) {
+			if (a && "object" === typeof a && a.constructor === this) return a;
+			var b = new this(k);
+			t(b, a);
+			return b
+		},
+		P = Math.random().toString(36).substring(16),
+		L = void 0,
+		N = 1,
+		K = 2,
+		O = new M,
+		S = new M,
+		X = 0;
+	y.all = function(a) {
+		return (new i(this, a)).promise
+	};
+	y.race = function(a) {
+		var b = this;
+		return H(a) ? new b(function(c, d) {
+			for (var f = a.length, e = 0; e < f; e++) b.resolve(a[e]).then(c, d)
+		}) : new b(function(a, b) {
+			b(new TypeError("You must pass an array to race."))
+		})
+	};
+	y.resolve = R;
+	y.reject = function(a) {
+		var b = new this(k);
+		x(b, a);
+		return b
+	};
+	y._setScheduler = function(a) {
+		E = a
+	};
+	y._setAsap = function(a) {
+		m = a
+	};
+	y._asap = m;
+	y.prototype = {
+		constructor: y,
+		then: Q,
+		"catch": function(a) {
+			return this.then(null, a)
+		}
+	};
+	var i = C;
+	C.prototype._enumerate = function() {
+		for (var a = this.length, b = this._input, c = 0; this._state === L && c < a; c++) this._eachEntry(b[c], c)
+	};
+	C.prototype._eachEntry = function(a, b) {
+		var c = this._instanceConstructor,
+			d = c.resolve;
+		d === R ? (d = l(a), d === Q && a._state !== L ? this._settledAt(a._state, b, a._result) : "function" !== typeof d ? (this._remaining--, this._result[b] = a) : c === y ? (c = new c(k), q(c, a, d), this._willSettleAt(c, b)) : this._willSettleAt(new c(function(b) {
+			b(a)
+		}), b)) : this._willSettleAt(d(a), b)
+	};
+	C.prototype._settledAt = function(a, b, c) {
+		var d = this.promise;
+		d._state === L && (this._remaining--, a === K ? x(d, c) : this._result[b] = c);
+		0 === this._remaining && u(d, this._result)
+	};
+	C.prototype._willSettleAt = function(a, b) {
+		var c = this;
+		D(a, void 0, function(a) {
+			c._settledAt(N, b, a)
+		}, function(a) {
+			c._settledAt(K, b, a)
+		})
+	};
+	var n = function() {
+			var a;
+			if ("undefined" !== typeof global) a = global;
+			else if ("undefined" !== typeof self) a = self;
+			else try {
+				a = Function("return this")()
+			} catch (W) {
+				throw Error("polyfill failed because global object is unavailable in this environment");
+			}
+			var b = a.Promise;
+			if (!b || "[object Promise]" !== Object.prototype.toString.call(b.resolve()) || b.cast) a.Promise = y
+		},
+		T = {
+			Promise: y,
+			polyfill: n
+		};
+	"function" === typeof define && define.amd ? define(function() {
+		return T
+	}) : "undefined" !== typeof module && module.exports ? module.exports = T : "undefined" !== typeof this && (this.ES6Promise = T);
+	n()
+}).call(this);
+(function(d) {
+	function a(a) {
+		"string" !== typeof a && (a = String(a));
+		if (/[^a-z0-9\-#$%&'*+.\^_`|~]/i.test(a)) throw new TypeError("Invalid character in header field name");
+		return a.toLowerCase()
+	}
+	function b(a) {
+		"string" !== typeof a && (a = String(a));
+		return a
+	}
+	function c(a) {
+		var b = {
+			next: function() {
+				var b = a.shift();
+				return {
+					done: void 0 === b,
+					value: b
+				}
+			}
+		};
+		u.iterable && (b[Symbol.iterator] = function() {
+			return b
+		});
+		return b
+	}
+	function f(a) {
+		this.map = {};
+		a instanceof f ? a.forEach(function(a, b) {
+			this.append(b, a)
+		}, this) : a && Object.getOwnPropertyNames(a).forEach(function(b) {
+			this.append(b, a[b])
+		}, this)
+	}
+	function e(a) {
+		if (a.bodyUsed) return Promise.reject(new TypeError("Already read"));
+		a.bodyUsed = !0
+	}
+	function h(a) {
+		return new Promise(function(b, c) {
+			a.onload = function() {
+				b(a.result)
+			};
+			a.onerror = function() {
+				c(a.error)
+			}
+		})
+	}
+	function k(a) {
+		var b = new FileReader;
+		b.readAsArrayBuffer(a);
+		return h(b)
+	}
+	function l() {
+		this.bodyUsed = !1;
+		this._initBody = function(a) {
+			this._bodyInit = a;
+			if ("string" === typeof a) this._bodyText = a;
+			else if (u.blob && Blob.prototype.isPrototypeOf(a)) this._bodyBlob = a;
+			else if (u.formData && FormData.prototype.isPrototypeOf(a)) this._bodyFormData = a;
+			else if (u.searchParams && URLSearchParams.prototype.isPrototypeOf(a)) this._bodyText = a.toString();
+			else if (!a) this._bodyText = "";
+			else if (!u.arrayBuffer || !ArrayBuffer.prototype.isPrototypeOf(a)) throw Error("unsupported BodyInit type");
+			this.headers.get("content-type") || ("string" === typeof a ? this.headers.set("content-type", "text/plain;charset=UTF-8") : this._bodyBlob && this._bodyBlob.type ? this.headers.set("content-type", this._bodyBlob.type) : u.searchParams && URLSearchParams.prototype.isPrototypeOf(a) && this.headers.set("content-type", "application/x-www-form-urlencoded;charset=UTF-8"))
+		};
+		u.blob ? (this.blob = function() {
+			var a = e(this);
+			if (a) return a;
+			if (this._bodyBlob) return Promise.resolve(this._bodyBlob);
+			if (this._bodyFormData) throw Error("could not read FormData body as blob");
+			return Promise.resolve(new Blob([this._bodyText]))
+		}, this.arrayBuffer = function() {
+			return this.blob().then(k)
+		}, this.text = function() {
+			var a = e(this);
+			if (a) return a;
+			if (this._bodyBlob) {
+				var a = this._bodyBlob,
+					b = new FileReader;
+				b.readAsText(a);
+				return h(b)
+			}
+			if (this._bodyFormData) throw Error("could not read FormData body as text");
+			return Promise.resolve(this._bodyText)
+		}) : this.text = function() {
+			var a = e(this);
+			return a ? a : Promise.resolve(this._bodyText)
+		};
+		u.formData && (this.formData = function() {
+			return this.text().then(r)
+		});
+		this.json = function() {
+			return this.text().then(JSON.parse)
+		};
+		return this
+	}
+	function g(a, b) {
+		b = b || {};
+		var c = b.body;
+		if (g.prototype.isPrototypeOf(a)) {
+			if (a.bodyUsed) throw new TypeError("Already read");
+			this.url = a.url;
+			this.credentials = a.credentials;
+			b.headers || (this.headers = new f(a.headers));
+			this.method = a.method;
+			this.mode = a.mode;
+			c || (c = a._bodyInit, a.bodyUsed = !0)
+		} else this.url = a;
+		this.credentials = b.credentials || this.credentials || "omit";
+		if (b.headers || !this.headers) this.headers = new f(b.headers);
+		a = b.method || this.method || "GET";
+		var d = a.toUpperCase();
+		this.method = -1 < x.indexOf(d) ? d : a;
+		this.mode = b.mode || this.mode || null;
+		this.referrer = null;
+		if (("GET" === this.method || "HEAD" === this.method) && c) throw new TypeError("Body not allowed for GET or HEAD requests");
+		this._initBody(c)
+	}
+	function r(a) {
+		var b = new FormData;
+		a.trim().split("&").forEach(function(a) {
+			if (a) {
+				var c = a.split("=");
+				a = c.shift().replace(/\+/g, " ");
+				c = c.join("=").replace(/\+/g, " ");
+				b.append(decodeURIComponent(a), decodeURIComponent(c))
+			}
+		});
+		return b
+	}
+	function v(a) {
+		var b = new f;
+		(a.getAllResponseHeaders() || "").trim().split("\n").forEach(function(a) {
+			var c = a.trim().split(":");
+			a = c.shift().trim();
+			c = c.join(":").trim();
+			b.append(a, c)
+		});
+		return b
+	}
+	function q(a, b) {
+		b || (b = {});
+		this.type = "default";
+		this.status = b.status;
+		this.ok = 200 <= this.status && 300 > this.status;
+		this.statusText = b.statusText;
+		this.headers = b.headers instanceof f ? b.headers : new f(b.headers);
+		this.url = b.url || "";
+		this._initBody(a)
+	}
+	if (!d.fetch) {
+		var t = "Symbol" in d && "iterator" in Symbol,
+			w;
+		if (w = "FileReader" in d && "Blob" in d) try {
+			new Blob, w = !0
+		} catch (z) {
+			w = !1
+		}
+		var u = {
+			searchParams: "URLSearchParams" in d,
+			iterable: t,
+			blob: w,
+			formData: "FormData" in d,
+			arrayBuffer: "ArrayBuffer" in d
+		};
+		f.prototype.append = function(c, d) {
+			c = a(c);
+			d = b(d);
+			var f = this.map[c];
+			f || (f = [], this.map[c] = f);
+			f.push(d)
+		};
+		f.prototype["delete"] = function(b) {
+			delete this.map[a(b)]
+		};
+		f.prototype.get = function(b) {
+			return (b = this.map[a(b)]) ? b[0] : null
+		};
+		f.prototype.getAll = function(b) {
+			return this.map[a(b)] || []
+		};
+		f.prototype.has = function(b) {
+			return this.map.hasOwnProperty(a(b))
+		};
+		f.prototype.set = function(c, d) {
+			this.map[a(c)] = [b(d)]
+		};
+		f.prototype.forEach = function(a, b) {
+			Object.getOwnPropertyNames(this.map).forEach(function(c) {
+				this.map[c].forEach(function(d) {
+					a.call(b, d, c, this)
+				}, this)
+			}, this)
+		};
+		f.prototype.keys = function() {
+			var a = [];
+			this.forEach(function(b, c) {
+				a.push(c)
+			});
+			return c(a)
+		};
+		f.prototype.values = function() {
+			var a = [];
+			this.forEach(function(b) {
+				a.push(b)
+			});
+			return c(a)
+		};
+		f.prototype.entries = function() {
+			var a = [];
+			this.forEach(function(b, c) {
+				a.push([c, b])
+			});
+			return c(a)
+		};
+		u.iterable && (f.prototype[Symbol.iterator] = f.prototype.entries);
+		var x = "DELETE GET HEAD OPTIONS POST PUT".split(" ");
+		g.prototype.clone = function() {
+			return new g(this)
+		};
+		l.call(g.prototype);
+		l.call(q.prototype);
+		q.prototype.clone = function() {
+			return new q(this._bodyInit, {
+				status: this.status,
+				statusText: this.statusText,
+				headers: new f(this.headers),
+				url: this.url
+			})
+		};
+		q.error = function() {
+			var a = new q(null, {
+				status: 0,
+				statusText: ""
+			});
+			a.type = "error";
+			return a
+		};
+		var D = [301, 302, 303, 307, 308];
+		q.redirect = function(a, b) {
+			if (-1 === D.indexOf(b)) throw new RangeError("Invalid status code");
+			return new q(null, {
+				status: b,
+				headers: {
+					location: a
+				}
+			})
+		};
+		d.Headers = f;
+		d.Request = g;
+		d.Response = q;
+		d.fetch = function(a, b) {
+			return new Promise(function(c, d) {
+				var f;
+				f = g.prototype.isPrototypeOf(a) && !b ? a : new g(a, b);
+				var e = new XMLHttpRequest;
+				e.onload = function() {
+					var a = e.status,
+						b = e.statusText,
+						d = v(e),
+						f;
+					f = "responseURL" in e ? e.responseURL : /^X-Request-URL:/m.test(e.getAllResponseHeaders()) ? e.getResponseHeader("X-Request-URL") : void 0;
+					c(new q("response" in e ? e.response : e.responseText, {
+						status: a,
+						statusText: b,
+						headers: d,
+						url: f
+					}))
+				};
+				e.onerror = function() {
+					d(new TypeError("Network request failed"))
+				};
+				e.ontimeout = function() {
+					d(new TypeError("Network request failed"))
+				};
+				e.open(f.method, f.url, !0);
+				"include" === f.credentials && (e.withCredentials = !0);
+				"responseType" in e && u.blob && (e.responseType = "blob");
+				f.headers.forEach(function(a, b) {
+					e.setRequestHeader(b, a)
+				});
+				e.send("undefined" === typeof f._bodyInit ? null : f._bodyInit)
+			})
+		};
+		d.fetch.polyfill = !0
+	}
+})("undefined" !== typeof self ? self : this);
+
+function UcSdkMessage() {
+	var d = this;
+	this.callbackList = [];
+	this.send = function(a, c) {
+		window.postMessage ? (a.postMessage(c, "*"), a.postMessage(c, "*")) : a.name = c
+	};
+	this.on = function(a) {
+		"function" === typeof a && this.callbackList.push(a)
+	};
+	this._trigger = function(a) {
+		for (var b = 0; b < this.callbackList.length; b++) this.callbackList[b].call(window, a)
+	};
+	if (window.postMessage) window.addEventListener ? window.addEventListener("message", function(a) {
+		d._trigger(a.data)
+	}, !1) : window.attachEvent && window.attachEvent("onmessage", function(a) {
+		d._trigger(a.data)
+	});
+	else {
+		var a = window.name = "";
+		setInterval(function() {
+			if (window.name !== a) {
+				var b = a = window.name;
+				a = window.name = "";
+				d._trigger(b)
+			}
+		}, 10)
+	}
+}(function(d) {
+	var a, b = function() {},
+		c = d.document,
+		b = {
+			set: b,
+			get: b,
+			remove: b,
+			clear: b,
+			each: b,
+			obj: b,
+			length: 0
+		};
+	(function() {
+		if ("localStorage" in d) try {
+			a = d.localStorage;
+			return
+		} catch (w) {}
+		var b = c.getElementsByTagName("head")[0],
+			e = d.location.hostname || "localStorage",
+			h = new Date,
+			k, l;
+		if (b.addBehavior) {
+			try {
+				l = new ActiveXObject("htmlfile"), l.open(), l.write('<script>document.w=window;</script><iframe src="/favicon.ico"></iframe>'), l.close(), k = l.w.frames[0].document, b = k.createElement("head"), k.appendChild(b)
+			} catch (w) {
+				b = c.getElementsByTagName("head")[0]
+			}
+			try {
+				h.setDate(h.getDate() + 36500), b.addBehavior("#default#userData"), b.expires = h.toUTCString(), b.load(e), b.save(e)
+			} catch (w) {
+				return
+			}
+			var g, r;
+			try {
+				g = b.XMLDocument.documentElement, r = g.attributes
+			} catch (w) {
+				return
+			}
+			var v = /^p__hack_/,
+				q = /m-_-c/g,
+				t = function(a) {
+					return encodeURIComponent("p__hack_" + a).replace(/%/g, "m-_-c")
+				};
+			a = {
+				length: r.length,
+				isVirtualObject: !0,
+				getItem: function(a) {
+					return (r.getNamedItem(t(a)) || {
+						nodeValue: null
+					}).nodeValue || g.getAttribute(t(a))
+				},
+				setItem: function(a, c) {
+					try {
+						g.setAttribute(t(a), c), b.save(e), this.length = r.length
+					} catch (x) {}
+				},
+				removeItem: function(a) {
+					try {
+						g.removeAttribute(t(a)), b.save(e), this.length = r.length
+					} catch (u) {}
+				},
+				clear: function() {
+					for (; r.length;) this.removeItem(r[0].nodeName);
+					this.length = 0
+				},
+				key: function(a) {
+					return r[a] ? decodeURIComponent(r[a].nodeName.replace(q, "%")).replace(v, "") : void 0
+				}
+			};
+			"localStorage" in d || (d.localStorage = a)
+		} else try {
+			a = d.localStorage
+		} catch (w) {
+			a = null
+		}
+	})();
+	d.LS = a ? {
+		set: function(b, c) {
+			try {
+				void 0 == a.getItem("ucsdk201705102046") || null == a.getItem("ucsdk201705102046") || "null" == a.getItem("ucsdk201705102046") ? localStorage.setItem(b, c) : (void 0 !== this.get(b) && this.remove(b), a.setItem(b, c), this.length = a.length)
+			} catch (h) {
+				void 0 !== this.get(b) && this.remove(b), a.setItem(b, c), this.length = a.length
+			}
+		},
+		get: function(b) {
+			try {
+				var c = void 0 == a.getItem("ucsdk201705102046") || null == a.getItem("ucsdk201705102046") || "null" == a.getItem("ucsdk201705102046") ? localStorage.getItem(b) : a.getItem(b);
+				return null === c ? void 0 : c
+			} catch (h) {
+				return c = a.getItem(b), null === c ? void 0 : c
+			}
+		},
+		remove: function(b) {
+			try {
+				void 0 == a.getItem("ucsdk201705102046") || null == a.getItem("ucsdk201705102046") || "null" == a.getItem("ucsdk201705102046") ? localStorage.setItem(b, "") : a.removeItem(b), this.length = a.length
+			} catch (e) {
+				a.removeItem(b), this.length = a.length
+			}
+		},
+		clear: function() {
+			a.clear();
+			this.length = 0
+		},
+		each: function(a) {
+			var b = this.obj();
+			a = a ||
+			function() {};
+			for (var c in b) if (!1 === a.call(this, c, this.get(c))) break
+		},
+		obj: function() {
+			var b = {},
+				c = 0,
+				d, k;
+			if (a.isVirtualObject) b = a.key(-1);
+			else for (d = a.length; c < d; c++) k = a.key(c), b[k] = this.get(k);
+			return b
+		},
+		length: a.length
+	} : b;
+	d.jQuery && (d.jQuery.LS = d.LS)
+})(window);
+var ucComponent_jsonpComponentItemSize = "",
+	ucComponent_jsonpComponentOrgId = "",
+	ucComponent_jsonpComponentOrgName = "",
+	ucComponent_jsonpComponentItem = "",
+	ucComponent_jsonpComponentLoginUrl = "",
+	ucComponent_jsonpComponentAppId = "",
+	ucComponentConfig_virtual_organizations = "",
+	ucComponentConfig_ucproxy_url = "",
+	ucComponent_jsonpComponentVFilter = "",
+	ucComponent_jsonpComponentCallbackCount = "",
+	ucComponent_jsonpComponentCallbackItems = "";
+try {
+	void 0 != global_uc_version && null != global_uc_version && "" != global_uc_version && (ucComponent_jsonpComponentVFilter = global_uc_version)
+} catch (d) {}
+var ucComponent_jsonpComponentIsUc101F = "";
+try {
+	ucComponent_jsonpComponentIsUc101F = document.getElementById("uc-javascript-sdk-tag").getAttribute("f")
+} catch (d) {
+	ucComponent_jsonpComponentIsUc101F = ""
+}
+if ("" == ucComponent_jsonpComponentVFilter) try {
+	ucComponent_jsonpComponentVFilter = document.getElementById("uc-javascript-sdk-tag").getAttribute("v"), "uc101" == ucComponent_jsonpComponentIsUc101F && (ucComponent_jsonpComponentVFilter = UCCOMPONENTCONFIG_101_VERSION)
+} catch (d) {
+	ucComponent_jsonpComponentVFilter = ""
+}
+var ucComponentConfig_uc_url_front = "",
+	ucComponentConfig_virtual_url_front = "";
+if ("dev" == ucComponent_jsonpComponentVFilter) ucComponentConfig_uc_url_front = "http://101uccenter.dev.web.nd/v0.93/", ucComponentConfig_virtual_url_front = "http://virtual-organization.dev.web.nd/v0.1/virtual_organizations/", ucComponentConfig_ucproxy_url = "http://192.168.252.58:8080/uc_personal_develop";
+else if ("debug" == ucComponent_jsonpComponentVFilter) ucComponentConfig_uc_url_front = "http://101uccenter.debug.web.nd/v0.93/", ucComponentConfig_virtual_url_front = "http://virtual-organization.debug.web.nd/v0.1/virtual_organizations/", ucComponentConfig_ucproxy_url = "http://uc-personal-web.debug.web.nd";
+else if ("qa" == ucComponent_jsonpComponentVFilter) ucComponentConfig_uc_url_front = "http://101uccenter.qa.web.sdp.101.com/v0.93/", ucComponentConfig_virtual_url_front = "http://virtual-organization.qa.web.sdp.101.com/v0.1/virtual_organizations/", ucComponentConfig_ucproxy_url = "http://uc-personal-web.qa.web.sdp.101.com";
+else if ("pre" == ucComponent_jsonpComponentVFilter) {
+	ucComponentConfig_uc_url_front = "https://ucbetapi.101.com/v0.93/";
+	ucComponentConfig_virtual_url_front = "https://ucvorg-beta.101.com/v0.1/virtual_organizations/";
+	ucComponentConfig_ucproxy_url = "https://uc-personal-beta.101.com";
+} else if ("pro" == ucComponent_jsonpComponentVFilter) {
+	ucComponentConfig_uc_url_front = "https://aqapi.101.com/v0.93/";
+	ucComponentConfig_virtual_url_front = "https://ucvorg.101.com/v0.1/virtual_organizations/";
+	ucComponentConfig_ucproxy_url = "https://uc.101.com";
+} else if ("wjt" == ucComponent_jsonpComponentVFilter) {
+	ucComponentConfig_uc_url_front = "https://ucwjt.101.com/v0.93/";
+	ucComponentConfig_virtual_url_front = "https://vorgwjt.101.com/v0.1/virtual_organizations/";
+	ucComponentConfig_ucproxy_url = "https://uc-wjt.101.com";
+} else if ("usa" == ucComponent_jsonpComponentVFilter) ucComponentConfig_uc_url_front = "http://101uccenter.awsca.101.com/v0.93/", ucComponentConfig_virtual_url_front = "https://vorg-awsca.101.com/v0.1/virtual_organizations/", ucComponentConfig_ucproxy_url = "http://uc-personal-web.awsca.101.com";
+else if ("sgp" == ucComponent_jsonpComponentVFilter) ucComponentConfig_uc_url_front = "https://awsuc.101.com/v0.93/", ucComponentConfig_virtual_url_front = "https://awsvorg.101.com/v0.1/virtual_organizations/", ucComponentConfig_ucproxy_url = "https://uc-personal-web.aws.101.com";
+else {
+	ucComponentConfig_uc_url_front = "https://aqapi.101.com/v0.93/";
+	ucComponentConfig_virtual_url_front = "https://ucvorg.101.com/v0.1/virtual_organizations/";
+	ucComponentConfig_ucproxy_url = "https://uc.101.com";
+}
+try {
+	void 0 != ucComponentConfig.uc_url_front && (ucComponentConfig_uc_url_front = ucComponentConfig.uc_url_front), void 0 != ucComponentConfig.virtual_url_front && (ucComponentConfig_virtual_url_front = ucComponentConfig.virtual_url_front)
+} catch (d) {}
+for (var BDRCVFRU = "", ucComponent_jsonpComponentVFilterarr = "", ucComponent_jsonpComponentVBDRCVFRU = window.location.host; - 1 < ucComponent_jsonpComponentVBDRCVFRU.indexOf(".");) ucComponent_jsonpComponentVBDRCVFRU = ucComponent_jsonpComponentVBDRCVFRU.replace(".", ""), ucComponent_jsonpComponentVBDRCVFRU = ucComponent_jsonpComponentVBDRCVFRU.replace(":", "");
+ucComponent_jsonpComponentVBDRCVFRU += "$$BDRCVFRU";
+
+function getCookie(d) {
+	var a = document.cookie,
+		b = a.indexOf(d);
+	if (-1 != b) {
+		b += d.length + 1;
+		d = a.indexOf(";", b); - 1 == d && (d = a.length);
+		var c = unescape(a.substring(b, d))
+	}
+	return c
+}
+function getBrowers() {
+	var d = navigator.platform,
+		a = navigator.userAgent,
+		b = "",
+		b = -1 < d.indexOf("Win") ? -1 < a.indexOf("Windows NT 5.0") ? b + "Win2000" : -1 < a.indexOf("Windows NT 5.1") ? b + "WinXP" : -1 < a.indexOf("Windows NT 5.2") ? b + "Win2003" : -1 < a.indexOf("Windows NT 6.0") ? b + "WindowsVista" : -1 < a.indexOf("Windows NT 6.1") || -1 < a.indexOf("Windows 7") ? b + "Win7" : -1 < a.indexOf("Windows 8") ? b + "Win8" : b + "Other" : -1 < d.indexOf("Mac") ? b + "Mac" : -1 < d.indexOf("X11") ? b + "Unix" : -1 < d.indexOf("Linux") ? b + "Linux" : b + "Other",
+		b = b + "/";
+	/[Ff]irefox(\/\d+\.\d+)/.test(a) ? (d = /([Ff]irefox)\/(\d+\.\d+)/.exec(a), b += d[1] + d[2]) : /MSIE \d+\.\d+/.test(a) ? (d = /MS(IE) (\d+\.\d+)/.exec(a), b += d[1] + d[2]) : /[Cc]hrome\/\d+/.test(a) ? (d = /([Cc]hrome)\/(\d+)/.exec(a), b += d[1] + d[2]) : /[Vv]ersion\/\d+\.\d+\.\d+(\.\d)* *[Ss]afari/.test(a) ? (d = /[Vv]ersion\/(\d+\.\d+\.\d+)(\.\d)* *([Ss]afari)/.exec(a), b += d[3] + d[1]) : /[Oo]pera.+[Vv]ersion\/\d+\.\d+/.test(a) ? (d = /([Oo]pera).+[Vv]ersion\/(\d+)\.\d+/.exec(a), b += d[1] + d[2]) : b += "IE";
+	return b
+}
+uc_console_log("getBrowers:" + getBrowers());
+var BDRCVFRU = getCookie(ucComponent_jsonpComponentVBDRCVFRU),
+	callbackFunction = function(d, a) {
+		a = "";
+		for (var b = 0; b < d.item.length; b++) a += d.item[b] + ",";
+		ucComponent_jsonpComponentItemSize = d.item.length;
+		window.LS.set("ucComponent_jsonpComponentItemSize", ucComponent_jsonpComponentItemSize);
+		ucComponent_jsonpComponentItem = a;
+		window.LS.set("ucComponent_jsonpComponentItem", ucComponent_jsonpComponentItem);
+		ucComponent_jsonpComponentLoginUrl = "";
+		try {
+			void 0 != ucComponentConfig.login_html && (ucComponent_jsonpComponentLoginUrl = ucComponentConfig.login_html)
+		} catch (c) {}
+		window.LS.set("ucComponent_jsonpComponentLoginUrl", ucComponent_jsonpComponentLoginUrl);
+		ucComponent_jsonpComponentAppId = d.app_id;
+		global_params_is_all_org=d.is_all_org;
+		window.LS.set("ucComponent_jsonpComponentAppId", ucComponent_jsonpComponentAppId);
+		ucComponent_jsonpComponentOrgId = d.org_id;
+		try {
+			void 0 != ucComponentConfig.org_id && (ucComponent_jsonpComponentAppId = ucComponent_jsonpComponentOrgId = ucComponentConfig.org_id)
+		} catch (c) {}
+		window.LS.set("ucComponent_jsonpComponentOrgId", ucComponent_jsonpComponentOrgId);
+		ucComponent_jsonpComponentOrgName = d.org_name;
+		try {
+			void 0 != ucComponentConfig.org_name && (ucComponent_jsonpComponentOrgName = ucComponentConfig.org_name)
+		} catch (c) {}
+		window.LS.set("ucComponent_jsonpComponentOrgName", ucComponent_jsonpComponentOrgName);
+		uc_console_log("org_name:" + ucComponent_jsonpComponentOrgName);
+		ucComponentConfig_virtual_organizations = d.is_vorg;
+		try {
+			void 0 != ucComponentConfig.virtual_organizations && (ucComponentConfig_virtual_organizations = ucComponentConfig.virtual_organizations)
+		} catch (c) {}
+		window.LS.set("ucComponentConfig_virtual_organizations", ucComponentConfig_virtual_organizations);
+		ucComponent.setCookie("BDRCVFRU", "nd");
+		ucComponent_jsonpComponentCallbackCount = d.callbackCount;
+		window.LS.set("ucComponent_jsonpComponentCallbackCount", ucComponent_jsonpComponentCallbackCount);
+		ucComponent_jsonpComponentCallbackItems = d.callback_items;
+		window.LS.set("ucComponent_jsonpComponentCallbackItems", ucComponent_jsonpComponentCallbackItems)
+	};
+try {
+	new UcComponentConfig, ucComponent_jsonpComponentItemSize = 0, ucComponent_jsonpComponentItem = "", ucComponent_jsonpComponentLoginUrl = ucComponentConfig.login_html, ucComponent_jsonpComponentOrgId = ucComponentConfig.org_id, ucComponent_jsonpComponentOrgName = ucComponentConfig.org_name, ucComponentConfig_virtual_organizations = ucComponentConfig.virtual_organizations
+} catch (d) {
+	var ucComponent_jsonpComponentOHead = document.getElementsByTagName("HEAD").item(0),
+		ucComponent_jsonpComponentoScript = document.createElement("script");
+	ucComponent_jsonpComponentoScript.type = "text/javascript";
+	ucComponent_jsonpComponentoScript.src = ucComponentConfig_ucproxy_url + "/v0.9/ucsdk/proxy/getComponenets?code=" + location.href;
+	ucComponent_jsonpComponentOHead.appendChild(ucComponent_jsonpComponentoScript)
+}
+var ucManager = {
+	loadComplete: function() {
+		return new Promise(function(d, a) {
+			GUcManagerHttpJsonp(ucComponentConfig_ucproxy_url + "/v0.9/ucsdk/proxy/getComponenets", {
+				code: location.href,
+				sso_101_uc: "uc"
+			}).then(function(a) {
+				for (var b = "", f = 0; f < a.item.length; f++) b += a.item[f] + ",";
+				ucComponent_jsonpComponentItemSize = a.item.length;
+				window.LS.set("ucComponent_jsonpComponentItemSize", ucComponent_jsonpComponentItemSize);
+				ucComponent_jsonpComponentItem = b;
+				window.LS.set("ucComponent_jsonpComponentItem", ucComponent_jsonpComponentItem);
+				ucComponent_jsonpComponentLoginUrl = "";
+				try {
+					void 0 != ucComponentConfig.login_html && (ucComponent_jsonpComponentLoginUrl = ucComponentConfig.login_html)
+				} catch (e) {}
+				window.LS.set("ucComponent_jsonpComponentLoginUrl", ucComponent_jsonpComponentLoginUrl);
+				ucComponent_jsonpComponentAppId = a.app_id;
+				window.LS.set("ucComponent_jsonpComponentAppId", ucComponent_jsonpComponentAppId);
+				ucComponent_jsonpComponentOrgId = a.org_id;
+				try {
+					void 0 != ucComponentConfig.org_id && (ucComponent_jsonpComponentAppId = ucComponent_jsonpComponentOrgId = ucComponentConfig.org_id)
+				} catch (e) {}
+				window.LS.set("ucComponent_jsonpComponentOrgId", ucComponent_jsonpComponentOrgId);
+				ucComponent_jsonpComponentOrgName = a.org_name;
+				try {
+					void 0 != ucComponentConfig.org_name && (ucComponent_jsonpComponentOrgName = ucComponentConfig.org_name)
+				} catch (e) {}
+				window.LS.set("ucComponent_jsonpComponentOrgName", ucComponent_jsonpComponentOrgName);
+				uc_console_log("org_name:" + ucComponent_jsonpComponentOrgName);
+				ucComponentConfig_virtual_organizations = a.is_vorg;
+				try {
+					void 0 != ucComponentConfig.virtual_organizations && (ucComponentConfig_virtual_organizations = ucComponentConfig.virtual_organizations)
+				} catch (e) {}
+				window.LS.set("ucComponentConfig_virtual_organizations", ucComponentConfig_virtual_organizations);
+				ucComponent.setCookie("BDRCVFRU", "nd");
+				ucComponent_jsonpComponentCallbackCount = a.callbackCount;
+				window.LS.set("ucComponent_jsonpComponentCallbackCount", ucComponent_jsonpComponentCallbackCount);
+				ucComponent_jsonpComponentCallbackItems = a.callback_items;
+				window.LS.set("ucComponent_jsonpComponentCallbackItems", ucComponent_jsonpComponentCallbackItems);
+				d("init_success")
+			})
+		})
+	},
+	//全组织登录
+	login_all_org: function(login_name,password) {
+		password=getMD5Value(password);
+		var promise= new Promise(function(resolve, rej) {
+			JsMAF.proxyRest(ucComponentConfig_uc_url_front + "tokens", '{"login_name":"' + login_name + '","password":"' + password + '"}', '{"Accept":"application/json","Content-Type":"application/json"}', "POST").then(function(a) {
+				if(undefined!=a.message){
+					resolve(a.message);
+				}else{
+					ucManager.thirdLoginSSO(a.access_token, a.refresh_token, a.mac_key,a.user_id).then(function(resps) {
+						resolve(a);
+					})
+				}
+			})
+		});
+		return promise;
+	},
+	login: function(login_name,password) {
+		//如果开启全组织登录，则新开一个分支登录
+		if(global_params_is_all_org=="1"){
+			var promise= new Promise(function(resolve, rej) {
+				ucManager.login_0922(login_name,password).then(function(resp) {
+					if(resp=="帐号不存在"){
+						ucManager.login_all_org(login_name,password).then(function(resp) {
+							resolve(resp);
+						});
+					}else{
+						resolve(resp);
+					}
+				});
+			});
+			return promise;
+		}
+		//如果没有开启全组织登录，则按旧的逻辑登录
+		else{
+			var promise= new Promise(function(resolve, rej) {
+				ucManager.loadComplete().then(function(a){
+					ucManager.login_0922(login_name,password).then(function(resp) {
+						resolve(resp);
+				});
+				});
+			});
+			return promise;
+		}
+	},
+	login_0922: function(d, a) {
+		window.LS.remove("is_reload");
+		uc_console_log("start login..." + d);
+		if (void 0 == d || "" == d) return uc_console_log("login_name鏈畾涔�"), d = new Promise(function(a, b) {
+			a("login_name is null")
+		});
+		if (void 0 == a || "" == a) return uc_console_log("password鏈畾涔�"), d = new Promise(function(a, b) {
+			a("password is null")
+		});
+		a = getMD5Value(a);
+		var b = null,
+			b = "1" == ucComponentConfig_virtual_organizations ? ucComponent.login_service_v_org_name(d, a) : ucComponent.login_service_org_name(ucComponentConfig_uc_url_front + "tokens", d, a);
+		uc_console_log("鐧诲綍鎴愬姛->id:" + ucComponent_jsonpComponentOrgId);
+		uc_console_log("鐧诲綍鎴愬姛->tk:" + window.LS.get("localhost_access_token_" + ucComponent_jsonpComponentOrgId));
+		window.LS.remove("is_reload");
+		return b
+	},
+	getSdpAppId:function(d) {
+		var promise= new Promise(function(resolve, rej) {
+			ucManager.loadComplete().then(function(response) {
+				resolve(ucComponent_jsonpComponentAppId);
+			});
+		})
+		return promise;
+	},
+	setRoleName:function(roleName) {
+		var promise= new Promise(function(resolve, rej) {
+			ucManager.loadComplete().then(function(response) {
+				GUcManagerHttpJsonp(ucComponentConfig_ucproxy_url+"/cc",{"t":"roleName_"+ucComponent_jsonpComponentAppId,"c":roleName}).then(function(json) {
+					resolve(roleName);
+				});
+			});
+		})
+		return promise;
+	},
+	getRoleName:function(roleName) {
+		var promise= new Promise(function(resolve, rej) {
+			ucManager.loadComplete().then(function(response) {
+				GUcManagerHttpJsonp(ucComponentConfig_ucproxy_url+"/gg",{"t":"roleName_"+ucComponent_jsonpComponentAppId}).then(function(json) {
+					resolve(json.code);
+				});
+			});
+		})
+		return promise;
+	},
+	getSessionId: function(d) {
+		var promise= new Promise(function(resolve, b) {
+			ucQuery.getDeviceId().then(function(device_id) {
+				JsMAF.proxyRest(ucComponentConfig_uc_url_front + "session", '{"org_name":"' + ucComponent_jsonpComponentOrgName + '","device_id":"' +device_id + '","session_type":"' + d + '"}', '{"Accept":"application/json","Content-Type":"application/json"}', "POST").then(function(bc) {
+					resolve(bc);
+				})
+			});
+		});
+		return promise;
+	},
+	loginBySession: function(d, a, b, c, f) {
+		if (void 0 == d || "" == d) {
+			var e = new Promise(function(a, b) {
+				a("login_name is null")
+			});
+			return e
+		}
+		if (void 0 == a || "" == a) return e = new Promise(function(a, b) {
+			a("password is null")
+		});
+		a = getMD5Value(a);
+		a = ucComponent.ecryptContent(a, c);
+		d = ucComponent.ecryptContent(d, c);
+		return new Promise(function(e, k) {
+			if(ucComponentConfig_virtual_organizations=="1"){
+				JsMAF.proxyRest(ucComponentConfig_virtual_url_front+ucComponent_jsonpComponentOrgId + "/tokens", '{"identify_code":"' + f + '","login_name":"' + d + '","password":"' + a + '","session_id":"' + b + '","session_key":"' + c + '"}', '{"Accept":"application/json","Content-Type":"application/json"}', "POST").then(function(a) {
+					if (void 0 != a.user_id) {
+						var b = ucComponent.decryptByDES(a.user_id, c),
+							d = ucComponent.decryptByDES(a.mac_key, c);
+						ucManager.thirdLoginSSO(a.access_token, a.refresh_token, d, b).then(function(b) {
+							e(a)
+						})
+					} else e(a)
+				})
+			}else{
+				JsMAF.proxyRest(ucComponentConfig_uc_url_front + "tokens", '{"org_name":"' + ucComponent_jsonpComponentOrgName + '","identify_code":"' + f + '","login_name":"' + d + '","password":"' + a + '","session_id":"' + b + '","session_key":"' + c + '"}', '{"Accept":"application/json","Content-Type":"application/json"}', "POST").then(function(a) {
+					if (void 0 != a.user_id) {
+						var b = ucComponent.decryptByDES(a.user_id, c),
+							d = ucComponent.decryptByDES(a.mac_key, c);
+						ucManager.thirdLoginSSO(a.access_token, a.refresh_token, d, b).then(function(b) {
+							e(a)
+						})
+					} else e(a)
+				})
+			}
+		})
+	},
+	thirdLoginSSO: function(d, a, b, c) {
+		if ("" == ucComponent_jsonpComponentAppId || null == ucComponent_jsonpComponentAppId || undefined== ucComponent_jsonpComponentAppId) {
+				return new Promise(function(f, e) {
+					ucManager.loadComplete().then(function(a){
+					JsMAF.proxyRest(ucComponentConfig_uc_url_front + "server/time", "{}", '{"Accept":"application/json","Content-Type":"application/json"}', "GET").then(function(e) {
+						e = e.ms_format;
+						var h = (new Date).getTime();
+						e = d + "$$" + a + "$$" + b + "$$" + c + "$$" + (e - h);
+						h = ucComponent.getOSAndBrowserKey();
+						h = ucComponent.ecryptContent(h, h);
+						e = ucComponent.ecryptContent(e, h);
+						ucComponent.setCookie("dsy_sdhghbjb_hgsjahd", "b12b213bb213hsahebhb223bhagh", "2");
+						window.LS.set("localhost_access_token_" + ucComponent_jsonpComponentAppId, "UC_SAVE_TOKENINFO_" + e);
+						window.LS.remove("is_reload");
+						try {
+							ucManager.imageSendMessagePromise().then(function(a) {
+								ucManager.callbackSendMessagePromise().then(function(a) {
+									f("success")
+								})
+							})
+						} catch (l) {
+							f("success")
+						}
+					})
+				})
+			});
+		}else{
+			return new Promise(function(f, e) {
+				JsMAF.proxyRest(ucComponentConfig_uc_url_front + "server/time", "{}", '{"Accept":"application/json","Content-Type":"application/json"}', "GET").then(function(e) {
+					e = e.ms_format;
+					var h = (new Date).getTime();
+					e = d + "$$" + a + "$$" + b + "$$" + c + "$$" + (e - h);
+					h = ucComponent.getOSAndBrowserKey();
+					h = ucComponent.ecryptContent(h, h);
+					e = ucComponent.ecryptContent(e, h);
+					ucComponent.setCookie("dsy_sdhghbjb_hgsjahd", "b12b213bb213hsahebhb223bhagh", "2");
+					window.LS.set("localhost_access_token_" + ucComponent_jsonpComponentAppId, "UC_SAVE_TOKENINFO_" + e);
+					window.LS.remove("is_reload");
+					try {
+						ucManager.imageSendMessagePromise().then(function(a) {
+							ucManager.callbackSendMessagePromise().then(function(a) {
+								f("success")
+							})
+						})
+					} catch (l) {
+						f("success")
+					}
+				})
+			})
+		}
+	},
+	getNonce: function() {
+		var d = window.LS.get("localhost_access_token_" + ucComponent_jsonpComponentAppId);
+		if ("" == d || void 0 == d || null == d) d = 0;
+		else {
+			void 0 != d && 0 <= d.indexOf("UC_SAVE_TOKENINFO_") && (d = d.replace("UC_SAVE_TOKENINFO_", ""));
+			var a = ucComponent.getOSAndBrowserKey(),
+				a = ucComponent.ecryptContent(a, a),
+				d = ucComponent.decryptByDES(d, a),
+				d = d.split("$$"),
+				d = 5 > d.length ? 0 : d[4]
+		}
+		return (new Date).getTime() + parseInt(d) + ":" + ucComponent.generateMixed(8)
+	},
+	getAccessToken_desToken_IE: function() {
+		return new Promise(function(d, a) {
+			a = window.LS.get("localhost_access_token_" + ucComponent_jsonpComponentAppId);
+			void 0 == a || "" == a || null == a || "0" == a ? ucManager.pullCookie().then(function(a) {
+				"" != a ? d(a) : d("")
+			}) : d(a)
+		})
+	},
+	toggleToken: function() {
+		return new Promise(function(d, a) {
+			ucManager.isLogin().then(function(a) {
+				if ("true" == a) {
+					var b = ucComponentConfig_virtual_url_front + ucComponent_jsonpComponentOrgId + "/tokens/actions/renew";
+					a = JsMAF.getAuthHeader(b, "POST");
+					var b = /^(?:(\w+):\/\/)?(?:(\w+):?(\w+)?@)?([^:\/\?#]+)(?::(\d+))?(\/[^\?#]+)?(?:\?([^#]+))?(?:#(\w+))?/.exec(b),
+						f = "",
+						f = void 0 != b && void 0 != b[5] && "" != b[5] && null != b[5] ? b[4] + ":" + b[5] : b[4];
+					a = encodeURIComponent(a);
+					JsMAF.proxyRest(ucComponentConfig_virtual_url_front + ucComponent_jsonpComponentOrgId + "/tokens/actions/renew", "{}", '{"Accept":"application/json","Content-Type":"application/json","Host":"' + f + '","Authorization":"' + a + '"}', "POST").then(function(a) {
+						void 0 != a.user_id && null != a.user_id ? JsMAF.proxyRest(ucComponentConfig_uc_url_front + "server/time", "{}", '{"Accept":"application/json","Content-Type":"application/json"}', "GET").then(function(b) {
+							b = b.ms_format;
+							var c = (new Date).getTime();
+							b = a.access_token + "$$" + a.refresh_token + "$$" + a.mac_key + "$$" + a.user_id + "$$" + (b - c);
+							c = ucComponent.getOSAndBrowserKey();
+							c = ucComponent.ecryptContent(c, c);
+							b = ucComponent.ecryptContent(b, c);
+							ucComponent.setCookie("dsy_sdhghbjb_hgsjahd", "b12b213bb213hsahebhb223bhagh", "2");
+							window.LS.set("localhost_access_token_" + ucComponent_jsonpComponentAppId, "UC_SAVE_TOKENINFO_" + b);
+							window.LS.remove("is_reload");
+							try {
+								ucManager.imageSendMessagePromise().then(function(b) {
+									ucManager.callbackSendMessagePromise().then(function(b) {
+										d(a)
+									})
+								})
+							} catch (l) {
+								d(a)
+							}
+						}) : d("false")
+					})
+				} else d("false")
+			})
+		})
+	},
+	getAccessToken_IE: function() {
+		return new Promise(function(d, a) {
+			var b = window.LS.get("localhost_access_token_" + ucComponent_jsonpComponentAppId);
+			if (void 0 == b || "" == b || null == b || "0" == b) ucManager.pullCookie().then(function(a) {
+				if ("" != a) try {
+					var c = ucComponent.getOSAndBrowserKey(),
+						c = ucComponent.ecryptContent(c, c); - 1 < a.indexOf("UC_SAVE_TOKENINFO_") && (a = a.replace("UC_SAVE_TOKENINFO_", ""));
+					b = ucComponent.decryptByDES(a, c);
+					var f = b.split("$$")[0];
+					d(f)
+				} catch (l) {
+					d("")
+				} else d("")
+			});
+			else try {
+				var c = ucComponent.getOSAndBrowserKey(),
+					c = ucComponent.ecryptContent(c, c); - 1 < b.indexOf("UC_SAVE_TOKENINFO_") && (b = b.replace("UC_SAVE_TOKENINFO_", ""));
+				var b = ucComponent.decryptByDES(b, c),
+					f = b.split("$$")[0];
+				d(f)
+			} catch (e) {
+				d("")
+			}
+		})
+	},
+	getAccessToken: function() {
+		var d = ucComponent.getOSAndBrowser();
+		if (-1 < d.indexOf("IE") || -1 < d.indexOf("ie")) return new Promise(function(a, c) {
+			try {
+				ucManager.getAccessToken_IE().then(function(b) {
+					a(b)
+				})
+			} catch (f) {
+				a("")
+			}
+		});
+		var d = ucComponent.getCookie("dsy_sdhghbjb_hgsjahd"),
+			a = window.LS.get("localhost_access_token_" + ucComponent_jsonpComponentAppId);
+		if (void 0 == d || "" == d || void 0 == a || "" == a || null == a) {
+			if (0 < ucComponent_jsonpComponentItemSize) return d = new Promise(function(a, c) {
+				window.LS.remove("localhost_access_token_" + ucComponent_jsonpComponentAppId);
+				a("")
+			});
+			d = new Promise(function(a, c) {
+				a("")
+			})
+		} else return d = new Promise(function(a, c) {
+			ucComponent.getOSAndBrowser();
+			ucManager.checkToken().then(function(b) {
+				"" != b ? a(b) : (window.LS.remove("localhost_access_token_" + ucComponent_jsonpComponentAppId), a(""))
+			})
+		})
+	},
+	ie8_frame_onload: function() {
+		return new Promise(function(d, a) {
+			d("")
+		})
+	},
+	pullCookie: function() {
+		ucComponent.getOSAndBrowser();
+		return new Promise(function(d, a) {
+			try {
+				GUcManagerHttpJsonp(ucComponentConfig_ucproxy_url + "/pullCookie", {
+					appId: ucComponent_jsonpComponentAppId
+				}).then(function(a) {
+					a = a.code;
+					if ("0" == a) d("");
+					else {
+						if (/^[^$]+\$\$[^$]+\$\$[^$]+\$\$[^$]*\$\$[^$]+\$\$[^$]+/.test(a)) { // 是否为新的 UC SDK, 
+							var matchs = a.split('$$')
+							var access_token = matchs[0];
+							var refresh_token = '';
+							var mac_key = matchs[1];
+							var user_id = matchs[2];
+							var diff = matchs[4];
+							var ssoToken = access_token + "$$" + refresh_token + "$$" + mac_key + "$$" + user_id + "$$" + diff;
+							// 将 新 SSO Token 转成 旧的 SSO Token 格式
+							var f = ucComponent.getOSAndBrowserKey();
+							f = ucComponent.ecryptContent(f, f);
+							var ssoToken = ucComponent.ecryptContent(ssoToken, f);
+							a = 'UC_SAVE_TOKENINFO_' + ssoToken // 模拟成旧的格式
+						}
+						a = a.replace("UC_SAVE_TOKENINFO_", "");
+						try {
+							var b = ucComponent.getOSAndBrowserKey(),
+								b = ucComponent.ecryptContent(b, b),
+								f = ucComponent.decryptByDES(a, b);
+							if ("null" == f || void 0 == f || null == f || "" == f || -1 >= f.indexOf("$$")) a = decodeURIComponent(a), f = ucComponent.decryptByDES(a, b), null != f && (window.LS.set("localhost_access_token_" + ucComponent_jsonpComponentAppId, a), d(a))
+						} catch (e) {
+							d("false")
+						}
+						null == a ? d("false") : (window.LS.set("localhost_access_token_" + ucComponent_jsonpComponentAppId, a), d(a))
+					}
+				})
+			} catch (b) {
+				d("")
+			}
+		})
+	},
+	isLogin: function() {
+		ucComponent.getOSAndBrowser();
+		return new Promise(function(d, a) {
+			if ("" == ucComponent_jsonpComponentAppId || null == ucComponent_jsonpComponentAppId || void 0 == ucComponent_jsonpComponentAppId) ucManager.loadComplete().then(function(a) {
+				try {
+					ucManager.getUserInfo_old_ie().then(function(a) {
+						"true" == a ? d("true") : ucManager.getUserInfo_old_ie().then(function(a) {
+							"true" == a ? d("true") : (window.LS.get("localhost_access_token_" + ucComponent_jsonpComponentAppId), window.LS.remove("localhost_access_token_" + ucComponent_jsonpComponentAppId), ucComponent.deleteCookie("dsy_sdhghbjb_hgsjahd"), ucManager.getUserInfo_old_ie().then(function(a) {
+								"true" == a ? d("true") : (window.LS.get("localhost_access_token_" + ucComponent_jsonpComponentAppId), window.LS.remove("localhost_access_token_" + ucComponent_jsonpComponentAppId), ucComponent.deleteCookie("dsy_sdhghbjb_hgsjahd"), "true" == a ? d("true") : (window.LS.get("localhost_access_token_" + ucComponent_jsonpComponentAppId), window.LS.remove("localhost_access_token_" + ucComponent_jsonpComponentAppId), ucComponent.deleteCookie("dsy_sdhghbjb_hgsjahd"), d("false")))
+							}))
+						})
+					})
+				} catch (c) {
+					window.LS.get("localhost_access_token_" + ucComponent_jsonpComponentAppId), window.LS.remove("localhost_access_token_" + ucComponent_jsonpComponentAppId), ucComponent.deleteCookie("dsy_sdhghbjb_hgsjahd"), d("false")
+				}
+			});
+			else try {
+				ucManager.getUserInfo_old_ie().then(function(a) {
+					"true" == a ? d("true") : ucManager.getUserInfo_old_ie().then(function(a) {
+						"true" == a ? d("true") : (window.LS.get("localhost_access_token_" + ucComponent_jsonpComponentAppId), window.LS.remove("localhost_access_token_" + ucComponent_jsonpComponentAppId), ucComponent.deleteCookie("dsy_sdhghbjb_hgsjahd"), ucManager.getUserInfo_old_ie().then(function(a) {
+							"true" == a ? d("true") : (window.LS.get("localhost_access_token_" + ucComponent_jsonpComponentAppId), window.LS.remove("localhost_access_token_" + ucComponent_jsonpComponentAppId), ucComponent.deleteCookie("dsy_sdhghbjb_hgsjahd"), "true" == a ? d("true") : (window.LS.get("localhost_access_token_" + ucComponent_jsonpComponentAppId), window.LS.remove("localhost_access_token_" + ucComponent_jsonpComponentAppId), ucComponent.deleteCookie("dsy_sdhghbjb_hgsjahd"), d("false")))
+						}))
+					})
+				})
+			} catch (b) {
+				window.LS.get("localhost_access_token_" + ucComponent_jsonpComponentAppId), window.LS.remove("localhost_access_token_" + ucComponent_jsonpComponentAppId), ucComponent.deleteCookie("dsy_sdhghbjb_hgsjahd"), d("false")
+			}
+		})
+	},
+	getUserInfo: function() {
+		return new Promise(function(d, a) {
+			try {
+				ucManager.getUserInfo_old().then(function(a) {
+					"object" == typeof a ? void 0 != a.user_id ? d(a) : (window.LS.remove("localhost_access_token_" + ucComponent_jsonpComponentAppId), ucComponent.deleteCookie("dsy_sdhghbjb_hgsjahd"), ucManager.getUserInfo_old().then(function(a) {
+						"object" == typeof a ? void 0 != a.user_id ? d(a) : (window.LS.get("localhost_access_token_" + ucComponent_jsonpComponentAppId), window.LS.remove("localhost_access_token_" + ucComponent_jsonpComponentAppId), ucComponent.deleteCookie("dsy_sdhghbjb_hgsjahd"), d("false")) : (window.LS.get("localhost_access_token_" + ucComponent_jsonpComponentAppId), window.LS.remove("localhost_access_token_" + ucComponent_jsonpComponentAppId), ucComponent.deleteCookie("dsy_sdhghbjb_hgsjahd"), d("false"))
+					})) : (window.LS.remove("localhost_access_token_" + ucComponent_jsonpComponentAppId), ucComponent.deleteCookie("dsy_sdhghbjb_hgsjahd"), ucManager.getUserInfo_old().then(function(a) {
+						"object" == typeof a ? void 0 != a.user_id ? d(a) : (window.LS.get("localhost_access_token_" + ucComponent_jsonpComponentAppId), window.LS.remove("localhost_access_token_" + ucComponent_jsonpComponentAppId), ucComponent.deleteCookie("dsy_sdhghbjb_hgsjahd"), d("false")) : (window.LS.get("localhost_access_token_" + ucComponent_jsonpComponentAppId), window.LS.remove("localhost_access_token_" + ucComponent_jsonpComponentAppId), ucComponent.deleteCookie("dsy_sdhghbjb_hgsjahd"), d("false"))
+					}))
+				})
+			} catch (b) {
+				window.LS.get("localhost_access_token_" + ucComponent_jsonpComponentAppId), window.LS.remove("localhost_access_token_" + ucComponent_jsonpComponentAppId), ucComponent.deleteCookie("dsy_sdhghbjb_hgsjahd"), d("false")
+			}
+		})
+	},
+	getUserInfo_old: function() {
+		var d = ucComponent.getOSAndBrowser();
+		return new Promise(function(a, b) {
+			try {
+				ucManager.getAccessToken_desToken_IE().then(function(b) {
+					if ("" != b) if (void 0 == b) a("");
+					else {
+						b = b.replace("UC_SAVE_TOKENINFO_", "");
+						var c = ucComponent.getOSAndBrowserKey(),
+							c = ucComponent.ecryptContent(c, c);
+						b = ucComponent.decryptByDES(b, c);
+						var e = b.split("$$");
+						b = ucManager.getNonce();
+						var c = e[0],
+							h = e[2],
+							k = e[3],
+							e = ucComponentConfig_uc_url_front + "users/" + k,
+							e = ucComponentConfig_uc_url_front + "users/" + k;
+						if (-1 < d.indexOf("IE9") || -1 < d.indexOf("IE8")) {
+							var l = ucComponent.getAuthHeader(e, "GET", c, h, b),
+								l = ucComponent.ecryptContent(l, "Uc1$abcd"),
+								g = new XDomainRequest;
+							g.onload = function() {
+								var b = JSON.parse(g.responseText);
+								a(b)
+							};
+							g.onerror = function() {
+								a("login fail")
+							};
+							g.open("post", "" + ucComponentConfig_ucproxy_url + "/v0.9/ucsdk/proxy/users/actions/query");
+							g.onprogess = function() {};
+							g.timeout = 0;
+							g.ontimeout = function() {};
+							setTimeout(function() {
+								g.send('{"mac":"' + l + '","user_id":"' + k + '"}')
+							}, 1E3)
+						} else ucComponent.get_userInfo_service(e, c, h, b).then(function(a) {
+							return a.json()
+						}).then(function(b) {
+							a(b)
+						}, function(b) {
+							a("")
+						})
+					} else a("")
+				})
+			} catch (c) {
+				a("")
+			}
+		})
+	},
+	getUserInfo_old_ie: function() {
+		return new Promise(function(d, a) {
+			try {
+				ucManager.getAccessToken_desToken_IE().then(function(a) {
+					if ("" != a) if (void 0 == a) d("false");
+					else {
+						try {
+							a = a.replace("UC_SAVE_TOKENINFO_", "");
+							var b = ucComponent.getOSAndBrowserKey(),
+								b = ucComponent.ecryptContent(b, b);
+							a = ucComponent.decryptByDES(a, b)
+						} catch (g) {
+							d("false")
+						}
+						if (null == a) d("false");
+						else {
+							b = a.split("$$");
+							try {
+								var f = b[0],
+									b = ucComponentConfig_uc_url_front + "tokens/" + f + "/actions/valid",
+									e = JsMAF.getAuthHeader(b, "POST").match('MAC id="(.*)",nonce="(.*)",mac="(.*)"'),
+									h = /^(?:(\w+):\/\/)?(?:(\w+):?(\w+)?@)?([^:\/\?#]+)(?::(\d+))?(\/[^\?#]+)?(?:\?([^#]+))?(?:#(\w+))?/.exec(b),
+									b = "",
+									b = void 0 != h && void 0 != h[5] && "" != h[5] && null != h[5] ? h[4] + ":" + h[5] : h[4],
+									k = '{"mac":"' + e[3] + '","nonce":"' + e[2] + '","request_uri":"' + ("/v0.93/tokens/" + f + "/actions/valid") + '","http_method":"POST","host":"' + b + '"}';
+								try {
+									var l = ucComponent.getOSAndBrowser();
+									0 <= l.indexOf("IE") || 0 <= l.indexOf("unknown") ? JsMAF.proxyRest(ucComponentConfig_uc_url_front + "tokens/" + f + "/actions/valid", k, '{"Accept":"application/json","Content-Type":"application/json"}', "POST").then(function(a) {
+										void 0 != a.user_id && null != a.user_id ? d("true") : d("false")
+									}) : fetch(ucComponentConfig_uc_url_front + "tokens/" + f + "/actions/valid", {
+										method: "POST",
+										headers: {
+											Accept: "application/json",
+											"Content-Type": "application/json"
+										},
+										body: k
+									}).then(function(a) {
+										return a.json()
+									}).then(function(a) {
+										void 0 != a.user_id && null != a.user_id ? d("true") : d("false")
+									}, function(a) {
+										d("false")
+									})
+								} catch (g) {
+									d("false")
+								}
+							} catch (g) {
+								d("false")
+							}
+						}
+					} else d("false")
+				})
+			} catch (b) {
+				d("false")
+			}
+		})
+	},
+	logOut2: function() {
+		window.LS.remove("is_reload");
+		postMessageOther("0");
+		var d = window.LS.get("localhost_access_token_" + ucComponent_jsonpComponentAppId);
+		if (void 0 != d && null != d && "" != d) {
+			void 0 != d && 0 <= d.indexOf("UC_SAVE_TOKENINFO_") && (d = d.replace("UC_SAVE_TOKENINFO_", ""));
+			var a = ucComponent.getOSAndBrowserKey(),
+				a = ucComponent.ecryptContent(a, a),
+				d = ucComponent.decryptByDES(d, a),
+				d = d.split("$$")[0];
+			ucComponent.getOSAndBrowser();
+			(new Image).src = "" + ucComponentConfig_ucproxy_url + "/v0.9/ucsdk/proxy/token/" + d + "/logout"
+		}
+		window.LS.remove("localhost_access_token_" + ucComponent_jsonpComponentAppId);
+		ucComponent.deleteCookie("dsy_sdhghbjb_hgsjahd");
+		var promise=new Promise(function(a, b) {
+			try {
+				ucManager.logOutOld().then(function(res) {
+					ucManager.callbackLogOutPromise().then(function(logoutRes) {
+						a("success");
+					})
+		       	});
+			} catch (e) {
+				a("success");
+			}
+		});
+		return promise;
+	},
+	logOut3: function() {
+		return new Promise(function(d, a) {
+			window.LS.remove("is_reload");
+			postMessageOther("0");
+			a = window.LS.get("localhost_access_token_" + ucComponent_jsonpComponentAppId);
+			if (void 0 != a && null != a && "" != a) {
+				if (void 0 != a) {
+					a = a.replace("UC_SAVE_TOKENINFO_", "");
+					var b = ucComponent.getOSAndBrowserKey(),
+						b = ucComponent.ecryptContent(b, b);
+					a = ucComponent.decryptByDES(a, b);
+					
+					try {
+						var c = a.split("$$")[0];
+						ucComponent.getOSAndBrowser();
+						a = new Image;
+						for (b = 0; 4 > b; b++) a.src = "" + ucComponentConfig_ucproxy_url + "/v0.9/ucsdk/proxy/token/" + c + "/logout?ssid=" + (new Date).getTime();
+						a.src = "" + ucComponentConfig_ucproxy_url + "/v0.9/ucsdk/proxy/token/" + c + "/logout?ssid=2132121321";
+						JsMAF.proxyRest(ucComponentConfig_uc_url_front + "tokens/" + c, "{}", '{"Accept":"application/json","Content-Type":"application/json"}', "DELETE").then(function(a) {
+							JsMAF.proxyRest(ucComponentConfig_uc_url_front + "tokens/" + c, "{}", '{"Accept":"application/json","Content-Type":"application/json"}', "DELETE").then(function(a) {
+								d("success")
+							})
+						})
+					} catch (e) {
+						d("success")
+					}
+				}
+			} else d("success")
+		})
+	},
+	logOut: function() {
+		var promise=new Promise(function(a, b) {
+			try {
+				ucManager.logOutOld().then(function(res) {
+					ucManager.logOutOld().then(function(res) {
+						ucManager.callbackLogOutPromise().then(function(logoutRes) {
+							a("success");
+						})
+					})
+		       	});
+			} catch (e) {
+				try {
+					ucManager.logOutOld().then(function(res) {
+						ucManager.callbackLogOutPromise().then(function(logoutRes) {
+							a("success");
+						})
+			       	});
+				} catch (e) {
+					a("success");
+				}
+			}
+		});
+		return promise;
+	},
+	logOutOld: function() {
+		window.LS.remove("is_reload");
+		postMessageOther("0");
+		if (0 < ucComponent_jsonpComponentItemSize) var d = new Promise(function(a, b) {
+			ucManager.logOut3().then(function(b) {
+				var c = ucComponent.getOSAndBrowser();
+				0 < c.indexOf("IE") ? ucManager.getAccessToken_IE().then(function(b) {
+					if ("" != b) if (-1 < c.indexOf("IE9") || -1 < c.indexOf("IE8")) {
+						var d = new XDomainRequest;
+						d.onload = function() {
+							window.LS.remove("localhost_access_token_" + ucComponent_jsonpComponentAppId);
+							ucComponent.deleteCookie("dsy_sdhghbjb_hgsjahd");
+							a("success")
+						};
+						d.onerror = function() {
+							a("login fail")
+						};
+						d.open("post", "" + ucComponentConfig_ucproxy_url + "/v0.9/ucsdk/proxy/users/exit");
+						d.onprogess = function() {};
+						d.timeout = 0;
+						d.ontimeout = function() {};
+						setTimeout(function() {
+							d.send('{"access_token":"' + b + '"}')
+						}, 1E3)
+					} else fetch("" + ucComponentConfig_ucproxy_url + "/v0.9/ucsdk/proxy/users/exit", {
+						method: "POST",
+						headers: {
+							Accept: "application/json",
+							"Content-Type": "application/json"
+						},
+						body: JSON.stringify({
+							access_token: b
+						})
+					}).then(function(a) {
+						return a.json()
+					}).then(function(b) {
+						window.LS.remove("localhost_access_token_" + ucComponent_jsonpComponentAppId);
+						ucComponent.deleteCookie("dsy_sdhghbjb_hgsjahd");
+						a("success")
+					}, function(b) {
+						a("success")
+					});
+					else a("success")
+				}) : ucManager.getAccessToken().then(function(b) {
+					if ("" != b) if (b = window.LS.get("localhost_access_token_" + ucComponent_jsonpComponentAppId), void 0 != b && null != b && "" != b) {
+						void 0 != b && 0 <= b.indexOf("UC_SAVE_TOKENINFO_") && (b = b.replace("UC_SAVE_TOKENINFO_", ""));
+						var c = ucComponent.getOSAndBrowserKey(),
+							c = ucComponent.ecryptContent(c, c);
+						b = ucComponent.decryptByDES(b, c);
+						var d = b.split("$$")[0],
+							c = ucComponent.getOSAndBrowser();
+						b = ucComponentConfig_uc_url_front + "tokens/" + d;
+						if (-1 < c.indexOf("IE9") || -1 < c.indexOf("IE8")) {
+							var f = new XDomainRequest;
+							f.onload = function() {
+								window.LS.remove("localhost_access_token_" + ucComponent_jsonpComponentAppId);
+								ucComponent.deleteCookie("dsy_sdhghbjb_hgsjahd");
+								a("success")
+							};
+							f.onerror = function() {
+								a("login fail")
+							};
+							f.open("post", "" + ucComponentConfig_ucproxy_url + "/v0.9/ucsdk/proxy/users/exit");
+							f.onprogess = function() {};
+							f.timeout = 0;
+							f.ontimeout = function() {};
+							setTimeout(function() {
+								f.send('{"access_token":"' + d + '"}')
+							}, 1E3)
+						} else c = /^(?:(\w+):\/\/)?(?:(\w+):?(\w+)?@)?([^:\/\?#]+)(?::(\d+))?(\/[^\?#]+)?(?:\?([^#]+))?(?:#(\w+))?/.exec(b), host = void 0 != c && void 0 != c[5] && "" != c[5] && null != c[5] ? c[4] + ":" + c[5] : c[4], fetch(b, {
+							method: "DELETE",
+							headers: {
+								Accept: "application/json",
+								"Content-Type": "application/json"
+							}
+						}).then(function(a) {
+							return a.json()
+						}).then(function(b) {
+							window.LS.remove("localhost_access_token_" + ucComponent_jsonpComponentAppId);
+							ucComponent.deleteCookie("dsy_sdhghbjb_hgsjahd");
+							a("success")
+						})
+					} else window.LS.remove("localhost_access_token_" + ucComponent_jsonpComponentAppId), ucComponent.deleteCookie("dsy_sdhghbjb_hgsjahd"), a("success");
+					else a("success")
+				})
+			})
+		});
+		else window.LS.remove("localhost_access_token_" + ucComponent_jsonpComponentAppId), d = new Promise(function(a, b) {
+			a("success")
+		});
+		return d
+	},
+	checkToken: function() {
+		var d = ucComponent.getCookie("dsy_sdhghbjb_hgsjahd"),
+			a = window.LS.get("localhost_access_token_" + ucComponent_jsonpComponentAppId);
+		if ("" == a || void 0 == a || void 0 == d || "" == d) return a = new Promise(function(a, b) {
+			a("")
+		});
+		void 0 != a && 0 <= a.indexOf("UC_SAVE_TOKENINFO_") && (a = a.replace("UC_SAVE_TOKENINFO_", ""));
+		d = ucComponent.getOSAndBrowserKey();
+		d = ucComponent.ecryptContent(d, d);
+		a = ucComponent.decryptByDES(a, d);
+		if (0 > a.indexOf("$$")) return a = new Promise(function(a, b) {
+			a("")
+		});
+		var a = a.split("$$"),
+			b = a[0],
+			a = a[2],
+			c = ucComponentConfig_uc_url_front + "tokens/" + b + "/actions/valid",
+			f = this.getNonce(),
+			d = /^(?:(\w+):\/\/)?(?:(\w+):?(\w+)?@)?([^:\/\?#]+)(?::(\d+))?(\/[^\?#]+)?(?:\?([^#]+))?(?:#(\w+))?/.exec(c),
+			e = "",
+			e = void 0 != d && void 0 != d[5] && "" != d[5] && null != d[5] ? d[4] + ":" + d[5] : d[4],
+			h = ucComponent.getMac(f, "POST", c, e, a),
+			a = ucComponent.getOSAndBrowser();
+		return -1 < a.indexOf("IE9") || -1 < a.indexOf("IE8") ? a = new Promise(function(a, d) {
+			var g = new XDomainRequest;
+			g.onload = function() {
+				"success" == JSON.parse(g.responseText).code ? a(b) : (0 < ucComponent_jsonpComponentItemSize && window.LS.remove("localhost_access_token_" + ucComponent_jsonpComponentAppId), a(""))
+			};
+			g.onerror = function() {
+				0 < ucComponent_jsonpComponentItemSize && window.LS.remove("localhost_access_token_" + ucComponent_jsonpComponentAppId);
+				a("")
+			};
+			g.open("post", "" + ucComponentConfig_ucproxy_url + "/v0.9/ucsdk/proxy/checkToken");
+			g.onprogess = function() {};
+			g.timeout = 0;
+			g.ontimeout = function() {};
+			setTimeout(function() {
+				g.send('{"mac":"' + h + '","access_token":"' + b + '","nonce":"' + f + '","host":"' + e + '","url":"' + c + '"}')
+			}, 1E3)
+		}) : -1 < a.indexOf("IE10") ? new Promise(function(a, d) {
+			fetch("" + ucComponentConfig_ucproxy_url + "/v0.9/ucsdk/proxy/checkToken", {
+				method: "POST",
+				headers: {
+					Accept: "application/json",
+					"Content-Type": "application/json"
+				},
+				body: JSON.stringify({
+					mac: h,
+					access_token: b,
+					nonce: f,
+					host: e,
+					url: c
+				})
+			}).then(function(a) {
+				return a.json()
+			}).then(function(c) {
+				"success" == c.code ? a(b) : (0 < ucComponent_jsonpComponentItemSize && window.LS.remove("localhost_access_token_" + ucComponent_jsonpComponentAppId), a(""))
+			}, function(b) {
+				uc_console_log("ie10_front:check error");
+				0 < ucComponent_jsonpComponentItemSize && window.LS.remove("localhost_access_token_" + ucComponent_jsonpComponentAppId);
+				a("")
+			})
+		}) : a = new Promise(function(a, b) {
+			fetch(c, {
+				method: "POST",
+				headers: {
+					Accept: "application/json",
+					"Content-Type": "application/json"
+				},
+				body: JSON.stringify({
+					mac: h,
+					nonce: f,
+					http_method: "POST",
+					request_uri: c,
+					host: e
+				})
+			}).then(function(a) {
+				return a.json()
+			}).then(function(b) {
+				null != b && null != b.user_id && void 0 != b.user_id ? a(b.access_token) : (0 < ucComponent_jsonpComponentItemSize && window.LS.remove("localhost_access_token_" + ucComponent_jsonpComponentAppId), a(""))
+			}, function(b) {
+				a("")
+			})
+		})
+	},
+	callbackSendMessagePromise: function() {
+		var d = 0,
+			a = ucComponent_jsonpComponentCallbackCount;
+		return new Promise(function(b, c) {
+			if (void 0 == a || 0 == a || "" == a) b("success");
+			else for (c = 0; c < a; c++) {
+				var f = ucComponent_jsonpComponentCallbackItems[c];
+				try {
+					var e = /^(?:(\w+):\/\/)?(?:(\w+):?(\w+)?@)?([^:\/\?#]+)(?::(\d+))?(\/[^\?#]+)?(?:\?([^#]+))?(?:#(\w+))?/.exec(f),
+						h = "",
+						h = void 0 != e && void 0 != e[5] && "" != e[5] && null != e[5] ? e[4] + ":" + e[5] : e[4],
+						k = JsMAF.getAuthHeader("http://" + h + "/", "GET");
+					GUcManagerHttpJsonp(f + "/oauth2/token/sso", {
+						_SSO_Authorization_: k
+					}).then(function(c) {
+						d++;
+						d >= a && b("success")
+					})
+				} catch (l) {
+					d++, d >= a && b("success")
+				}
+			}
+		})
+	},
+	callbackLogOutPromise: function() {
+		var d = 0,
+			a = ucComponent_jsonpComponentCallbackCount;
+		return new Promise(function(b, c) {
+			if (void 0 == a || 0 == a || "" == a) b("success");
+			else for (c = 0; c < a; c++) {
+				var f = ucComponent_jsonpComponentCallbackItems[c];
+				try {
+					GUcManagerHttpJsonp(f + "/account/logout", {}).then(function(c) {
+						d++;
+						d >= a && b("success")
+					})
+				} catch (l) {
+					d++, d >= a && b("success")
+				}
+			}
+		})
+	},
+	callbaclElarning_send:function(callbacktotal,elearning_host){
+		var host_arr=elearning_host.split("$$$");
+		
+		var promise = new Promise(function (resolve, reject) {
+			//递归回调elearning
+			if(callback_sso_count>=callbacktotal){
+				callback_sso_count=0;
+				resolve("true");
+			}else{
+				var this_url=host_arr[callback_sso_count];
+				var host=ucManager.getHostByUrl(this_url);
+				var mac = JsMAF.getAuthHeader("http://" + host + "/", "GET");
+				callback_sso_count++;
+				var callback_url="http://"+this_url+"/sso";;
+				try {
+					GUcManagerHttpJsonp(callback_url, {
+						_SSO_Authorization_: mac
+					}).then(function(b) {
+						ucManager.callbaclElarning_send(callbacktotal,elearning_host).then(function(b) {
+							resolve("true");
+						})
+					})
+				} catch (exs) {
+					ucManager.callbaclElarning_send(callbacktotal,elearning_host).then(function(b) {
+						resolve("true");
+					})
+				}
+			}
+		});
+		
+		return promise;
+
+	},
+	callbaclElarning_pre:function(callbacktotal){
+		var elearning_host="";
+		
+		var ucComponent_jsonpComponentItem_arr=ucComponent_jsonpComponentItem.split(",")
+		for(var i=0;i<ucComponent_jsonpComponentItem_arr.length;i++){
+			if(ucComponent_jsonpComponentItem_arr[i].indexOf(elearning_1)==0){
+				elearning_host+=ucComponent_jsonpComponentItem_arr[i]+"$$$";
+			}
+			if(ucComponent_jsonpComponentItem_arr[i].indexOf(elearning_2)>-1){
+				elearning_host+=ucComponent_jsonpComponentItem_arr[i]+"$$$";
+			}
+		}
+		var i=0;
+		var promise = new Promise(function (resolve, reject) {
+			ucManager.callbaclElarning_send(callbacktotal,elearning_host).then(function(b) {
+					resolve("true");
+			})
+		});
+		return promise;
+
+	},
+	getHostByUrl:function(url){
+		var pattern = /^(?:(\w+):\/\/)?(?:(\w+):?(\w+)?@)?([^:\/\?#]+)(?::(\d+))?(\/[^\?#]+)?(?:\?([^#]+))?(?:#(\w+))?/;
+		var result = pattern.exec(url);
+		var host="";
+		if(undefined!=result && undefined!=result[5] && ""!=result[5] && null!=result[5]){
+			host=result[4]+":"+result[5];
+		}else{
+			host=result[4];
+		}
+		return host;
+	}
+	,
+	imageSendMessagePromise: function() {
+		if(ucComponent_jsonpComponentOrgName.toLocaleLowerCase().indexOf("k12") && ucComponent_jsonpComponentVFilter!="pre"){
+			var elearning_host="";
+			if(ucComponent_jsonpComponentVFilter=="pre"){
+				//elearning生产和预生产的域名
+				var elearning_host = /xue.101.com/g;
+			}else{
+				//elearning生产和预生产的域名
+				elearning_host = /,e.101.com/g;
+			}
+			
+			var callbacktotal=0;
+			
+			//统计elearning的回调数量
+			var elearning_host_arr=ucComponent_jsonpComponentItem.match(elearning_host);
+			
+			if(null!=elearning_host_arr){
+				callbacktotal+=elearning_host_arr.length;
+			}
+			var promise = new Promise(function (resolve, reject) {
+				var q = encodeURIComponent(window.LS.get("localhost_access_token_" + ucComponent_jsonpComponentAppId)),
+				q = encodeURIComponent(q);
+				try {
+					GUcManagerHttpJsonp(ucComponentConfig_ucproxy_url + "/pushCookie", {
+						appId: ucComponent_jsonpComponentAppId,
+						ssoToken: q
+					}).then(function(b) {
+						if(callbacktotal>0){
+							ucManager.callbaclElarning_pre(callbacktotal).then(function(b) {
+								setTimeout(function(){
+									resolve("true");
+				                }, 1000);
+							})
+						}else{
+							resolve("true");
+						}
+					})
+				} catch (exs) {
+					alert("sso失败");
+				}
+			});
+			return promise;
+		}else{
+			var d = window.LS.get("ucComponent_jsonpComponentItem");
+			if (void 0 == d || null == d || "null" == d || "" == d) d = ucComponent_jsonpComponentItem;
+			return new Promise(function(a, b) {
+				if (void 0 != d && null != d && "" != d) if (0 <= d.indexOf(",")) {
+					var c = 1,
+						f = 0;
+					b = /chinavrpark.com/g;
+					var e = /,e.101.com/g,
+						h = /xue.101.com/g;
+					try {
+						"pre" == ucComponent_jsonpComponentVFilter && (h = /xuexuexuexue.101.com/g)
+					} catch (F) {}
+					var k = /r.xue.101.com/g,
+						l = d.match(b),
+						g = d.match(e),
+						r = d.match(h),
+						v = d.match(k);
+					null != l && (c += d.match(b).length);
+					null != g && (c += d.match(e).length);
+					null != r && (c += d.match(h).length);
+					null != v && (c += d.match(k).length);
+					b = d.split(",");
+					try {
+						var q = encodeURIComponent(window.LS.get("localhost_access_token_" + ucComponent_jsonpComponentAppId)),
+							q = encodeURIComponent(q);
+						if (-1 < getBrowers().indexOf("IE8")) try {
+							GUcManagerHttpJsonp(ucComponentConfig_ucproxy_url + "/pushCookie", {
+								appId: ucComponent_jsonpComponentAppId,
+								ssoToken: q
+							}).then(function(b) {
+								f++;
+								uc_console_log("the super sdk redirect times::" + f + ",target:" + c);
+								f >= c && a("true4")
+							})
+						} catch (F) {
+							f++, uc_console_log("the super sdk redirect times::" + f + ",target:" + c), f >= c && a("true4")
+						} else fetchJsonp("" + ucComponentConfig_ucproxy_url + "/pushCookie?ssoToken=" + q + "&appId=" + ucComponent_jsonpComponentAppId, {
+							jsonpCallback: "callback",
+							timeout: 3E3
+						}).then(function(a) {
+							return a.json()
+						}).then(function(b) {
+							try {
+								f++, uc_console_log("the super sdk redirect times::" + f + ",target:" + c), f >= c && a("true4")
+							} catch (A) {
+								f++, uc_console_log("the super sdk redirect times::" + f + ",target:" + c), f >= c && a("true4")
+							}
+						})["catch"](function(b) {
+							try {
+								f++, uc_console_log("the super sdk redirect times::" + f + ",target:" + c), f >= c && a("true4")
+							} catch (A) {
+								f++, uc_console_log("the super sdk redirect times::" + f + ",target:" + c), f >= c && a("true4")
+							}
+						})
+					} catch (F) {}
+					for (q = 0; q < b.length; q++) if (3 < b[q].length) try {
+						for (var t = b[q]; 0 <= t.indexOf(".");) t = t.replace(".", ""), t = t.replace(":", ""), t = t.replace("/", ""), t = t.replace("#", "");
+						var w = /^(?:(\w+):\/\/)?(?:(\w+):?(\w+)?@)?([^:\/\?#]+)(?::(\d+))?(\/[^\?#]+)?(?:\?([^#]+))?(?:#(\w+))?/.exec("http://" + b[q]),
+							e = "",
+							e = void 0 != w && void 0 != w[5] && "" != w[5] && null != w[5] ? w[4] + ":" + w[5] : w[4];
+						if (isRealUcComponentHost(b[q])) {
+							if (u = JsMAF.getAuthHeader("http://" + e + "/", "GET"), u = encodeURIComponent(u), -1 < e.indexOf("portal111111111111.101.com") || -1 < e.indexOf("chinavrpark.com") || 0 == e.indexOf("e.101.com") || -1 < e.indexOf("r.xue.101.com")) fetchJsonp("http://" + b[q] + "/ucsso?_SSO_Authorization_=" + u, {
+								jsonpCallback: "callback",
+								timeout: 2E3
+							}).then(function(a) {
+								return a.json()
+							}).then(function(b) {
+								try {
+									f++, f >= c && a("true4")
+								} catch (A) {
+									f++, f >= c && a("true4")
+								}
+							})["catch"](function(b) {
+								try {
+									f++, f >= c && a("true4")
+								} catch (A) {
+									f++, f >= c && a("true4")
+								}
+							})
+						} else {
+							var u = JsMAF.getAuthHeader("http://" + e + "/", "GET");
+							if (-1 < e.indexOf("xue.101.com") && -1 >= e.indexOf("r.xue.101.com") && -1 >= d.indexOf("e.101.com")) var x = e.replace("xue.101.com", "e.101.com"),
+								u = JsMAF.getAuthHeader("http://" + x + "/", "GET");
+							u = encodeURIComponent(u);
+							if (-1 < e.indexOf("xue.101.com") && -1 >= e.indexOf("r.xue.101.com") && -1 >= e.indexOf("r.xue.101.com") || -1 < e.indexOf("chinavrpark.com") || 0 ==  e.indexOf("e.101.com") || -1 < e.indexOf("r.xue.101.com")) if (-1 < getBrowers().indexOf("IE8")) {
+								var D = new Image;
+								if (-1 < e.indexOf("xue.101.com") && -1 >= e.indexOf("r.xue.101.com")) if (0 ==  d.indexOf("e.101.com")) {
+									f++;
+									f >= c && a("true4");
+									continue
+								} else {
+									var z = b[q],
+										z = z.replace("xue.101.com", "e.101.com");
+									D.src = "//" + z + "/sso?_SSO_Authorization_=" + u
+								} else D.src = "//" + b[q] + "/sso?_SSO_Authorization_=" + u;
+								var M = new Image;
+								M.src = "//uc.101.com/support/image/nd_logo.png?sid=" + (new Date).getTime();
+								M.onload = function() {
+									try {
+										f++, uc_console_log("the super sdk redirect times::" + f + ",target:" + c), f >= c && a("true4")
+									} catch (F) {
+										f++, uc_console_log("the super sdk redirect times::" + f + ",target:" + c), f >= c && a("true4")
+									}
+								}
+							} else {
+								h = "";
+								if (-1 < e.indexOf("xue.101.com") && -1 >= e.indexOf("r.xue.101.com")) if (0 == d.indexOf("e.101.com")) {
+									f++;
+									f >= c && a("true4");
+									continue
+								} else z = b[q], z = z.replace("xue.101.com", "e.101.com"), h = "http://" + z + "/sso?_SSO_Authorization_=" + u;
+								else h = "//" + b[q] + "/sso?_SSO_Authorization_=" + u;
+								fetchJsonp(h, {
+									jsonpCallback: "callback",
+									timeout: 2E3
+								}).then(function(a) {
+									return a.json()
+								}).then(function(b) {
+									try {
+										f++, uc_console_log("the super sdk redirect times::" + f + ",target:" + c), f >= c && a("true4")
+									} catch (A) {
+										f++, uc_console_log("the super sdk redirect times::" + f + ",target:" + c), f >= c && a("true4")
+									}
+								})["catch"](function(b) {
+									try {
+										f++, uc_console_log("the super sdk redirect times::" + f + ",target:" + c), f >= c && a("true4")
+									} catch (A) {
+										f++, uc_console_log("the super sdk redirect times::" + f + ",target:" + c), f >= c && a("true4")
+									}
+								})
+							}
+						}
+					} catch (F) {
+						f++, a("true44")
+					}
+				} else a("true2");
+				else a("true1")
+			})
+		}
+	},
+	register_tel: function(d) {
+		return ucComponent.register_tel(d)
+	}
+},
+	JsMAF = {
+		getAuthHeader: function(d, a) {
+			try {
+				"pre" == ucComponent_jsonpComponentVFilter && (console.log(d), console.log(a))
+			} catch (f) {} - 1 >= d.indexOf("http") && (d = ucComponentConfig_uc_url_front + d);
+			var b = window.LS.get("localhost_access_token_" + ucComponent_jsonpComponentAppId);
+			if (void 0 != b && 10 < b.length) b = b.replace("UC_SAVE_TOKENINFO_", "");
+			else return uc_console_log("not login in"), void 0 != ucComponent_jsonpComponentLoginUrl && "" != ucComponent_jsonpComponentLoginUrl && "uc101" != ucComponent_jsonpComponentIsUc101F && (location.href = ucComponent_jsonpComponentLoginUrl), "";
+			var c = ucComponent.getOSAndBrowserKey(),
+				c = ucComponent.ecryptContent(c, c),
+				b = ucComponent.decryptByDES(b, c),
+				b = b.split("$$"),
+				c = b[4],
+				c = (new Date).getTime() + parseInt(c) + ":" + ucComponent.generateMixed(8);
+			return ucComponent.getAuthHeader(d, a, b[0], b[2], c)
+		},
+		getAuthHeaderByHost: function(d, a, b) {
+			var c = window.LS.get("localhost_access_token_" + ucComponent_jsonpComponentAppId);
+			if (void 0 != c && 10 < c.length) c = c.replace("UC_SAVE_TOKENINFO_", "");
+			else return "";
+			var f = ucComponent.getOSAndBrowserKey(),
+				f = ucComponent.ecryptContent(f, f),
+				c = ucComponent.decryptByDES(c, f),
+				f = c.split("$$"),
+				c = f[4],
+				c = (new Date).getTime() + parseInt(c) + ":" + ucComponent.generateMixed(8),
+				e = f[0],
+				f = f[2];
+			b = b.toUpperCase();
+			e = 'MAC id="' + e + '",nonce="' + (c + '",mac="');
+			d = CryptoJS.HmacSHA256(c + "\n" + b + "\n" + a + "\n" + d + "\n", f).toString(CryptoJS.enc.Base64);
+			return e + (d + '"')
+		},
+		iPost: function(d, a, b) {
+			-1 >= d.indexOf("http") && (d = ucComponentConfig_uc_url_front + d);
+			var c = "";
+			return b && (c = this.getAuthHeader(d, "POST"), null == c || void 0 == c) ? null : fetch(d, {
+				method: "POST",
+				headers: {
+					Accept: "application/json",
+					"Content-Type": "application/json",
+					Authorization: c
+				},
+				body: a
+			})
+		},
+		iGet: function(d, a) {
+			-1 >= d.indexOf("http") && (d = ucComponentConfig_uc_url_front + d);
+			var b = "";
+			return a && (b = this.getAuthHeader(d, "GET"), null == b || void 0 == b) ? null : fetch(d, {
+				method: "GET",
+				headers: {
+					Accept: "application/json",
+					"Content-Type": "application/json",
+					Authorization: b
+				}
+			})
+		},
+		iPut: function(d, a, b) {
+			-1 >= d.indexOf("http") && (d = ucComponentConfig_uc_url_front + d);
+			var c = "";
+			return b && (c = this.getAuthHeader(d, "PUT"), null == c || void 0 == c) ? null : fetch(d, {
+				method: "PUT",
+				headers: {
+					Accept: "application/json",
+					"Content-Type": "application/json",
+					Authorization: c
+				},
+				body: a
+			})
+		},
+		iDetele: function(d, a, b) {
+			-1 >= d.indexOf("http") && (d = ucComponentConfig_uc_url_front + d);
+			var c = "";
+			return b && (c = this.getAuthHeader(d, "DELETE"), null == c || void 0 == c) ? null : fetch(d, {
+				method: "DELETE",
+				headers: {
+					Accept: "application/json",
+					"Content-Type": "application/json",
+					Authorization: c
+				},
+				body: a
+			})
+		},
+		iPatch: function(d, a, b) {
+			-1 >= d.indexOf("http") && (d = ucComponentConfig_uc_url_front + d);
+			var c = "";
+			return b && (c = this.getAuthHeader(d, "PATCH"), null == c || void 0 == c) ? null : fetch(d, {
+				method: "PATCH",
+				headers: {
+					Accept: "application/json",
+					"Content-Type": "application/json",
+					Authorization: c
+				},
+				body: a
+			})
+		}
+	};
+(function(d) {
+	d.hasClass = function(a, b) {
+		return a.className.match(new RegExp("(\\s|^)" + b + "(\\s|$)"))
+	};
+	d.addClass = function(a, b) {
+		d.hasClass(a, b) || (a.className += " " + b)
+	};
+	d.removeClass = function(a, b) {
+		d.hasClass(a, b) && (a.className = a.className.replace(new RegExp("(\\s|^)" + b + "(\\s|$)"), " "))
+	};
+	d.third_login_success = function(a, b, c, f, e) {
+		var h = null;
+		return new Promise(function(k, l) {
+			fetch(ucComponentConfig_uc_url_front + "third_tokens", {
+				method: "POST",
+				headers: {
+					Accept: "application/json",
+					"Content-Type": "application/json"
+				},
+				body: '{"open_id":"' + a + '","org_name":"' + e + '", "source_plat":"' + c + '","app_id":"' + b + '","third_access_token":"' + f + '"}'
+			}).then(function(a) {
+				h = a.clone();
+				return a.json()
+			}).then(function(a) {
+				null != a && null != a.user_id && void 0 != a.user_id ? fetch(ucComponentConfig_uc_url_front + "server/time", {
+					method: "GET",
+					headers: {
+						Accept: "application/json",
+						"Content-Type": "application/json"
+					}
+				}).then(function(a) {
+					return a.json()
+				}).then(function(b) {
+					b = b.ms_format;
+					var c = (new Date).getTime();
+					b -= c;
+					var c = a.user_id,
+						f = a.mac_key;
+					d.setCookie("dsy_sdhghbjb_hgsjahd", "b12b213bb213hsahebhb223bhagh", "2");
+					b = a.access_token + "$$" + a.refresh_token + "$$" + f + "$$" + c + "$$" + b;
+					c = d.getOSAndBrowserKey();
+					c = d.ecryptContent(c, c);
+					b = d.ecryptContent(b, c);
+					window.LS.set("localhost_access_token_" + ucComponent_jsonpComponentAppId, "UC_SAVE_TOKENINFO_" + b);
+					k(h)
+				}) : k(h)
+			}, function(a) {
+				k("login fail")
+			})
+		})
+	};
+	d.get_userInfo_service = function(a, b, c, f) {
+		return fetch(a, {
+			method: "GET",
+			headers: {
+				Accept: "application/json",
+				"Content-Type": "application/json",
+				Authorization: d.getAuthHeader(a, "GET", b, c, f)
+			}
+		})
+	};
+	d.login_service_org_name = function(a, b, c) {
+		var f = d.getOSAndBrowser();
+		return new Promise(function(e, h) {
+			if (-1 < f.indexOf("IE9") || -1 < f.indexOf("IE8")) {
+				var k = new XDomainRequest;
+				k.onload = function() {
+					var a = JSON.parse(k.responseText);
+					if (null != a && null != a.user_id && void 0 != a.user_id) {
+						var b = new XDomainRequest;
+						b.onload = function() {
+							var c = JSON.parse(b.responseText).ms_format,
+								f = (new Date).getTime(),
+								c = a.access_token + "$$" + a.refresh_token + "$$" + a.mac_key + "$$" + a.user_id + "$$" + (c - f),
+								f = d.getOSAndBrowserKey(),
+								f = d.ecryptContent(f, f),
+								c = d.ecryptContent(c, f);
+							d.setCookie("dsy_sdhghbjb_hgsjahd", "b12b213bb213hsahebhb223bhagh", "2");
+							window.LS.set("localhost_access_token_" + ucComponent_jsonpComponentAppId, "UC_SAVE_TOKENINFO_" + c);
+							window.LS.remove("is_reload");
+							try {
+								ucManager.imageSendMessagePromise().then(function(b) {
+									ucManager.callbackSendMessagePromise().then(function(b) {
+										e(a)
+									})
+								})
+							} catch (q) {
+								e(a)
+							}
+						};
+						b.onerror = function() {
+							e("login fail")
+						};
+						b.open("get", "" + ucComponentConfig_ucproxy_url + "/v0.9/ucsdk/proxy/serverTime?sid=" + (new Date).getTime());
+						b.send(null)
+					} else e(a.message)
+				};
+				k.onerror = function() {
+					e("login fail")
+				};
+				k.open("post", "" + ucComponentConfig_ucproxy_url + "/v0.9/ucsdk/proxy/login");
+				k.onprogess = function() {};
+				k.timeout = 0;
+				k.ontimeout = function() {};
+				setTimeout(function() {
+					k.send('{"login_name":"' + b + '","password":"' + c + '","org_name": "' + ucComponent_jsonpComponentOrgName + '"}')
+				}, 1E3)
+			} else {
+				var login_bodys="";
+				login_bodys=JSON.stringify({
+					login_name: "" + b,
+					password: "" + c,
+					org_name: "" + ucComponent_jsonpComponentOrgName.toLowerCase()
+				})
+				fetch(a, {
+					method: "POST",
+					headers: {
+						Accept: "application/json",
+						"Content-Type": "application/json"
+					},
+					body: login_bodys
+				}).then(function(a) {
+					return a.json()
+				}).then(function(a) {
+					null != a && null != a.user_id && void 0 != a.user_id ? fetch(ucComponentConfig_uc_url_front + "server/time", {
+						method: "GET",
+						headers: {
+							Accept: "application/json",
+							"Content-Type": "application/json"
+						}
+					}).then(function(a) {
+						return a.json()
+					}).then(function(b) {
+						b = b.ms_format;
+						var c = (new Date).getTime();
+						b = a.access_token + "$$" + a.refresh_token + "$$" + a.mac_key + "$$" + a.user_id + "$$" + (b - c);
+						c = d.getOSAndBrowserKey();
+						c = d.ecryptContent(c, c);
+						b = d.ecryptContent(b, c);
+						d.setCookie("dsy_sdhghbjb_hgsjahd", "b12b213bb213hsahebhb223bhagh", "2");
+						window.LS.set("localhost_access_token_" + ucComponent_jsonpComponentAppId, "UC_SAVE_TOKENINFO_" + b);
+						window.LS.remove("is_reload");
+						try {
+							ucManager.imageSendMessagePromise().then(function(b) {
+								ucManager.callbackSendMessagePromise().then(function(b) {
+									e(a)
+								})
+							})
+						} catch (v) {
+							e(a)
+						}
+					}) : e(a.message)
+				}, function(a) {
+					e("login fail")
+				})
+			}
+		})
+	};
+	d.login_service_v_org_name = function(a, b) {
+		return new Promise(function(c, f) {
+			f = d.getOSAndBrowser();
+			if (-1 < f.indexOf("IE9") || -1 < f.indexOf("IE8")) {
+				var e = new XDomainRequest;
+				e.onload = function() {
+					var a = JSON.parse(e.responseText);
+					if (null != a && null != a.user_id && void 0 != a.user_id) {
+						var b = new XDomainRequest;
+						b.onload = function() {
+							var f = JSON.parse(b.responseText).ms_format,
+								e = (new Date).getTime(),
+								f = a.access_token + "$$" + a.refresh_token + "$$" + a.mac_key + "$$" + a.user_id + "$$" + (f - e),
+								e = d.getOSAndBrowserKey(),
+								e = d.ecryptContent(e, e),
+								f = d.ecryptContent(f, e);
+							d.setCookie("dsy_sdhghbjb_hgsjahd", "b12b213bb213hsahebhb223bhagh", "2");
+							window.LS.set("localhost_access_token_" + ucComponent_jsonpComponentAppId, "UC_SAVE_TOKENINFO_" + f);
+							try {
+								ucManager.imageSendMessagePromise().then(function(b) {
+									ucManager.callbackSendMessagePromise().then(function(b) {
+										c(a)
+									})
+								})
+							} catch (r) {
+								c(a)
+							}
+						};
+						b.onerror = function() {
+							c("login fail")
+						};
+						b.open("get", "" + ucComponentConfig_ucproxy_url + "/v0.9/ucsdk/proxy/serverTime?sid=" + (new Date).getTime());
+						b.send(null)
+					} else c(a.message)
+				};
+				e.onerror = function() {
+					c("login fail")
+				};
+				e.open("post", "" + ucComponentConfig_ucproxy_url + "/v0.9/ucsdk/proxy/vlogin");
+				e.onprogess = function() {};
+				e.timeout = 0;
+				e.ontimeout = function() {};
+				setTimeout(function() {
+					e.send('{"login_name":"' + a + '","password":"' + b + '","org_name": "' + ucComponent_jsonpComponentOrgName + '"}')
+				}, 1E3)
+			} else fetch(ucComponentConfig_virtual_url_front + ucComponent_jsonpComponentOrgId + "/tokens", {
+				method: "POST",
+				headers: {
+					Accept: "application/json",
+					"Content-Type": "application/json"
+				},
+				body: JSON.stringify({
+					login_name: "" + a,
+					password: "" + b
+				})
+			}).then(function(a) {
+				return a.json()
+			}).then(function(a) {
+				null != a && void 0 != a.user_id ? fetch(ucComponentConfig_uc_url_front + "server/time", {
+					method: "GET",
+					headers: {
+						Accept: "application/json",
+						"Content-Type": "application/json"
+					}
+				}).then(function(a) {
+					return a.json()
+				}).then(function(b) {
+					b = b.ms_format;
+					var f = (new Date).getTime();
+					b = a.access_token + "$$" + a.refresh_token + "$$" + a.mac_key + "$$" + a.user_id + "$$" + (b - f);
+					f = d.getOSAndBrowserKey();
+					f = d.ecryptContent(f, f);
+					b = d.ecryptContent(b, f);
+					d.setCookie("dsy_sdhghbjb_hgsjahd", "b12b213bb213hsahebhb223bhagh", "2");
+					window.LS.set("localhost_access_token_" + ucComponent_jsonpComponentAppId, "UC_SAVE_TOKENINFO_" + b);
+					try {
+						ucManager.imageSendMessagePromise().then(function(b) {
+							ucManager.callbackSendMessagePromise().then(function(b) {
+								c(a)
+							})
+						})
+					} catch (g) {
+						c(a)
+					}
+				}) : c(a.message)
+			}, function(a) {
+				c("login fail")
+			})
+		})
+	};
+	d.str2asc = function(a) {
+		return ("0" + a.charCodeAt(0).toString(16)).slice(-2)
+	};
+	d.asc2str = function(a) {
+		return String.fromCharCode(a)
+	};
+	d.urlEncode = function(a) {
+		for (var b = "", c = 0; c < a.length; c++) var f = a.charAt(c),
+			e = d.str2asc(f),
+			b = 127 < parseInt("0x" + e) ? b + ("%" + e.slice(0, 2) + "%" + e.slice(-2)) : " " == f ? b + "+" : -1 != "!\"#$%&'()*+,/:;<=>?[]^`{|}~%".indexOf(f) ? b + ("%" + e.toString(16)) : b + f;
+		return b
+	};
+	d.decryptByDES = function(a, b) {
+		try {
+			var c = CryptoJS.enc.Utf8.parse(b),
+				d = CryptoJS.DES.decrypt({
+					ciphertext: CryptoJS.enc.Base64.parse(a)
+				}, c, {
+					mode: CryptoJS.mode.ECB,
+					padding: CryptoJS.pad.Pkcs7
+				});
+			return "" == d.toString(CryptoJS.enc.Utf8) ? null : d.toString(CryptoJS.enc.Utf8)
+		} catch (e) {
+			return null
+		}
+	};
+	d.ecryptContent = function(a, b) {
+		try {
+			var c = CryptoJS.enc.Utf8.parse(b);
+			return CryptoJS.DES.encrypt(a, c, {
+				mode: CryptoJS.mode.ECB,
+				padding: CryptoJS.pad.Pkcs7
+			})
+		} catch (f) {
+			return null
+		}
+	};
+	d.getElementsClass = function(a) {
+		var b = [],
+			c = 0,
+			d = document.getElementsByTagName("*"),
+			e;
+		for (e in d) 1 == d[e].nodeType && d[e].getAttribute("class") == a && (b[c] = d[e], c++);
+		return b
+	};
+	d.binToHex = function(a) {
+		for (var b = [], c = 0; c < a.length; c++) {
+			var d = a.charCodeAt(c);
+			b.push(d)
+		}
+		return b.join("")
+	};
+	d.getOSAndBrowserKey = function() {
+		if(null!=ucComponent_jsonpComponentAppId){
+			return ucComponent_jsonpComponentAppId;
+		}
+		var a = navigator.platform,
+			b = navigator.userAgent,
+			c = "",
+			c = -1 < a.indexOf("Win") ? -1 < b.indexOf("Windows NT 5.0") ? c + "Win2000" : -1 < b.indexOf("Windows NT 5.1") ? c + "WinXP" : -1 < b.indexOf("Windows NT 5.2") ? c + "Win2003" : -1 < b.indexOf("Windows NT 6.0") ? c + "WindowsVista" : -1 < b.indexOf("Windows NT 6.1") || -1 < b.indexOf("Windows 7") ? c + "Win7" : -1 < b.indexOf("Windows 8") ? c + "Win8" : c + "Other" : -1 < a.indexOf("Mac") ? c + "Mac" : -1 < a.indexOf("X11") ? c + "Unix" : -1 < a.indexOf("Linux") ? c + "Linux" : c + "Other",
+			c = c + "/";
+		/[Ff]irefox(\/\d+\.\d+)/.test(b) ? (a = /([Ff]irefox)\/(\d+\.\d+)/.exec(b), c += a[1] + a[2]) : /MSIE \d+\.\d+/.test(b) ? (a = /MS(IE) (\d+\.\d+)/.exec(b), c += a[1] + a[2]) : /[Cc]hrome\/\d+/.test(b) ? (a = /([Cc]hrome)\/(\d+)/.exec(b), c += a[1] + a[2]) : /[Vv]ersion\/\d+\.\d+\.\d+(\.\d)* *[Ss]afari/.test(b) ? (a = /[Vv]ersion\/(\d+\.\d+\.\d+)(\.\d)* *([Ss]afari)/.exec(b), c += a[3] + a[1]) : /[Oo]pera.+[Vv]ersion\/\d+\.\d+/.test(b) ? (a = /([Oo]pera).+[Vv]ersion\/(\d+)\.\d+/.exec(b), c += a[1] + a[2]) : c += "IE";
+		return -1 < c.indexOf("IE") || -1 < c.indexOf("Other") ? "windows_IE" : c
+	};
+	d.getOSAndBrowser = function() {
+		var a = navigator.platform,
+			b = navigator.userAgent,
+			c = "",
+			c = -1 < a.indexOf("Win") ? -1 < b.indexOf("Windows NT 5.0") ? c + "Win2000" : -1 < b.indexOf("Windows NT 5.1") ? c + "WinXP" : -1 < b.indexOf("Windows NT 5.2") ? c + "Win2003" : -1 < b.indexOf("Windows NT 6.0") ? c + "WindowsVista" : -1 < b.indexOf("Windows NT 6.1") || -1 < b.indexOf("Windows 7") ? c + "Win7" : -1 < b.indexOf("Windows 8") ? c + "Win8" : c + "Other" : -1 < a.indexOf("Mac") ? c + "Mac" : -1 < a.indexOf("X11") ? c + "Unix" : -1 < a.indexOf("Linux") ? c + "Linux" : c + "Other",
+			c = c + "/";
+		/[Ff]irefox(\/\d+\.\d+)/.test(b) ? (a = /([Ff]irefox)\/(\d+\.\d+)/.exec(b), c += a[1] + a[2]) : /MSIE \d+\.\d+/.test(b) ? (a = /MS(IE) (\d+\.\d+)/.exec(b), c += a[1] + a[2]) : /[Cc]hrome\/\d+/.test(b) ? (a = /([Cc]hrome)\/(\d+)/.exec(b), c += a[1] + a[2]) : /[Vv]ersion\/\d+\.\d+\.\d+(\.\d)* *[Ss]afari/.test(b) ? (a = /[Vv]ersion\/(\d+\.\d+\.\d+)(\.\d)* *([Ss]afari)/.exec(b), c += a[3] + a[1]) : /[Oo]pera.+[Vv]ersion\/\d+\.\d+/.test(b) ? (a = /([Oo]pera).+[Vv]ersion\/(\d+)\.\d+/.exec(b), c += a[1] + a[2]) : c += "IE";
+		return c
+	};
+	d.getClientCrc = function() {
+		var a = window.LS.get("localhost_crc");
+		if (void 0 != a && null != a && "" != a) return a;
+		var a = document.createElement("canvas"),
+			b = a.getContext("2d");
+		b.font = "14px 'Arial'";
+		b.textBaseline = "nd";
+		b.fillStyle = "#f60";
+		b.fillRect(125, 1, 62, 20);
+		b.fillStyle = "#069";
+		b.fillText("http://www.101.com/", 2, 15);
+		b.fillStyle = "rgba(102, 204, 0, 0.7)";
+		b.fillText("http://www.101.com/", 4, 17);
+		a = a.toDataURL().replace("data:image/png;base64,", "");
+		a = atob(a);
+		a = d.binToHex(a.slice(-16, -12));
+		a = d.getOSAndBrowser() + "/" + a + (new Date).getTime();
+		window.LS.set("localhost_crc", a);
+		return a
+	};
+	d.setCookie = function(a, b, c) {
+		sdsadsadbgdhsabdjhsabjhbds = 1;
+		if (void 0 != b && null != b && "" != b) {
+			for (b = b.replace("B", "adbdaB199nd12"); 0 < b.indexOf("$");) b = b.replace("$", "dsfnsdkj,nsad");
+			c = void 0 == c || "" == c ? .5 : c;
+			if ("BDRCVFRU" == a) {
+				for (a = window.location.host; - 1 < a.indexOf(".");) a = a.replace(".", ""), a = a.replace(":", "");
+				a += "$$BDRCVFRU";
+				c = .1
+			}
+			var d = new Date;
+			d.setTime(d.getTime() + 36E5 * c);
+			b = a + "=" + b + ";expires=" + d.toGMTString();
+			document.cookie = b
+		}
+	};
+	d.getCookie = function(a) {
+		if (a = document.cookie.match(new RegExp("(^| )" + a + "=([^;]*)(;|$)"))) {
+			for (a = unescape(a[2]); 0 < a.indexOf("dsfnsdkj,nsad");) a = a.replace("dsfnsdkj,nsad", "$");
+			return a.replace("adbdaB199nd12", "B")
+		}
+		return ""
+	};
+	d.openDialogByIframe = function(a, b, c, f) {
+		var e = $(window).width(),
+			h = $(document).height();
+		$("body").append("<div class='yz_popIframeDiv'></div>");
+		$("body").append("<div class='yz_popTanChu'><div class='yz_popTanChutit'><span class='yz_popTanChuTxt'>" + c + "</span><span class='yz_popTanChuClose'>close</span></div><iframe class='winIframe' frameborder='0' hspace='0' src=" + f + "></iframe></div>");
+		$(".yz_popIframeDiv").css({
+			width: e,
+			height: h,
+			background: "#000",
+			position: "absolute",
+			left: "0",
+			top: "0"
+		});
+		$(".yz_popIframeDiv").fadeTo(0, .5);
+		c = $(window).width() / 2 - a / 2;
+		f = $(window).height() / 2 - b / 2 + $(window).scrollTop();
+		$(".yz_popTanChu").css({
+			width: a,
+			height: b,
+			border: "3px #ccc solid",
+			left: c,
+			top: f,
+			background: "#fff",
+			position: "absolute"
+		});
+		$(".yz_popTanChutit").css({
+			width: a,
+			height: "25px",
+			"border-bottom": "1px #ccc solid",
+			background: "#eee",
+			"line-height": "25px"
+		});
+		$(".yz_popTanChuTxt").css({
+			"text-indent": "5px",
+			"float": "left",
+			"font-size": "14px"
+		});
+		$(".yz_popTanChuClose").css({
+			width: "40px",
+			"float": "right",
+			"font-size": "12px",
+			color: "#667",
+			cursor: "pointer"
+		});
+		b -= 26;
+		$(".winIframe").css({
+			width: a,
+			height: b,
+			"border-bottom": "1px #ccc solid",
+			background: "#ffffff"
+		});
+		$(".yz_popTanChuClose").hover(function() {
+			$(this).css("color", "#334")
+		}, function() {
+			$(this).css("color", "#667")
+		});
+		$(".yz_popTanChuClose").click(function() {
+			$(".yz_popIframeDiv").remove();
+			$(".yz_popTanChu").remove();
+			d.deleteCookie("access_token_cookie")
+		})
+	};
+	d.deleteCookie = function(a) {
+		var b = new Date;
+		b.setTime(b.getTime() - 1E4);
+		document.cookie = a + "=;expire=" + b.toGMTString()
+	};
+	d.generateMixed = function(a) {
+		for (var b = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ".split(""), c = "", d = 0; d < a; d++) c += b[Math.ceil(35 * Math.random())];
+		return c
+	};
+	d.getAuthHeader = function(a, b, c, d, e) {
+		b = b.toUpperCase();
+		c = 'MAC id="' + c + '",nonce="' + (e + '",mac="');
+		var f = a.indexOf("/", 7),
+			k = /^(?:(\w+):\/\/)?(?:(\w+):?(\w+)?@)?([^:\/\?#]+)(?::(\d+))?(\/[^\?#]+)?(?:\?([^#]+))?(?:#(\w+))?/.exec(a),
+			k = void 0 != k && void 0 != k[5] && "" != k[5] && null != k[5] ? k[4] + ":" + k[5] : k[4];
+		a = a.substring(f);
+		a = a.replace("/" + k, "");
+		b = e + "\n" + b + "\n" + a + "\n" + k + "\n";
+		try {
+			"pre" == ucComponent_jsonpComponentVFilter && console.log(b)
+		} catch (l) {}
+		d = CryptoJS.HmacSHA256(b, d).toString(CryptoJS.enc.Base64);
+		return c + (d + '"')
+	};
+	d.helpOldSystemReloadPage = function(a) {
+		0 > document.getElementById(a).src.indexOf(location.host) && document.getElementById(a).contentWindow.location.reload(!0)
+	};
+	d.getDate = function(a) {
+		return eval("new Date(" + a.replace(/\d+(?=-[^-]+$)/, function(a) {
+			return parseInt(a, 10) - 1
+		}).match(/\d+/g) + ")")
+	};
+	d.getMac = function(a, b, c, d, e) {
+		return CryptoJS.HmacSHA256(a + "\n" + b + "\n" + c + "\n" + d + "\n", e).toString(CryptoJS.enc.Base64)
+	}
+})(this.ucComponent || (this.ucComponent = {}));
+CryptoJS = CryptoJS ||
+function(d, a) {
+	var b = {},
+		c = b.lib = {},
+		f = function() {},
+		e = c.Base = {
+			extend: function(a) {
+				f.prototype = this;
+				var b = new f;
+				a && b.mixIn(a);
+				b.hasOwnProperty("init") || (b.init = function() {
+					b.$super.init.apply(this, arguments)
+				});
+				b.init.prototype = b;
+				b.$super = this;
+				return b
+			},
+			create: function() {
+				var a = this.extend();
+				a.init.apply(a, arguments);
+				return a
+			},
+			init: function() {},
+			mixIn: function(a) {
+				for (var b in a) a.hasOwnProperty(b) && (this[b] = a[b]);
+				a.hasOwnProperty("toString") && (this.toString = a.toString)
+			},
+			clone: function() {
+				return this.init.prototype.extend(this)
+			}
+		},
+		h = c.WordArray = e.extend({
+			init: function(b, c) {
+				b = this.words = b || [];
+				this.sigBytes = c != a ? c : 4 * b.length
+			},
+			toString: function(a) {
+				return (a || l).stringify(this)
+			},
+			concat: function(a) {
+				var b = this.words,
+					c = a.words,
+					d = this.sigBytes;
+				a = a.sigBytes;
+				this.clamp();
+				if (d % 4) for (var f = 0; f < a; f++) b[d + f >>> 2] |= (c[f >>> 2] >>> 24 - f % 4 * 8 & 255) << 24 - (d + f) % 4 * 8;
+				else if (65535 < c.length) for (f = 0; f < a; f += 4) b[d + f >>> 2] = c[f >>> 2];
+				else b.push.apply(b, c);
+				this.sigBytes += a;
+				return this
+			},
+			clamp: function() {
+				var a = this.words,
+					b = this.sigBytes;
+				a[b >>> 2] &= 4294967295 << 32 - b % 4 * 8;
+				a.length = d.ceil(b / 4)
+			},
+			clone: function() {
+				var a = e.clone.call(this);
+				a.words = this.words.slice(0);
+				return a
+			},
+			random: function(a) {
+				for (var b = [], c = 0; c < a; c += 4) b.push(4294967296 * d.random() | 0);
+				return new h.init(b, a)
+			}
+		}),
+		k = b.enc = {},
+		l = k.Hex = {
+			stringify: function(a) {
+				var b = a.words;
+				a = a.sigBytes;
+				for (var c = [], d = 0; d < a; d++) {
+					var f = b[d >>> 2] >>> 24 - d % 4 * 8 & 255;
+					c.push((f >>> 4).toString(16));
+					c.push((f & 15).toString(16))
+				}
+				return c.join("")
+			},
+			parse: function(a) {
+				for (var b = a.length, c = [], d = 0; d < b; d += 2) c[d >>> 3] |= parseInt(a.substr(d, 2), 16) << 24 - d % 8 * 4;
+				return new h.init(c, b / 2)
+			}
+		},
+		g = k.Latin1 = {
+			stringify: function(a) {
+				var b = a.words;
+				a = a.sigBytes;
+				for (var c = [], d = 0; d < a; d++) c.push(String.fromCharCode(b[d >>> 2] >>> 24 - d % 4 * 8 & 255));
+				return c.join("")
+			},
+			parse: function(a) {
+				for (var b = a.length, c = [], d = 0; d < b; d++) c[d >>> 2] |= (a.charCodeAt(d) & 255) << 24 - d % 4 * 8;
+				return new h.init(c, b)
+			}
+		},
+		r = k.Utf8 = {
+			stringify: function(a) {
+				try {
+					return decodeURIComponent(escape(g.stringify(a)))
+				} catch (w) {
+					throw Error("Malformed UTF-8 data");
+				}
+			},
+			parse: function(a) {
+				return g.parse(unescape(encodeURIComponent(a)))
+			}
+		},
+		v = c.BufferedBlockAlgorithm = e.extend({
+			reset: function() {
+				this._data = new h.init;
+				this._nDataBytes = 0
+			},
+			_append: function(a) {
+				"string" == typeof a && (a = r.parse(a));
+				this._data.concat(a);
+				this._nDataBytes += a.sigBytes
+			},
+			_process: function(a) {
+				var b = this._data,
+					c = b.words,
+					f = b.sigBytes,
+					e = this.blockSize,
+					q = f / (4 * e),
+					q = a ? d.ceil(q) : d.max((q | 0) - this._minBufferSize, 0);
+				a = q * e;
+				f = d.min(4 * a, f);
+				if (a) {
+					for (var g = 0; g < a; g += e) this._doProcessBlock(c, g);
+					g = c.splice(0, a);
+					b.sigBytes -= f
+				}
+				return new h.init(g, f)
+			},
+			clone: function() {
+				var a = e.clone.call(this);
+				a._data = this._data.clone();
+				return a
+			},
+			_minBufferSize: 0
+		});
+	c.Hasher = v.extend({
+		cfg: e.extend(),
+		init: function(a) {
+			this.cfg = this.cfg.extend(a);
+			this.reset()
+		},
+		reset: function() {
+			v.reset.call(this);
+			this._doReset()
+		},
+		update: function(a) {
+			this._append(a);
+			this._process();
+			return this
+		},
+		finalize: function(a) {
+			a && this._append(a);
+			return this._doFinalize()
+		},
+		blockSize: 16,
+		_createHelper: function(a) {
+			return function(b, c) {
+				return (new a.init(c)).finalize(b)
+			}
+		},
+		_createHmacHelper: function(a) {
+			return function(b, c) {
+				return (new q.HMAC.init(a, c)).finalize(b)
+			}
+		}
+	});
+	var q = b.algo = {};
+	return b
+}(Math);
+(function() {
+	var d = CryptoJS,
+		a = d.lib.WordArray;
+	d.enc.Base64 = {
+		stringify: function(a) {
+			var b = a.words,
+				d = a.sigBytes,
+				e = this._map;
+			a.clamp();
+			a = [];
+			for (var h = 0; h < d; h += 3) for (var k = (b[h >>> 2] >>> 24 - h % 4 * 8 & 255) << 16 | (b[h + 1 >>> 2] >>> 24 - (h + 1) % 4 * 8 & 255) << 8 | b[h + 2 >>> 2] >>> 24 - (h + 2) % 4 * 8 & 255, l = 0; 4 > l && h + .75 * l < d; l++) a.push(e.charAt(k >>> 6 * (3 - l) & 63));
+			if (b = e.charAt(64)) for (; a.length % 4;) a.push(b);
+			return a.join("")
+		},
+		parse: function(b) {
+			var c = b.length,
+				d = this._map,
+				e = d.charAt(64);
+			e && (e = b.indexOf(e), -1 != e && (c = e));
+			for (var e = [], h = 0, k = 0; k < c; k++) if (k % 4) {
+				var l = d.indexOf(b.charAt(k - 1)) << k % 4 * 2,
+					g = d.indexOf(b.charAt(k)) >>> 6 - k % 4 * 2;
+				e[h >>> 2] |= (l | g) << 24 - h % 4 * 8;
+				h++
+			}
+			return a.create(e, h)
+		},
+		_map: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/="
+	}
+})();
+(function(d) {
+	function a(a, b, c, d, f, e, g) {
+		a = a + (b & c | ~b & d) + f + g;
+		return (a << e | a >>> 32 - e) + b
+	}
+	function b(a, b, c, d, f, e, g) {
+		a = a + (b & d | c & ~d) + f + g;
+		return (a << e | a >>> 32 - e) + b
+	}
+	function c(a, b, c, d, f, e, g) {
+		a = a + (b ^ c ^ d) + f + g;
+		return (a << e | a >>> 32 - e) + b
+	}
+	function f(a, b, c, d, f, e, g) {
+		a = a + (c ^ (b | ~d)) + f + g;
+		return (a << e | a >>> 32 - e) + b
+	}
+	for (var e = CryptoJS, h = e.lib, k = h.WordArray, l = h.Hasher, h = e.algo, g = [], r = 0; 64 > r; r++) g[r] = 4294967296 * d.abs(d.sin(r + 1)) | 0;
+	h = h.MD5 = l.extend({
+		_doReset: function() {
+			this._hash = new k.init([1732584193, 4023233417, 2562383102, 271733878])
+		},
+		_doProcessBlock: function(d, e) {
+			for (var h = 0; 16 > h; h++) {
+				var k = e + h,
+					u = d[k];
+				d[k] = (u << 8 | u >>> 24) & 16711935 | (u << 24 | u >>> 8) & 4278255360
+			}
+			var h = this._hash.words,
+				k = d[e + 0],
+				u = d[e + 1],
+				x = d[e + 2],
+				q = d[e + 3],
+				l = d[e + 4],
+				r = d[e + 5],
+				v = d[e + 6],
+				A = d[e + 7],
+				G = d[e + 8],
+				y = d[e + 9],
+				C = d[e + 10],
+				H = d[e + 11],
+				B = d[e + 12],
+				I = d[e + 13],
+				E = d[e + 14];
+			d = d[e + 15];
+			e = h[0];
+			var m = h[1],
+				n = h[2],
+				p = h[3];
+			e = a(e, m, n, p, k, 7, g[0]);
+			p = a(p, e, m, n, u, 12, g[1]);
+			n = a(n, p, e, m, x, 17, g[2]);
+			m = a(m, n, p, e, q, 22, g[3]);
+			e = a(e, m, n, p, l, 7, g[4]);
+			p = a(p, e, m, n, r, 12, g[5]);
+			n = a(n, p, e, m, v, 17, g[6]);
+			m = a(m, n, p, e, A, 22, g[7]);
+			e = a(e, m, n, p, G, 7, g[8]);
+			p = a(p, e, m, n, y, 12, g[9]);
+			n = a(n, p, e, m, C, 17, g[10]);
+			m = a(m, n, p, e, H, 22, g[11]);
+			e = a(e, m, n, p, B, 7, g[12]);
+			p = a(p, e, m, n, I, 12, g[13]);
+			n = a(n, p, e, m, E, 17, g[14]);
+			m = a(m, n, p, e, d, 22, g[15]);
+			e = b(e, m, n, p, u, 5, g[16]);
+			p = b(p, e, m, n, v, 9, g[17]);
+			n = b(n, p, e, m, H, 14, g[18]);
+			m = b(m, n, p, e, k, 20, g[19]);
+			e = b(e, m, n, p, r, 5, g[20]);
+			p = b(p, e, m, n, C, 9, g[21]);
+			n = b(n, p, e, m, d, 14, g[22]);
+			m = b(m, n, p, e, l, 20, g[23]);
+			e = b(e, m, n, p, y, 5, g[24]);
+			p = b(p, e, m, n, E, 9, g[25]);
+			n = b(n, p, e, m, q, 14, g[26]);
+			m = b(m, n, p, e, G, 20, g[27]);
+			e = b(e, m, n, p, I, 5, g[28]);
+			p = b(p, e, m, n, x, 9, g[29]);
+			n = b(n, p, e, m, A, 14, g[30]);
+			m = b(m, n, p, e, B, 20, g[31]);
+			e = c(e, m, n, p, r, 4, g[32]);
+			p = c(p, e, m, n, G, 11, g[33]);
+			n = c(n, p, e, m, H, 16, g[34]);
+			m = c(m, n, p, e, E, 23, g[35]);
+			e = c(e, m, n, p, u, 4, g[36]);
+			p = c(p, e, m, n, l, 11, g[37]);
+			n = c(n, p, e, m, A, 16, g[38]);
+			m = c(m, n, p, e, C, 23, g[39]);
+			e = c(e, m, n, p, I, 4, g[40]);
+			p = c(p, e, m, n, k, 11, g[41]);
+			n = c(n, p, e, m, q, 16, g[42]);
+			m = c(m, n, p, e, v, 23, g[43]);
+			e = c(e, m, n, p, y, 4, g[44]);
+			p = c(p, e, m, n, B, 11, g[45]);
+			n = c(n, p, e, m, d, 16, g[46]);
+			m = c(m, n, p, e, x, 23, g[47]);
+			e = f(e, m, n, p, k, 6, g[48]);
+			p = f(p, e, m, n, A, 10, g[49]);
+			n = f(n, p, e, m, E, 15, g[50]);
+			m = f(m, n, p, e, r, 21, g[51]);
+			e = f(e, m, n, p, B, 6, g[52]);
+			p = f(p, e, m, n, q, 10, g[53]);
+			n = f(n, p, e, m, C, 15, g[54]);
+			m = f(m, n, p, e, u, 21, g[55]);
+			e = f(e, m, n, p, G, 6, g[56]);
+			p = f(p, e, m, n, d, 10, g[57]);
+			n = f(n, p, e, m, v, 15, g[58]);
+			m = f(m, n, p, e, I, 21, g[59]);
+			e = f(e, m, n, p, l, 6, g[60]);
+			p = f(p, e, m, n, H, 10, g[61]);
+			n = f(n, p, e, m, x, 15, g[62]);
+			m = f(m, n, p, e, y, 21, g[63]);
+			h[0] = h[0] + e | 0;
+			h[1] = h[1] + m | 0;
+			h[2] = h[2] + n | 0;
+			h[3] = h[3] + p | 0
+		},
+		_doFinalize: function() {
+			var a = this._data,
+				b = a.words,
+				c = 8 * this._nDataBytes,
+				e = 8 * a.sigBytes;
+			b[e >>> 5] |= 128 << 24 - e % 32;
+			var f = d.floor(c / 4294967296);
+			b[(e + 64 >>> 9 << 4) + 15] = (f << 8 | f >>> 24) & 16711935 | (f << 24 | f >>> 8) & 4278255360;
+			b[(e + 64 >>> 9 << 4) + 14] = (c << 8 | c >>> 24) & 16711935 | (c << 24 | c >>> 8) & 4278255360;
+			a.sigBytes = 4 * (b.length + 1);
+			this._process();
+			a = this._hash;
+			b = a.words;
+			for (c = 0; 4 > c; c++) e = b[c], b[c] = (e << 8 | e >>> 24) & 16711935 | (e << 24 | e >>> 8) & 4278255360;
+			return a
+		},
+		clone: function() {
+			var a = l.clone.call(this);
+			a._hash = this._hash.clone();
+			return a
+		}
+	});
+	e.MD5 = l._createHelper(h);
+	e.HmacMD5 = l._createHmacHelper(h)
+})(Math);
+(function() {
+	var d = CryptoJS,
+		a = d.lib,
+		b = a.Base,
+		c = a.WordArray,
+		a = d.algo,
+		f = a.EvpKDF = b.extend({
+			cfg: b.extend({
+				keySize: 4,
+				hasher: a.MD5,
+				iterations: 1
+			}),
+			init: function(a) {
+				this.cfg = this.cfg.extend(a)
+			},
+			compute: function(a, b) {
+				for (var d = this.cfg, e = d.hasher.create(), f = c.create(), h = f.words, v = d.keySize, d = d.iterations; h.length < v;) {
+					q && e.update(q);
+					var q = e.update(a).finalize(b);
+					e.reset();
+					for (var t = 1; t < d; t++) q = e.finalize(q), e.reset();
+					f.concat(q)
+				}
+				f.sigBytes = 4 * v;
+				return f
+			}
+		});
+	d.EvpKDF = function(a, b, c) {
+		return f.create(c).compute(a, b)
+	}
+})();
+CryptoJS.lib.Cipher ||
+function(d) {
+	var a = CryptoJS,
+		b = a.lib,
+		c = b.Base,
+		f = b.WordArray,
+		e = b.BufferedBlockAlgorithm,
+		h = a.enc.Base64,
+		k = a.algo.EvpKDF,
+		l = b.Cipher = e.extend({
+			cfg: c.extend(),
+			createEncryptor: function(a, b) {
+				return this.create(this._ENC_XFORM_MODE, a, b)
+			},
+			createDecryptor: function(a, b) {
+				return this.create(this._DEC_XFORM_MODE, a, b)
+			},
+			init: function(a, b, c) {
+				this.cfg = this.cfg.extend(c);
+				this._xformMode = a;
+				this._key = b;
+				this.reset()
+			},
+			reset: function() {
+				e.reset.call(this);
+				this._doReset()
+			},
+			process: function(a) {
+				this._append(a);
+				return this._process()
+			},
+			finalize: function(a) {
+				a && this._append(a);
+				return this._doFinalize()
+			},
+			keySize: 4,
+			ivSize: 4,
+			_ENC_XFORM_MODE: 1,
+			_DEC_XFORM_MODE: 2,
+			_createHelper: function(a) {
+				return {
+					encrypt: function(b, c, d) {
+						return ("string" == typeof c ? w : t).encrypt(a, b, c, d)
+					},
+					decrypt: function(b, c, d) {
+						return ("string" == typeof c ? w : t).decrypt(a, b, c, d)
+					}
+				}
+			}
+		});
+	b.StreamCipher = l.extend({
+		_doFinalize: function() {
+			return this._process(!0)
+		},
+		blockSize: 1
+	});
+	var g = a.mode = {},
+		r = function(a, b, c) {
+			var e = this._iv;
+			e ? this._iv = d : e = this._prevBlock;
+			for (var f = 0; f < c; f++) a[b + f] ^= e[f]
+		},
+		v = (b.BlockCipherMode = c.extend({
+			createEncryptor: function(a, b) {
+				return this.Encryptor.create(a, b)
+			},
+			createDecryptor: function(a, b) {
+				return this.Decryptor.create(a, b)
+			},
+			init: function(a, b) {
+				this._cipher = a;
+				this._iv = b
+			}
+		})).extend();
+	v.Encryptor = v.extend({
+		processBlock: function(a, b) {
+			var c = this._cipher,
+				d = c.blockSize;
+			r.call(this, a, b, d);
+			c.encryptBlock(a, b);
+			this._prevBlock = a.slice(b, b + d)
+		}
+	});
+	v.Decryptor = v.extend({
+		processBlock: function(a, b) {
+			var c = this._cipher,
+				d = c.blockSize,
+				e = a.slice(b, b + d);
+			c.decryptBlock(a, b);
+			r.call(this, a, b, d);
+			this._prevBlock = e
+		}
+	});
+	g = g.CBC = v;
+	v = (a.pad = {}).Pkcs7 = {
+		pad: function(a, b) {
+			b *= 4;
+			b -= a.sigBytes % b;
+			for (var c = b << 24 | b << 16 | b << 8 | b, d = [], e = 0; e < b; e += 4) d.push(c);
+			b = f.create(d, b);
+			a.concat(b)
+		},
+		unpad: function(a) {
+			a.sigBytes -= a.words[a.sigBytes - 1 >>> 2] & 255
+		}
+	};
+	b.BlockCipher = l.extend({
+		cfg: l.cfg.extend({
+			mode: g,
+			padding: v
+		}),
+		reset: function() {
+			l.reset.call(this);
+			var a = this.cfg,
+				b = a.iv,
+				a = a.mode;
+			if (this._xformMode == this._ENC_XFORM_MODE) var c = a.createEncryptor;
+			else c = a.createDecryptor, this._minBufferSize = 1;
+			this._mode = c.call(a, this, b && b.words)
+		},
+		_doProcessBlock: function(a, b) {
+			this._mode.processBlock(a, b)
+		},
+		_doFinalize: function() {
+			var a = this.cfg.padding;
+			if (this._xformMode == this._ENC_XFORM_MODE) {
+				a.pad(this._data, this.blockSize);
+				var b = this._process(!0)
+			} else b = this._process(!0), a.unpad(b);
+			return b
+		},
+		blockSize: 4
+	});
+	var q = b.CipherParams = c.extend({
+		init: function(a) {
+			this.mixIn(a)
+		},
+		toString: function(a) {
+			return (a || this.formatter).stringify(this)
+		}
+	}),
+		g = (a.format = {}).OpenSSL = {
+			stringify: function(a) {
+				var b = a.ciphertext;
+				a = a.salt;
+				return (a ? f.create([1398893684, 1701076831]).concat(a).concat(b) : b).toString(h)
+			},
+			parse: function(a) {
+				a = h.parse(a);
+				var b = a.words;
+				if (1398893684 == b[0] && 1701076831 == b[1]) {
+					var c = f.create(b.slice(2, 4));
+					b.splice(0, 4);
+					a.sigBytes -= 16
+				}
+				return q.create({
+					ciphertext: a,
+					salt: c
+				})
+			}
+		},
+		t = b.SerializableCipher = c.extend({
+			cfg: c.extend({
+				format: g
+			}),
+			encrypt: function(a, b, c, d) {
+				d = this.cfg.extend(d);
+				var e = a.createEncryptor(c, d);
+				b = e.finalize(b);
+				e = e.cfg;
+				return q.create({
+					ciphertext: b,
+					key: c,
+					iv: e.iv,
+					algorithm: a,
+					mode: e.mode,
+					padding: e.padding,
+					blockSize: a.blockSize,
+					formatter: d.format
+				})
+			},
+			decrypt: function(a, b, c, d) {
+				d = this.cfg.extend(d);
+				b = this._parse(b, d.format);
+				return a.createDecryptor(c, d).finalize(b.ciphertext)
+			},
+			_parse: function(a, b) {
+				return "string" == typeof a ? b.parse(a, this) : a
+			}
+		}),
+		a = (a.kdf = {}).OpenSSL = {
+			execute: function(a, b, c, d) {
+				d || (d = f.random(8));
+				a = k.create({
+					keySize: b + c
+				}).compute(a, d);
+				c = f.create(a.words.slice(b), 4 * c);
+				a.sigBytes = 4 * b;
+				return q.create({
+					key: a,
+					iv: c,
+					salt: d
+				})
+			}
+		},
+		w = b.PasswordBasedCipher = t.extend({
+			cfg: t.cfg.extend({
+				kdf: a
+			}),
+			encrypt: function(a, b, c, d) {
+				d = this.cfg.extend(d);
+				c = d.kdf.execute(c, a.keySize, a.ivSize);
+				d.iv = c.iv;
+				a = t.encrypt.call(this, a, b, c.key, d);
+				a.mixIn(c);
+				return a
+			},
+			decrypt: function(a, b, c, d) {
+				d = this.cfg.extend(d);
+				b = this._parse(b, d.format);
+				c = d.kdf.execute(c, a.keySize, a.ivSize, b.salt);
+				d.iv = c.iv;
+				return t.decrypt.call(this, a, b, c.key, d)
+			}
+		})
+}();
+(function() {
+	function d(a, b) {
+		b &= this._lBlock >>> a ^ this._rBlock;
+		this._rBlock ^= b;
+		this._lBlock ^= b << a
+	}
+	function a(a, b) {
+		b &= this._rBlock >>> a ^ this._lBlock;
+		this._lBlock ^= b;
+		this._rBlock ^= b << a
+	}
+	var b = CryptoJS,
+		c = b.lib,
+		f = c.WordArray,
+		c = c.BlockCipher,
+		e = b.algo,
+		h = [57, 49, 41, 33, 25, 17, 9, 1, 58, 50, 42, 34, 26, 18, 10, 2, 59, 51, 43, 35, 27, 19, 11, 3, 60, 52, 44, 36, 63, 55, 47, 39, 31, 23, 15, 7, 62, 54, 46, 38, 30, 22, 14, 6, 61, 53, 45, 37, 29, 21, 13, 5, 28, 20, 12, 4],
+		k = [14, 17, 11, 24, 1, 5, 3, 28, 15, 6, 21, 10, 23, 19, 12, 4, 26, 8, 16, 7, 27, 20, 13, 2, 41, 52, 31, 37, 47, 55, 30, 40, 51, 45, 33, 48, 44, 49, 39, 56, 34, 53, 46, 42, 50, 36, 29, 32],
+		l = [1, 2, 4, 6, 8, 10, 12, 14, 15, 17, 19, 21, 23, 25, 27, 28],
+		g = [{
+			0: 8421888,
+			268435456: 32768,
+			536870912: 8421378,
+			805306368: 2,
+			1073741824: 512,
+			1342177280: 8421890,
+			1610612736: 8389122,
+			1879048192: 8388608,
+			2147483648: 514,
+			2415919104: 8389120,
+			2684354560: 33280,
+			2952790016: 8421376,
+			3221225472: 32770,
+			3489660928: 8388610,
+			3758096384: 0,
+			4026531840: 33282,
+			134217728: 0,
+			402653184: 8421890,
+			671088640: 33282,
+			939524096: 32768,
+			1207959552: 8421888,
+			1476395008: 512,
+			1744830464: 8421378,
+			2013265920: 2,
+			2281701376: 8389120,
+			2550136832: 33280,
+			2818572288: 8421376,
+			3087007744: 8389122,
+			3355443200: 8388610,
+			3623878656: 32770,
+			3892314112: 514,
+			4160749568: 8388608,
+			1: 32768,
+			268435457: 2,
+			536870913: 8421888,
+			805306369: 8388608,
+			1073741825: 8421378,
+			1342177281: 33280,
+			1610612737: 512,
+			1879048193: 8389122,
+			2147483649: 8421890,
+			2415919105: 8421376,
+			2684354561: 8388610,
+			2952790017: 33282,
+			3221225473: 514,
+			3489660929: 8389120,
+			3758096385: 32770,
+			4026531841: 0,
+			134217729: 8421890,
+			402653185: 8421376,
+			671088641: 8388608,
+			939524097: 512,
+			1207959553: 32768,
+			1476395009: 8388610,
+			1744830465: 2,
+			2013265921: 33282,
+			2281701377: 32770,
+			2550136833: 8389122,
+			2818572289: 514,
+			3087007745: 8421888,
+			3355443201: 8389120,
+			3623878657: 0,
+			3892314113: 33280,
+			4160749569: 8421378
+		}, {
+			0: 1074282512,
+			16777216: 16384,
+			33554432: 524288,
+			50331648: 1074266128,
+			67108864: 1073741840,
+			83886080: 1074282496,
+			100663296: 1073758208,
+			117440512: 16,
+			134217728: 540672,
+			150994944: 1073758224,
+			167772160: 1073741824,
+			184549376: 540688,
+			201326592: 524304,
+			218103808: 0,
+			234881024: 16400,
+			251658240: 1074266112,
+			8388608: 1073758208,
+			25165824: 540688,
+			41943040: 16,
+			58720256: 1073758224,
+			75497472: 1074282512,
+			92274688: 1073741824,
+			109051904: 524288,
+			125829120: 1074266128,
+			142606336: 524304,
+			159383552: 0,
+			176160768: 16384,
+			192937984: 1074266112,
+			209715200: 1073741840,
+			226492416: 540672,
+			243269632: 1074282496,
+			260046848: 16400,
+			268435456: 0,
+			285212672: 1074266128,
+			301989888: 1073758224,
+			318767104: 1074282496,
+			335544320: 1074266112,
+			352321536: 16,
+			369098752: 540688,
+			385875968: 16384,
+			402653184: 16400,
+			419430400: 524288,
+			436207616: 524304,
+			452984832: 1073741840,
+			469762048: 540672,
+			486539264: 1073758208,
+			503316480: 1073741824,
+			520093696: 1074282512,
+			276824064: 540688,
+			293601280: 524288,
+			310378496: 1074266112,
+			327155712: 16384,
+			343932928: 1073758208,
+			360710144: 1074282512,
+			377487360: 16,
+			394264576: 1073741824,
+			411041792: 1074282496,
+			427819008: 1073741840,
+			444596224: 1073758224,
+			461373440: 524304,
+			478150656: 0,
+			494927872: 16400,
+			511705088: 1074266128,
+			528482304: 540672
+		}, {
+			0: 260,
+			1048576: 0,
+			2097152: 67109120,
+			3145728: 65796,
+			4194304: 65540,
+			5242880: 67108868,
+			6291456: 67174660,
+			7340032: 67174400,
+			8388608: 67108864,
+			9437184: 67174656,
+			10485760: 65792,
+			11534336: 67174404,
+			12582912: 67109124,
+			13631488: 65536,
+			14680064: 4,
+			15728640: 256,
+			524288: 67174656,
+			1572864: 67174404,
+			2621440: 0,
+			3670016: 67109120,
+			4718592: 67108868,
+			5767168: 65536,
+			6815744: 65540,
+			7864320: 260,
+			8912896: 4,
+			9961472: 256,
+			11010048: 67174400,
+			12058624: 65796,
+			13107200: 65792,
+			14155776: 67109124,
+			15204352: 67174660,
+			16252928: 67108864,
+			16777216: 67174656,
+			17825792: 65540,
+			18874368: 65536,
+			19922944: 67109120,
+			20971520: 256,
+			22020096: 67174660,
+			23068672: 67108868,
+			24117248: 0,
+			25165824: 67109124,
+			26214400: 67108864,
+			27262976: 4,
+			28311552: 65792,
+			29360128: 67174400,
+			30408704: 260,
+			31457280: 65796,
+			32505856: 67174404,
+			17301504: 67108864,
+			18350080: 260,
+			19398656: 67174656,
+			20447232: 0,
+			21495808: 65540,
+			22544384: 67109120,
+			23592960: 256,
+			24641536: 67174404,
+			25690112: 65536,
+			26738688: 67174660,
+			27787264: 65796,
+			28835840: 67108868,
+			29884416: 67109124,
+			30932992: 67174400,
+			31981568: 4,
+			33030144: 65792
+		}, {
+			0: 2151682048,
+			65536: 2147487808,
+			131072: 4198464,
+			196608: 2151677952,
+			262144: 0,
+			327680: 4198400,
+			393216: 2147483712,
+			458752: 4194368,
+			524288: 2147483648,
+			589824: 4194304,
+			655360: 64,
+			720896: 2147487744,
+			786432: 2151678016,
+			851968: 4160,
+			917504: 4096,
+			983040: 2151682112,
+			32768: 2147487808,
+			98304: 64,
+			163840: 2151678016,
+			229376: 2147487744,
+			294912: 4198400,
+			360448: 2151682112,
+			425984: 0,
+			491520: 2151677952,
+			557056: 4096,
+			622592: 2151682048,
+			688128: 4194304,
+			753664: 4160,
+			819200: 2147483648,
+			884736: 4194368,
+			950272: 4198464,
+			1015808: 2147483712,
+			1048576: 4194368,
+			1114112: 4198400,
+			1179648: 2147483712,
+			1245184: 0,
+			1310720: 4160,
+			1376256: 2151678016,
+			1441792: 2151682048,
+			1507328: 2147487808,
+			1572864: 2151682112,
+			1638400: 2147483648,
+			1703936: 2151677952,
+			1769472: 4198464,
+			1835008: 2147487744,
+			1900544: 4194304,
+			1966080: 64,
+			2031616: 4096,
+			1081344: 2151677952,
+			1146880: 2151682112,
+			1212416: 0,
+			1277952: 4198400,
+			1343488: 4194368,
+			1409024: 2147483648,
+			1474560: 2147487808,
+			1540096: 64,
+			1605632: 2147483712,
+			1671168: 4096,
+			1736704: 2147487744,
+			1802240: 2151678016,
+			1867776: 4160,
+			1933312: 2151682048,
+			1998848: 4194304,
+			2064384: 4198464
+		}, {
+			0: 128,
+			4096: 17039360,
+			8192: 262144,
+			12288: 536870912,
+			16384: 537133184,
+			20480: 16777344,
+			24576: 553648256,
+			28672: 262272,
+			32768: 16777216,
+			36864: 537133056,
+			40960: 536871040,
+			45056: 553910400,
+			49152: 553910272,
+			53248: 0,
+			57344: 17039488,
+			61440: 553648128,
+			2048: 17039488,
+			6144: 553648256,
+			10240: 128,
+			14336: 17039360,
+			18432: 262144,
+			22528: 537133184,
+			26624: 553910272,
+			30720: 536870912,
+			34816: 537133056,
+			38912: 0,
+			43008: 553910400,
+			47104: 16777344,
+			51200: 536871040,
+			55296: 553648128,
+			59392: 16777216,
+			63488: 262272,
+			65536: 262144,
+			69632: 128,
+			73728: 536870912,
+			77824: 553648256,
+			81920: 16777344,
+			86016: 553910272,
+			90112: 537133184,
+			94208: 16777216,
+			98304: 553910400,
+			102400: 553648128,
+			106496: 17039360,
+			110592: 537133056,
+			114688: 262272,
+			118784: 536871040,
+			122880: 0,
+			126976: 17039488,
+			67584: 553648256,
+			71680: 16777216,
+			75776: 17039360,
+			79872: 537133184,
+			83968: 536870912,
+			88064: 17039488,
+			92160: 128,
+			96256: 553910272,
+			100352: 262272,
+			104448: 553910400,
+			108544: 0,
+			112640: 553648128,
+			116736: 16777344,
+			120832: 262144,
+			124928: 537133056,
+			129024: 536871040
+		}, {
+			0: 268435464,
+			256: 8192,
+			512: 270532608,
+			768: 270540808,
+			1024: 268443648,
+			1280: 2097152,
+			1536: 2097160,
+			1792: 268435456,
+			2048: 0,
+			2304: 268443656,
+			2560: 2105344,
+			2816: 8,
+			3072: 270532616,
+			3328: 2105352,
+			3584: 8200,
+			3840: 270540800,
+			128: 270532608,
+			384: 270540808,
+			640: 8,
+			896: 2097152,
+			1152: 2105352,
+			1408: 268435464,
+			1664: 268443648,
+			1920: 8200,
+			2176: 2097160,
+			2432: 8192,
+			2688: 268443656,
+			2944: 270532616,
+			3200: 0,
+			3456: 270540800,
+			3712: 2105344,
+			3968: 268435456,
+			4096: 268443648,
+			4352: 270532616,
+			4608: 270540808,
+			4864: 8200,
+			5120: 2097152,
+			5376: 268435456,
+			5632: 268435464,
+			5888: 2105344,
+			6144: 2105352,
+			6400: 0,
+			6656: 8,
+			6912: 270532608,
+			7168: 8192,
+			7424: 268443656,
+			7680: 270540800,
+			7936: 2097160,
+			4224: 8,
+			4480: 2105344,
+			4736: 2097152,
+			4992: 268435464,
+			5248: 268443648,
+			5504: 8200,
+			5760: 270540808,
+			6016: 270532608,
+			6272: 270540800,
+			6528: 270532616,
+			6784: 8192,
+			7040: 2105352,
+			7296: 2097160,
+			7552: 0,
+			7808: 268435456,
+			8064: 268443656
+		}, {
+			0: 1048576,
+			16: 33555457,
+			32: 1024,
+			48: 1049601,
+			64: 34604033,
+			80: 0,
+			96: 1,
+			112: 34603009,
+			128: 33555456,
+			144: 1048577,
+			160: 33554433,
+			176: 34604032,
+			192: 34603008,
+			208: 1025,
+			224: 1049600,
+			240: 33554432,
+			8: 34603009,
+			24: 0,
+			40: 33555457,
+			56: 34604032,
+			72: 1048576,
+			88: 33554433,
+			104: 33554432,
+			120: 1025,
+			136: 1049601,
+			152: 33555456,
+			168: 34603008,
+			184: 1048577,
+			200: 1024,
+			216: 34604033,
+			232: 1,
+			248: 1049600,
+			256: 33554432,
+			272: 1048576,
+			288: 33555457,
+			304: 34603009,
+			320: 1048577,
+			336: 33555456,
+			352: 34604032,
+			368: 1049601,
+			384: 1025,
+			400: 34604033,
+			416: 1049600,
+			432: 1,
+			448: 0,
+			464: 34603008,
+			480: 33554433,
+			496: 1024,
+			264: 1049600,
+			280: 33555457,
+			296: 34603009,
+			312: 1,
+			328: 33554432,
+			344: 1048576,
+			360: 1025,
+			376: 34604032,
+			392: 33554433,
+			408: 34603008,
+			424: 0,
+			440: 34604033,
+			456: 1049601,
+			472: 1024,
+			488: 33555456,
+			504: 1048577
+		}, {
+			0: 134219808,
+			1: 131072,
+			2: 134217728,
+			3: 32,
+			4: 131104,
+			5: 134350880,
+			6: 134350848,
+			7: 2048,
+			8: 134348800,
+			9: 134219776,
+			10: 133120,
+			11: 134348832,
+			12: 2080,
+			13: 0,
+			14: 134217760,
+			15: 133152,
+			2147483648: 2048,
+			2147483649: 134350880,
+			2147483650: 134219808,
+			2147483651: 134217728,
+			2147483652: 134348800,
+			2147483653: 133120,
+			2147483654: 133152,
+			2147483655: 32,
+			2147483656: 134217760,
+			2147483657: 2080,
+			2147483658: 131104,
+			2147483659: 134350848,
+			2147483660: 0,
+			2147483661: 134348832,
+			2147483662: 134219776,
+			2147483663: 131072,
+			16: 133152,
+			17: 134350848,
+			18: 32,
+			19: 2048,
+			20: 134219776,
+			21: 134217760,
+			22: 134348832,
+			23: 131072,
+			24: 0,
+			25: 131104,
+			26: 134348800,
+			27: 134219808,
+			28: 134350880,
+			29: 133120,
+			30: 2080,
+			31: 134217728,
+			2147483664: 131072,
+			2147483665: 2048,
+			2147483666: 134348832,
+			2147483667: 133152,
+			2147483668: 32,
+			2147483669: 134348800,
+			2147483670: 134217728,
+			2147483671: 134219808,
+			2147483672: 134350880,
+			2147483673: 134217760,
+			2147483674: 134219776,
+			2147483675: 0,
+			2147483676: 133120,
+			2147483677: 2080,
+			2147483678: 131104,
+			2147483679: 134350848
+		}],
+		r = [4160749569, 528482304, 33030144, 2064384, 129024, 8064, 504, 2147483679],
+		v = e.DES = c.extend({
+			_doReset: function() {
+				for (var a = this._key.words, b = [], c = 0; 56 > c; c++) {
+					var d = h[c] - 1;
+					b[c] = a[d >>> 5] >>> 31 - d % 32 & 1
+				}
+				a = this._subKeys = [];
+				for (d = 0; 16 > d; d++) {
+					for (var e = a[d] = [], f = l[d], c = 0; 24 > c; c++) e[c / 6 | 0] |= b[(k[c] - 1 + f) % 28] << 31 - c % 6, e[4 + (c / 6 | 0)] |= b[28 + (k[c + 24] - 1 + f) % 28] << 31 - c % 6;
+					e[0] = e[0] << 1 | e[0] >>> 31;
+					for (c = 1; 7 > c; c++) e[c] >>>= 4 * (c - 1) + 3;
+					e[7] = e[7] << 5 | e[7] >>> 27
+				}
+				b = this._invSubKeys = [];
+				for (c = 0; 16 > c; c++) b[c] = a[15 - c]
+			},
+			encryptBlock: function(a, b) {
+				this._doCryptBlock(a, b, this._subKeys)
+			},
+			decryptBlock: function(a, b) {
+				this._doCryptBlock(a, b, this._invSubKeys)
+			},
+			_doCryptBlock: function(b, c, e) {
+				this._lBlock = b[c];
+				this._rBlock = b[c + 1];
+				d.call(this, 4, 252645135);
+				d.call(this, 16, 65535);
+				a.call(this, 2, 858993459);
+				a.call(this, 8, 16711935);
+				d.call(this, 1, 1431655765);
+				for (var f = 0; 16 > f; f++) {
+					for (var h = e[f], k = this._lBlock, l = this._rBlock, q = 0, t = 0; 8 > t; t++) q |= g[t][((l ^ h[t]) & r[t]) >>> 0];
+					this._lBlock = l;
+					this._rBlock = k ^ q
+				}
+				e = this._lBlock;
+				this._lBlock = this._rBlock;
+				this._rBlock = e;
+				d.call(this, 1, 1431655765);
+				a.call(this, 8, 16711935);
+				a.call(this, 2, 858993459);
+				d.call(this, 16, 65535);
+				d.call(this, 4, 252645135);
+				b[c] = this._lBlock;
+				b[c + 1] = this._rBlock
+			},
+			keySize: 2,
+			ivSize: 2,
+			blockSize: 2
+		});
+	b.DES = c._createHelper(v);
+	e = e.TripleDES = c.extend({
+		_doReset: function() {
+			var a = this._key.words;
+			this._des1 = v.createEncryptor(f.create(a.slice(0, 2)));
+			this._des2 = v.createEncryptor(f.create(a.slice(2, 4)));
+			this._des3 = v.createEncryptor(f.create(a.slice(4, 6)))
+		},
+		encryptBlock: function(a, b) {
+			this._des1.encryptBlock(a, b);
+			this._des2.decryptBlock(a, b);
+			this._des3.encryptBlock(a, b)
+		},
+		decryptBlock: function(a, b) {
+			this._des3.decryptBlock(a, b);
+			this._des2.encryptBlock(a, b);
+			this._des1.decryptBlock(a, b)
+		},
+		keySize: 6,
+		ivSize: 2,
+		blockSize: 2
+	});
+	b.TripleDES = c._createHelper(e)
+})();
+"use strict";
+var hex_chr = "0123456789abcdef";
+
+function rhex(d) {
+	for (var a = "", b = 0; 3 >= b; b++) a += hex_chr.charAt(d >> 8 * b + 4 & 15) + hex_chr.charAt(d >> 8 * b & 15);
+	return a
+}
+function str2blks_MD5(d) {
+	var a, b = (d.length + 8 >> 6) + 1,
+		c = Array(16 * b);
+	for (a = 0; a < 16 * b; a++) c[a] = 0;
+	for (a = 0; a < d.length; a++) c[a >> 2] |= d.charCodeAt(a) << a % 4 * 8;
+	c[a >> 2] |= 128 << a % 4 * 8;
+	c[16 * b - 2] = 8 * d.length;
+	return c
+}
+function add(d, a) {
+	var b = (d & 65535) + (a & 65535);
+	return (d >> 16) + (a >> 16) + (b >> 16) << 16 | b & 65535
+}
+function rol(d, a) {
+	return d << a | d >>> 32 - a
+}
+function cmn(d, a, b, c, f, e) {
+	return add(rol(add(add(a, d), add(c, e)), f), b)
+}
+function ff(d, a, b, c, f, e, h) {
+	return cmn(a & b | ~a & c, d, a, f, e, h)
+}
+function gg(d, a, b, c, f, e, h) {
+	return cmn(a & c | b & ~c, d, a, f, e, h)
+}
+function hh(d, a, b, c, f, e, h) {
+	return cmn(a ^ b ^ c, d, a, f, e, h)
+}
+function ii(d, a, b, c, f, e, h) {
+	return cmn(b ^ (a | ~c), d, a, f, e, h)
+}
+function MD5(d) {
+	d = str2blks_MD5(d);
+	for (var a = 1732584193, b = -271733879, c = -1732584194, f = 271733878, e = 0; e < d.length; e += 16) var h = a,
+		k = b,
+		l = c,
+		g = f,
+		a = ff(a, b, c, f, d[e + 0], 7, -680876936),
+		f = ff(f, a, b, c, d[e + 1], 12, -389564586),
+		c = ff(c, f, a, b, d[e + 2], 17, 606105819),
+		b = ff(b, c, f, a, d[e + 3], 22, -1044525330),
+		a = ff(a, b, c, f, d[e + 4], 7, -176418897),
+		f = ff(f, a, b, c, d[e + 5], 12, 1200080426),
+		c = ff(c, f, a, b, d[e + 6], 17, -1473231341),
+		b = ff(b, c, f, a, d[e + 7], 22, -45705983),
+		a = ff(a, b, c, f, d[e + 8], 7, 1770035416),
+		f = ff(f, a, b, c, d[e + 9], 12, -1958414417),
+		c = ff(c, f, a, b, d[e + 10], 17, -42063),
+		b = ff(b, c, f, a, d[e + 11], 22, -1990404162),
+		a = ff(a, b, c, f, d[e + 12], 7, 1804603682),
+		f = ff(f, a, b, c, d[e + 13], 12, -40341101),
+		c = ff(c, f, a, b, d[e + 14], 17, -1502002290),
+		b = ff(b, c, f, a, d[e + 15], 22, 1236535329),
+		a = gg(a, b, c, f, d[e + 1], 5, -165796510),
+		f = gg(f, a, b, c, d[e + 6], 9, -1069501632),
+		c = gg(c, f, a, b, d[e + 11], 14, 643717713),
+		b = gg(b, c, f, a, d[e + 0], 20, -373897302),
+		a = gg(a, b, c, f, d[e + 5], 5, -701558691),
+		f = gg(f, a, b, c, d[e + 10], 9, 38016083),
+		c = gg(c, f, a, b, d[e + 15], 14, -660478335),
+		b = gg(b, c, f, a, d[e + 4], 20, -405537848),
+		a = gg(a, b, c, f, d[e + 9], 5, 568446438),
+		f = gg(f, a, b, c, d[e + 14], 9, -1019803690),
+		c = gg(c, f, a, b, d[e + 3], 14, -187363961),
+		b = gg(b, c, f, a, d[e + 8], 20, 1163531501),
+		a = gg(a, b, c, f, d[e + 13], 5, -1444681467),
+		f = gg(f, a, b, c, d[e + 2], 9, -51403784),
+		c = gg(c, f, a, b, d[e + 7], 14, 1735328473),
+		b = gg(b, c, f, a, d[e + 12], 20, -1926607734),
+		a = hh(a, b, c, f, d[e + 5], 4, -378558),
+		f = hh(f, a, b, c, d[e + 8], 11, -2022574463),
+		c = hh(c, f, a, b, d[e + 11], 16, 1839030562),
+		b = hh(b, c, f, a, d[e + 14], 23, -35309556),
+		a = hh(a, b, c, f, d[e + 1], 4, -1530992060),
+		f = hh(f, a, b, c, d[e + 4], 11, 1272893353),
+		c = hh(c, f, a, b, d[e + 7], 16, -155497632),
+		b = hh(b, c, f, a, d[e + 10], 23, -1094730640),
+		a = hh(a, b, c, f, d[e + 13], 4, 681279174),
+		f = hh(f, a, b, c, d[e + 0], 11, -358537222),
+		c = hh(c, f, a, b, d[e + 3], 16, -722521979),
+		b = hh(b, c, f, a, d[e + 6], 23, 76029189),
+		a = hh(a, b, c, f, d[e + 9], 4, -640364487),
+		f = hh(f, a, b, c, d[e + 12], 11, -421815835),
+		c = hh(c, f, a, b, d[e + 15], 16, 530742520),
+		b = hh(b, c, f, a, d[e + 2], 23, -995338651),
+		a = ii(a, b, c, f, d[e + 0], 6, -198630844),
+		f = ii(f, a, b, c, d[e + 7], 10, 1126891415),
+		c = ii(c, f, a, b, d[e + 14], 15, -1416354905),
+		b = ii(b, c, f, a, d[e + 5], 21, -57434055),
+		a = ii(a, b, c, f, d[e + 12], 6, 1700485571),
+		f = ii(f, a, b, c, d[e + 3], 10, -1894986606),
+		c = ii(c, f, a, b, d[e + 10], 15, -1051523),
+		b = ii(b, c, f, a, d[e + 1], 21, -2054922799),
+		a = ii(a, b, c, f, d[e + 8], 6, 1873313359),
+		f = ii(f, a, b, c, d[e + 15], 10, -30611744),
+		c = ii(c, f, a, b, d[e + 6], 15, -1560198380),
+		b = ii(b, c, f, a, d[e + 13], 21, 1309151649),
+		a = ii(a, b, c, f, d[e + 4], 6, -145523070),
+		f = ii(f, a, b, c, d[e + 11], 10, -1120210379),
+		c = ii(c, f, a, b, d[e + 2], 15, 718787259),
+		b = ii(b, c, f, a, d[e + 9], 21, -343485551),
+		a = add(a, h),
+		b = add(b, k),
+		c = add(c, l),
+		f = add(f, g);
+	return rhex(a) + rhex(b) + rhex(c) + rhex(f)
+}
+function getMD5Value(d) {
+	return MD5(d + "£¬¡£fdjf,jkgfkl")
+}
+CryptoJS.mode.ECB = function() {
+	var d = CryptoJS.lib.BlockCipherMode.extend();
+	d.Encryptor = d.extend({
+		processBlock: function(a, b) {
+			this._cipher.encryptBlock(a, b)
+		}
+	});
+	d.Decryptor = d.extend({
+		processBlock: function(a, b) {
+			this._cipher.decryptBlock(a, b)
+		}
+	});
+	return d
+}();
+(function(d) {
+	d.httpJsonp = function(a, b) {
+		for (var c = "", d = 0; 20 > d; d++) c += Math.floor(10 * Math.random());
+		var e = "nd" + (new Date).getTime() + c;
+		return new Promise(function(c, d) {
+			Ajax.init({
+				url: a,
+				type: "get",
+				dataType: "jsonp",
+				data: b,
+				callback: e,
+				time: "2000",
+				success: function(a) {
+					c(a)
+				},
+				fail: function(a) {
+					c("fail")
+				}
+			})
+		})
+	};
+	d.proxyRest = function(a, b, c, f) {
+		var e = "{",
+			e = e + ('"$headers":' + c + ","),
+			e = e + ('"$body":' + b + ","),
+			e = e + ('"$method":"' + f + '"'),
+			e = e + "}";
+		return new Promise(function(b, c) {
+			d.httpJsonp(a, {
+				$proxy: "proxyhttp",
+				bodys: e
+			}).then(function(a) {
+				try {
+					var c = JSON.parse(a.$body);
+					b(c)
+				} catch (r) {
+					c = JSON.parse('{"error_code":"jssdk_jsonp_exceptions"}'), b(c)
+				}
+			})
+		})
+	}
+})(this.JsMAF || (this.JsMAF = {}));

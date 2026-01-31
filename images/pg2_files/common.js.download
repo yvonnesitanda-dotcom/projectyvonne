@@ -1,0 +1,922 @@
+/*
+ * @Author: lijing(707123) 
+ * @Date: 2019-11-27 14:42:58 
+ * @Last Modified by: lijing(707123)
+ * @Last Modified time: 2020-10-15 11:02:07
+ */
+(function (window) {
+  (function () {
+    $.ajax({
+      type: 'GET',
+      url: 'https://ipapi.co/country_calling_code/',
+      success: function (result) {
+        if (result == "+20") {//为埃及时跳转至埃及官网
+          window.location.href = "http://egy.class.101.com"
+          return
+        }
+      }
+    })
+  })();
+  var ORG_NAME = "v_org_k12_awsca";
+  var UC_API = "https://uc-awsca.101.com/v0.93/";
+  var Terminal = "";
+  var PRO = window.location.host == 'class.101.com';
+  var addressStr = window.location.href;
+  var formAPI = (addressStr.indexOf('https') != -1) ? "https://formsys.101.com/api/pptglobal/" : "http://formsys.101.com/api/pptglobal/";
+  var Tool = {
+    trackEvent: function (category, action, label) {
+      if (gtag) {
+        console.log(category, action, label);
+        gtag("event", action, {
+          event_category: category,
+          event_label: label
+        });
+      }
+    },
+
+    getUrlParam: function (name) {
+      var params = decodeURI(window.location.search);
+      var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+      var r = params.substr(1).match(reg);
+      if (r != null) return unescape(r[2]);
+      return null;
+    },
+    browserInfo: function () {
+      var json = {
+        userAgent: navigator.userAgent.toLowerCase(),
+        isAndroid: Boolean(navigator.userAgent.match(/android/gi)),
+        isIos: Boolean(navigator.userAgent.match(/iphone|ipod|ipad/gi)),
+        isWeChat: Boolean(navigator.userAgent.match(/MicroMessenger/gi)),
+        isQQ: Boolean(navigator.userAgent.match(/QQ/gi)),
+        isQQBrowser: Boolean(navigator.userAgent.match(/MQQBrowser/gi)),
+        isND: Boolean(navigator.userAgent.match(/SmartCanWebView/gi)),
+        isWinXP: Boolean(navigator.userAgent.indexOf("Windows NT 5") != -1 || navigator.userAgent.indexOf("Windows XP") != -1)
+      };
+      return json;
+    },
+    getData: function (url, method, data, success, error) {
+      var _method = method ? method : "GET";
+      return $.ajax({
+        url: url,
+        type: _method,
+        data: data,
+        contentType: "application/json",
+        dataType: "json",
+        success: function (resp) {
+          success && success(resp);
+        },
+        error: function (err) {
+          error && error(err);
+        }
+      });
+    },
+    detectOrient: function (cb) {
+      var u = navigator.userAgent;
+      if (window.orientation === 90 || window.orientation === -90) {
+        cb && cb("landscape");
+      }
+      window.addEventListener(
+        "onorientationchange" in window ? "orientationchange" : "resize",
+        function () {
+          if (window.orientation === 180 || window.orientation === 0) {
+            document.querySelector('meta[name="viewport"]').content = '';
+            setTimeout(function () {
+              document.querySelector('meta[name="viewport"]').content = 'minimal-ui,target-densitydpi=device-dpi, width=750, user-scalable=0,user-scalable=no';
+              cb && cb("portrait");
+            }, 400);
+
+          }
+          if (window.orientation === 90 || window.orientation === -90) {
+            cb && cb("landscape");
+          }
+        },
+        false
+      );
+    },
+    scrollHeader: function () {
+      var $window = $(window),
+        $header = $(".com-header").addClass('fixed');
+      $window.on("scroll.header", function () {
+        var scrollTop = $window.scrollTop();
+        var _left = -Math.max(
+          document.body.scrollLeft,
+          document.documentElement.scrollLeft
+        ); //水平滚动
+        $header.css("left", _left);
+        scrollTop > 1 ? $header.addClass("on") : $header.removeClass("on");
+      });
+    },
+
+
+
+  };
+  Tool.trackAd = '';
+  Tool.gtagtrackEvent = function (category, action, label) {
+    var _category = Terminal + '-' + category;
+
+    console.log(_category, action, label + Tool.trackAd)
+    if (gtag && PRO) {
+      gtag('event', action, {
+        event_category: _category,
+        event_label: label + Tool.trackAd,
+      })
+    }
+  };
+  Tool.getSession = function (cb) {
+    var URL = UC_API + "session";
+    new Fingerprint2().get(function (deviceId) {
+      var _data = JSON.stringify({
+        session_type: 0,
+        org_name: ORG_NAME,
+        device_id: deviceId
+      });
+      Tool.getData(URL, "POST", _data, cb);
+    });
+  }
+  Tool.initRes = function () {
+    var $registerForm = $("#registerForm");
+    var $check = $(".icon-check", $registerForm);
+    var $modal = $('.modal-register');
+    var $errorTip = $(".checkError");
+    var isAgaree = false;
+
+    $check.on("click", function () {
+      if (isAgaree) {
+        $check.removeClass("on");
+      } else {
+        $check.addClass("on");
+      }
+      isAgaree = !isAgaree;
+    });
+    $("#email,#password,#rpassword").on("focus", function () {
+      $errorTip.html("").removeClass("on");
+    });
+    $('#toResBtn').on('click', function () {
+      $modal.addClass("on");
+    })
+    $('.icon-pop-close', $modal).on('click', function () {
+      $modal.removeClass("on");
+      Tool.gtagtrackEvent('全站-顶部', '注册弹窗', '关闭弹窗')
+    })
+    jQuery.validator.addMethod(
+      "isEmail",
+      function (value, element) {
+        // var pw = /^[A-Za-z\d]+([-_.][A-Za-z\d]+)*@([A-Za-z\d]+[-.])+[A-Za-z\d]{2,4}$/;
+        var pw = /^\w+((.\w+)|(-\w+))@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
+        // var pw = /^[a-z0-9A-Z]+[- | a-z0-9A-Z . _]+@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-z]{2,}$/;
+
+        return this.optional(element) || pw.test(value);
+      },
+      "Please enter a valid email address"
+    );
+    jQuery.validator.addMethod('requiedNone', function (value) {
+      var val = $.trim(value);
+
+      if (val == '' || val == undefined) return false;
+      return true;
+
+    }, "This field is required.");
+
+    jQuery.validator.addMethod(
+      "isPwFormat",
+      function (value, element) {
+        var pw = /^[A-Za-z0-9]*$/;
+        return this.optional(element) || pw.test(value);
+      },
+      "Please enter Numbers or letters"
+    );
+    $registerForm.validate({
+      messages: {
+        passwordrepeat: {
+          equalTo: "The two passwords do not match",
+          required: "Please confirm password"
+
+        },
+        email: {
+          required: "Please enter email address"
+        },
+        password: {
+          required: "Please enter password"
+        }
+      },
+      rules: {
+        email: {
+          required: true,
+          isEmail: true
+        },
+        password: {
+          required: true,
+          isPwFormat: true,
+          maxlength: 12,
+          minlength: 6
+        },
+        passwordrepeat: {
+          required: true,
+          isPwFormat: true,
+          maxlength: 12,
+          minlength: 6,
+          equalTo: "#password"
+        }
+      },
+      success: function (label) {
+        label.html(" ").addClass("checked").removeClass('error');
+      },
+      // success:'success'
+      submitHandler: function (e) {
+        var $submitBtn = $(".register-from .com-btn");
+        if (!isAgaree) {
+          $errorTip
+            .html("You have not yet agreed to the registration agreement")
+            .addClass('on');
+          return;
+        } else {
+          $submitBtn.attr("disabled", true).val("Register ....");
+          $errorTip.removeClass('on');
+          Tool.getSession(function (data) {
+            var URL = UC_API + "emails/actions/register?lang=en";
+            var sessionKey = data.session_key;
+            var session_id = data.session_id;
+            var email = $.trim($("#email").val());
+            var password = getMD5Value($.trim($("#password").val()));
+
+            email = ucComponent.ecryptContent(email, sessionKey);
+            password = ucComponent.ecryptContent(password, sessionKey);
+
+            var _data =
+              '{"email":"' +
+              email +
+              '","password":"' +
+              password +
+              '","org_name":"' +
+              ORG_NAME +
+              '","session_id":"' +
+              session_id +
+              '"}';
+
+
+            Tool.getData(URL, "POST", _data,
+              function (result) {
+                $submitBtn.attr("disabled", false).val("Register");
+                $("#email,#password,#rpassword").val("");
+                $('.register-success').show();
+                $('.register-from').hide();
+                Tool.gtagtrackEvent('全站-顶部', '注册弹窗', '注册成功')
+              },
+              function (err) {
+                $submitBtn.attr("disabled", false).val("Register");
+                var errJson = JSON.parse(err.responseText);
+                var tipValue = "fail to register";
+                switch (errJson.code) {
+                  case "UC/EMAIL_HAS_REGISTER":
+                    tipValue = "Email has been registered";
+                    break;
+                  case "UC/REGISTER_OVER_SUM":
+                    tipValue =
+                      "The number of device registrations exceeded the limit";
+                    break;
+                }
+                $("#email,#password,#rpassword").val("");
+                Tool.gtagtrackEvent('全站-顶部', '注册弹窗', '注册失败')
+                $errorTip.html(tipValue).addClass("on");
+              }
+            );
+          });
+        }
+      }
+    });
+
+  }
+  Tool.locNavPc = function () {
+    var addressStr = window.location.href;
+    if (addressStr.indexOf("download") !== -1) {
+      $('.com-header nav li[rel=download]').addClass('on')
+
+    } else if (addressStr.indexOf("solution") !== -1) {
+      $('.com-header nav li[rel=solution]').addClass('on')
+
+    } else if (addressStr.indexOf("tools") !== -1) {
+      $('.com-header nav li[rel=tools]').addClass('on')
+
+    } else if (addressStr.indexOf("newlist") !== -1 || addressStr.indexOf("news") !== -1) {
+      $('.com-header nav li[rel=news]').addClass('on')
+
+    } else if (addressStr.indexOf("about") !== -1) {
+      if (addressStr.indexOf("contact") !== -1) {
+        $('.sidebar li:eq(0)').addClass('on');
+      } else if (addressStr.indexOf("declare") !== -1) {
+        $('.sidebar li:eq(1)').addClass('on');
+
+      } else if (addressStr.indexOf("copyright") !== -1) {
+        $('.sidebar li:eq(2)').addClass('on');
+
+      } else if (addressStr.indexOf("privacy") !== -1) {
+        $('.sidebar li:eq(3)').addClass('on');
+      }
+      $('.com-header nav li[rel=about]').addClass('on')
+    } else {
+      $('.com-header nav li[rel=home]').addClass('on')
+    }
+  }
+  Tool.locNavMobile = function () {
+    var addressStr = window.location.href;
+    if (addressStr.indexOf("download") !== -1) {
+      $('.com-header  li[rel=download]').addClass('on')
+
+    } else if (addressStr.indexOf("tools") !== -1) {
+      $('.com-header  li[rel=tools]').addClass('on')
+
+    } else if (addressStr.indexOf("solution") !== -1) {
+      $('.com-header  li[rel=solution]').addClass('on')
+
+    } else if (addressStr.indexOf("about") !== -1) {
+      $('.com-header  li[rel=about]').addClass('on')
+
+    } else if (addressStr.indexOf("newlist") !== -1 || addressStr.indexOf("news") !== -1) {
+      $('.com-header  li[rel=news]').addClass('on')
+
+    } else {
+      $('.com-header  li[rel=home]').addClass('on')
+    }
+    $('#navHeaderIcon').on('click', function () {
+
+      $('.com-header').toggleClass('open');
+    })
+  }
+  Tool.templateHTML = function (templateID, $target, data, append) {
+    var htmrStr = template(templateID, data);
+    if (append) {
+      $(htmrStr).appendTo($target);
+    } else {
+      $target.html(htmrStr);
+    }
+  }
+  Tool.newReturnTop = function () {
+    var $returnTop = $('.news-top');
+    var $window = $(window);
+
+    $returnTop.on("click", function () {
+      $("body,html").animate({
+        scrollTop: 0
+      },
+        500
+      );
+      return false;
+    });
+    $window.on('scroll', function () {
+      var scrollTop = $window.scrollTop();
+      var _footerTop = $(".com-footer").offset().top;
+      var abs = _footerTop - scrollTop;
+      if (scrollTop > 200) {
+        $returnTop.fadeIn();
+      } else {
+        $returnTop.hide();
+      }
+      if (abs < 1000) {
+        $returnTop.css({
+          bottom: "390px"
+        })
+      } else {
+        $returnTop.css({
+          bottom: "35px"
+        })
+      }
+    })
+  }
+  Tool.getSoftInfo = function () {
+    var newId = 163420,
+      URL = "//so.99.com/search.jsp?keyword=" + " " + "&pn=0&pc=10&channel=50050&kdid=" + newId + "&type=0&conditionfield=1&orderfield=newsdate&dataType=jsonp&callBack=?";
+    Tool.getData(URL, 'GET', {}, function (data) {
+      var newData = data.indexdata;
+      for (var i in newData) {
+        fillInfo(newData[i]);
+      }
+      //测试本地环境
+      if (!PRO) {
+        // $('a[rel=downAndroid],a[rel=downWin]').attr('href', 'javascript:;')
+      }
+    })
+
+    function fillInfo(data) {
+      var downMsg = data.newslead.split(';');
+
+      switch (data.newstitle) {
+        case "class101-ios":
+          var $target = $('a[rel=downIos]');
+          $target.on('click', function () {
+            var $btn = $('<img height="1" width="1" style="display:none;" alt="" src="https://px.ads.linkedin.com/collect/?pid=1353321&conversionId=1265260&fmt=gif" />')
+            $btn.appendTo($target);
+
+          })
+          $target.attr('href', 'javascript:;')
+          // $('span', $target).text('')
+          $('[rel=downAndroidVer]').text(data.secondtitle)
+          $('[rel=downAndroidLog]').html(data.content)
+          $('.codeImg img', $target).attr('src', data.newspic)
+
+          break;
+        case "class101-android":
+          var $target = $('a[rel=downAndroid]');
+          $target.on('click', function () {
+            var $btn = $('<img height="1" width="1" style="display:none;" alt="" src="https://px.ads.linkedin.com/collect/?pid=1353321&conversionId=1265260&fmt=gif" />')
+            $btn.appendTo($target);
+
+          })
+          if (browserInfo.isWinXP) {
+            $target.attr('href', downMsg[2])
+            $('span', $target).text(' (' + downMsg[3] + ') ')
+          } else {
+            $target.attr('href', downMsg[0])
+            $('span', $target).text(' (' + downMsg[1] + ') ')
+          }
+          $('[rel=downAndroidVer]').text(data.secondtitle)
+          $('[rel=downAndroidLog]').html(data.content)
+          $('.codeImg img', $target).attr('src', data.newspic)
+
+          break;
+        case "class101-window":
+          var $target = $('a[rel=downWin]');
+          $target.on('click', function () {
+            var $btn = $('<img height="1" width="1" style="display:none;" alt="" src="https://px.ads.linkedin.com/collect/?pid=1353321&conversionId=1265252&fmt=gif"/>')
+            $btn.appendTo($target);
+          })
+          $target.attr('href', downMsg[0])
+          $('span', $target).text(' (' + downMsg[1] + ')')
+          $('[rel=downWinVer]').text(data.secondtitle)
+          $('[rel=downWinLog]').html(data.content)
+          break;
+      }
+
+
+
+    }
+
+
+  }
+  Tool.solutionFrom = function () {
+    var $modal = $('.modal-consult'),
+      $submitBtn = $('#submitConsult'),
+      $form = $('.consult-form'),
+      $success = $('.consult-success'),
+      $formErrorTip = $('.fromError'),
+      $consultForm = $('#consultForm');
+
+    function resetForm() {
+      $('.ipt').val('').removeClass('valid');
+      $formErrorTip.hide();
+    }
+    jQuery.validator.addMethod(
+      "consultMsg",
+      function (value, element) {
+        // var pw = /^\w+((.\w+)|(-\w+))@[A-Za-z0-9]+((.|-)[A-Za-z0-9]+).[A-Za-z0-9]+$/;
+        var pw = /^\w+((.\w+)|(-\w+))@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
+        var pw2 = /^1[23456789][0123456789]\d{8}$/;
+
+        // var pw2 = /+(9[976]\d|8[987530]\d|6[987]\d|5[90]\d|42\d|3[875]\d|2[98654321]\d|9[8543210]|8[6421]|6[6543210]|5[87654321]| 4[987654310]|3[9643210]|2[70]|7|1)\d{1,14}$/;
+
+        return this.optional(element) || pw.test(value) || pw2.test(value);
+      },
+      "Please enter valid email address or  telephone "
+    );
+    $('a[rel=consultBtn]').on('click', function () {
+      $modal.addClass("on");
+      $form.show();
+      $success.hide();
+      resetForm();
+    })
+    $('.icon-pop-close', $modal).on('click', function () {
+      $modal.removeClass("on");
+      Tool.gtagtrackEvent('解决方案页面', '发送信息弹窗', '关闭弹窗')
+    })
+    $consultForm.validate({
+      messages: {
+        consultName: {
+          required: 'Please enter name',
+        },
+        consultMsg: {
+          required: 'Please enter Contact',
+        },
+        consultComment: {
+          required: 'Please enter Comment',
+          minlength: 'Please enter a value greater than or equal to 20'
+        }
+      },
+      rules: {
+        consultName: {
+          required: true,
+        },
+        consultMsg: {
+          required: true,
+          consultMsg: true
+        },
+        consultComment: {
+          required: true,
+          minlength: 20,
+        }
+      },
+      showErrors: function (errorMap, errorList) {
+        var timeOut = setTimeout(function () {
+          if ($('#consultMsg').hasClass('valid') && $('#consultName').hasClass('valid') && $('#consultComment').hasClass('valid')) {
+            $submitBtn.removeClass('disabled').attr("disabled", false)
+
+          } else {
+            $submitBtn.addClass('disabled').attr("disabled", true)
+          }
+          clearTimeout(timeOut);
+        }, 50)
+
+        this.defaultShowErrors();
+      },
+
+      submitHandler: function () {
+        var url = formAPI + 'class101solution';
+        var data = JSON.stringify({
+          name: $.trim($("#consultName").val()),
+          contact: $.trim($("#consultMsg").val()),
+          comment: $.trim($("#consultComment").val()),
+        })
+
+        Tool.getData(url, "POST", data, function (data) {
+          $form.hide();
+          $success.fadeIn();
+          $formErrorTip.hide();
+          Tool.gtagtrackEvent('解决方案页面', '发送信息弹窗', '发送成功')
+        }, function (error) {
+          $formErrorTip.show();
+          Tool.gtagtrackEvent('解决方案页面', '发送信息弹窗', '发送失败')
+        })
+
+
+
+      }
+    })
+
+  }
+  Tool.askForm = function ($btnEle, category) {
+    var $askDialog = $('.ask-dialog');
+    var $askQues1 = $('#askQues1');
+    var $askQues2 = $('#askQues2');
+    var $askQues3 = $('#askQues3');
+    var $askQues4 = $('#askQues4');
+    var $formErrorTip = $('.fromError');
+
+    var timeOut;
+    var postData = {};
+    var addressStr = window.location.href;
+
+    $('#btnAsk').on('click', function () {
+      $('.ask-start').hide();
+      $('.ask-ques1').fadeIn();
+      Tool.gtagtrackEvent(category, '点击图标', '点击 - 开始填写问卷')
+    })
+
+
+    $('.close', $askDialog).on('click', function () {
+      $askDialog.hide();
+      $('.ask-start').show().siblings().hide();
+      $('.close', $askDialog).show();
+      $formErrorTip.hide();
+      Tool.gtagtrackEvent(category, '点击图标', '关闭下载问卷弹窗')
+    })
+    $btnEle.on('click', function () {
+      timeOut = setTimeout(function () {
+        $askDialog.show();
+        clearTimeout(timeOut);
+      }, 1000)
+
+    })
+    $('[name=askSystem]').on('click', function () {
+      var value = $('#askSystemOther').val();
+      var len = $('[name=askSystem]:checked').length;
+      if (value == '' && len == 0) {
+        $('#askSystemOther-error').show()
+      } else {
+        $('#askSystemOther-error').hide()
+      }
+    })
+    $('[name=askBrowser]').on('click', function () {
+      var value = $('#askBrowserOther').val();
+      var len = $('[name=askBrowser]:checked').length;
+      if (value == '' && len == 0) {
+        $('#askBrowserOther-error').show()
+      } else {
+        $('#askBrowserOther-error').hide()
+      }
+    })
+    jQuery.validator.addMethod('checkSystem', function (value, element) {
+      var len = $('[name=askSystem]:checked').length;
+      if (value == '' && len == 0) return false;
+      return true;
+
+    }, 'Please select or enter your operating system')
+    jQuery.validator.addMethod('checkBrowser', function (value, element) {
+      var len = $('[name=askBrowser]:checked').length;
+      if (value == '' && len == 0) return false;
+      return true;
+
+    }, 'Please select or enter your browser')
+
+    $askQues1.validate({
+
+      rules: {
+        askFrom: {
+          required: true,
+        },
+        askSystemOther: {
+          checkSystem: true,
+        },
+        askBrowserOther: {
+          checkBrowser: true,
+        }
+
+      },
+      submitHandler: function () {
+        $('.ask-ques1').hide();
+        $('.ask-ques2').fadeIn();
+        var askSystemText = '';
+        var askBrowserText = '';
+
+        $('[name=askSystem]:checked').each(function () {
+          var _text = $(this).val();
+          askSystemText += _text + ';';
+        })
+        askSystemText = $('#askSystemOther').val() ? askSystemText + $('#askSystemOther').val() : askSystemText;
+        $('[name=askBrowser]:checked').each(function () {
+          var _text = $(this).val();
+
+          askBrowserText += _text + ';';
+
+        })
+        askBrowserText = $('#askBrowserOther').val() ? askBrowserText + $('#askBrowserOther').val() : askBrowserText;
+
+        postData.askFrom = $('#askFrom').val();
+        postData.askSystem = askSystemText;
+        postData.askBrowser = askBrowserText;
+
+
+        console.log(postData)
+      }
+    })
+    $askQues2.validate({
+      rules: {
+        loadSeep: {
+          required: true,
+        },
+
+      },
+      submitHandler: function () {
+
+        postData.loadSeep = $('[name=loadSeep]:checked').val();
+        $('.ask-ques2').hide();
+        $('.ask-ques3').fadeIn();
+
+        console.log(postData)
+
+      }
+    })
+    $askQues3.validate({
+      rules: {
+        webBase: {
+          required: true,
+        },
+
+      },
+      submitHandler: function () {
+        postData.webBase = $('[name=webBase]:checked').val();
+        $('.ask-ques3').hide();
+        $('.ask-end').fadeIn();
+
+        console.log(postData)
+
+      }
+    })
+    $askQues4.validate({
+      rules: {
+        askEmail: {
+          isEmail: true
+        },
+      },
+      submitHandler: function () {
+        postData.askEmail = $('#askEmail').val();
+        var url = formAPI + 'class101downloadexp';
+        var data = JSON.stringify(postData);
+
+        // console.log(postData)
+        Tool.getData(url, "POST", data, function (data) {
+          $('.ask-end').hide();
+          $('.ask-success').fadeIn();
+          $formErrorTip.hide();
+          Tool.gtagtrackEvent(category, '填写问卷', '填写问卷成功')
+        }, function (error) {
+          $formErrorTip.show();
+        })
+
+
+
+      }
+    })
+    $('.ask-end .white-btn').on('click', function () {
+      $('#sendPost').trigger('click')
+    })
+  }
+  Tool.MessageUSForm = function (_category) {
+    var $success = $('.consult-success');
+    var $formErrorTip = $('.fromError');
+    var $messageForm = $('#messageForm');
+    $messageForm.validate({
+      messages: {
+        Name: {
+          requiedNone: 'Please enter your name. '
+        },
+        Email: {
+          requiedNone: 'Please enter your email. '
+        },
+        Country: {
+          requiedNone: 'Please enter your country. '
+        },
+        Question: {
+          requiedNone: 'Please enter your question. '
+        }
+      },
+      rules: {
+        Name: {
+          requiedNone: true,
+        },
+        Email: {
+          requiedNone: true,
+          isEmail: true
+        },
+        Country: {
+          requiedNone: true,
+        },
+        Question: {
+
+          requiedNone: true,
+        },
+      },
+      submitHandler: function () {
+        var url = formAPI + 'class101messageus';
+        var data = JSON.stringify({
+          Name: $.trim($("#Name").val()),
+          Email: $.trim($("#Email").val()),
+          Country: $.trim($("#Country").val()),
+          Question: $.trim($("#Question").val()),
+        })
+        Tool.getData(url, "POST", data, function (data) {
+          $messageForm.hide();
+          $success.fadeIn();
+          $formErrorTip.hide();
+          Tool.gtagtrackEvent(_category, '发送信息弹窗', '发送成功')
+        }, function (error) {
+          $formErrorTip.show();
+          Tool.gtagtrackEvent(_category, '发送信息弹窗', '发送失败')
+        })
+
+      }
+    })
+  }
+
+  Tool.footerClose = function () {
+    var $footerDown = $('.com-footerDown');
+    var $footerClose = $('#footerClose');
+    if (browserInfo.isIos) { //ios 
+      $footerDown.hide();
+      $('body').addClass('noFooterDown');
+    } else {
+      $footerClose.on('click', function () {
+        $footerDown.hide();
+        $('body').addClass('noFooterDown');
+      })
+    }
+
+
+
+  }
+  Tool.commonMD = function () {
+    $('[data-md]').on('click', function () {
+      var $this = $(this);
+      Tool.gtagtrackEvent($this.data('md'), $this.data('action'), $this.data('label'))
+    })
+
+  }
+  Tool.detectOrient = function (cb) {
+    var u = navigator.userAgent;
+    if (window.orientation === 90 || window.orientation === -90) {
+      cb && cb("landscape");
+    }
+
+    window.addEventListener("onorientationchange" in window ? "orientationchange" : "resize",
+      function () {
+        if (window.orientation === 180 || window.orientation === 0) {
+
+          cb && cb('portrait')
+        }
+        if (window.orientation === 90 || window.orientation === -90) {
+          cb && cb('landscape')
+
+        }
+      }, false);
+  }
+
+  Tool.emailTouch = function (category) {
+    var $toolEmailForm = $('#toolEmailForm');
+    var url = formAPI + 'class101touchemail';
+    $('#touchEmail').on('focus', function () {
+      $('.commit-error').hide();
+    })
+    $toolEmailForm.validate({
+      messages: {
+        touchEmail: {
+          required: 'Please enter your email. '
+        }
+      },
+      rules: {
+        touchEmail: {
+          required: true,
+          isEmail: true
+        }
+      },
+      submitHandler: function () {
+        var data = JSON.stringify({
+          touchEmail: $.trim($('#touchEmail').val())
+        });
+
+        Tool.getData(url, "POST", data, function () {
+          var $successRes = $('.successRes');
+          var timeOut = null;
+          $successRes.fadeIn();
+          timeOut = setTimeout(function () {
+            $successRes.fadeOut();
+            clearTimeout(timeOut)
+          }, 3000)
+          Tool.gtagtrackEvent(category, '点击图标', '点击图标-订阅邮件')
+          $('#touchEmail').val('')
+          $('.commit-error').hide();
+        }, function () {
+          $('.commit-error').show();
+        })
+
+      }
+
+    })
+
+  }
+  Tool.leavePage = function (params) {
+    window.onbeforeunload = function name(params) {
+      console.log('onbeforeunload');
+    }
+  }
+
+
+  Tool.trackAdConfirm = function () {
+    switch (window.comFrom) {
+      case 'f':
+        Tool.trackAd = '(facebook)';
+        break;
+      case 'g':
+        Tool.trackAd = '(谷歌)';
+        break;
+      case 'e':
+        Tool.trackAd = '(edmodo)';
+        break;
+      case 'lk':
+        Tool.trackAd = '(linkedin)';
+        break;
+    }
+
+  }
+  Tool.init = function () {
+    window.comFrom = Tool.getUrlParam("from");
+    window.browserInfo = Tool.browserInfo();
+    Tool.trackAdConfirm()
+    Tool.getSoftInfo();
+    Tool.commonMD();
+    Tool.leavePage()
+    if (!(browserInfo.isAndroid || browserInfo.isIos)) { //PC 
+      Terminal = 'PC';
+      Tool.initRes();
+      Tool.locNavPc();
+    } else { //手机
+      Terminal = 'WAP';
+      Tool.locNavMobile();
+      Tool.footerClose();
+
+      Tool.detectOrient(function (statue) {
+        if (statue == "landscape") {
+          $("#landscapeTip").show();
+        } else {
+          setTimeout(function () {
+            $("#landscapeTip").hide();
+          }, 100)
+
+        }
+
+      })
+    }
+  };
+
+
+  window.Tool = Tool;
+})(window);
+(function () {
+  Tool.init();
+})();

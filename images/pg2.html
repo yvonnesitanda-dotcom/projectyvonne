@@ -1,0 +1,1420 @@
+<!DOCTYPE html>
+<!-- saved from url=(0039)https://class.101.com/tools/index.shtml -->
+<html class="js canvas video csstransforms csstransitions cssanimations" lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+<meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+<meta name="renderer" content="webkit">
+<meta name="author" content="yaofenfan(868618) | 2020-04-07">
+<meta name="editor" content="yaofenfan(868618) | 2020-04-07">
+<link rel="stylesheet" href="./pg2_files/pc.css">
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script src="./pg2_files/sdk.js.download" async="" crossorigin="anonymous"></script><script type="text/javascript" async="" src="./pg2_files/analytics.js.download"></script><script type="text/javascript" async="" src="./pg2_files/js"></script><script src="./pg2_files/hm.js.download"></script><script src="./pg2_files/172518563694893" async=""></script><script async="" src="./pg2_files/fbevents.js.download"></script><script type="text/javascript" async="" src="./pg2_files/js(1)"></script><script type="text/javascript" async="" src="./pg2_files/analytics.js.download"></script><script type="text/javascript" async="" src="./pg2_files/insight.min.js.download"></script><script type="text/javascript" async="" src="./pg2_files/analytics.js.download"></script><script type="text/javascript" async="" src="./pg2_files/js(2)"></script><script async="" src="./pg2_files/gtm.js.download"></script><script async="" src="./pg2_files/gtm(1).js.download"></script><script async="" src="./pg2_files/js(3)"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-128989928-1');
+</script>
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-MF7JX24');</script>
+<!-- End Google Tag Manager -->
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-N89CDQ9');</script>
+  <!-- End Google Tag Manager -->
+<script>
+    function checkMobile() {
+        var ua = navigator.userAgent.toLowerCase();
+        var brower = {};
+        if (ua.match(
+            /iphone|ipod|ios|android|nokia|Windows Phone OS|blackberry|webos|MeeGo|smartphone|symbian|s60|Series60|ucweb|uc brower|opera mini|opera mobi|mini 9.5|320x320|240x320|176x220|320*480|480*320|240*320|320*320|176*220|vx1000|lge|m800|e860|u940|ux840|compal|wireless|mobi|ahong|lg380|lgku|lgu900|lg210|lg47|lg920|lg840|lg370|sam-r|mg50|s55|g83|t66|vx400|mk99|d615|d763|el370|sl900|mp500|samu3|samu4|vx10|xda_|samu5|samu6|samu7|samu9|a615|b832|m881|s920|n210|s700|c-810|_h797|mob-x|sk16d|848b|mowser|s580|r800|471x|v120|rim8|c500foma:|160x|x160|480x|x640|t503|w839|i250|sprint|w398samr810|m5252|c7100|mt126|x225|s5330|s820|htil-g1|fly v71|s302|-x113|novarra|k610i|-three|8325rc|8352rc|sanyo|vx54|c888|nx250|n120|mtk |c5588|s710|t880|c5005|i;458x|p404i|s210|c5100|teleca|s940|c500|s590|foma|samsu|vx8|vx9|a1000|_mms|myx|a700|gu1100|bc831|e300|ems100|me701|me702m-three|sd588|s800|8325rc|ac831|mw200|brew |d88|htc\/|htc_touch|355x|m50|km100|d736|p-9521|telco|sl74|ktouch|m4u\/|me702|8325rc|kddi|phone|lg |sonyericsson|samsung|240x|x320|vx10|nokia|sony cmd|motorola|up.browser|up.link|mmp|symbian|smartphone|midp|wap|vodafone|o2|pocket|mobile|psp|treo/i
+        )) {
+            brower.mobile = true;
+        }
+        if (ua.match(/MicroMessenger/i)) {
+            brower.wechat = true;
+        }
+        if (ua.match(/iphone|ipad/i)) {
+            brower.ios = true;
+        }
+        if (ua.match(/android/i)) {
+            brower.android = true;
+        }
+        if (ua.match(/Windows Phone/i)) {
+            brower.wp = true;
+        }
+        return brower;
+    };
+    function getUrlParam(name) {
+        var params = decodeURI(window.location.search);
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+        var r = params.substr(1).match(reg);
+        if (r != null) return unescape(r[2]);
+        return null;
+    }
+    function handleRouter() {
+        var ua = checkMobile();
+        var _herf = window.location.href;
+        if (!ua.mobile) return;
+        var domain = 'https://' + window.location.host+'/m';
+        var pathname=window.location.pathname;
+        var targetLink=domain+pathname;
+        if(window.location.search){
+            targetLink=targetLink+window.location.search;
+        }
+        window.location.href=targetLink
+    }
+    handleRouter();
+</script>
+<script src="./pg2_files/modernizr.custom.js.download"></script>
+ <!--[if lt IE 9]>
+    <script src="//gcdncs.101.com/v0.1/static/edit_99/tmcms/class101/js/respond.min.js"></script>
+    <script src="//gcdncs.101.com/v0.1/static/edit_99/tmcms/class101/js/es5-shim.min.js"></script>
+    <script src="//gcdncs.101.com/v0.1/static/edit_99/tmcms/class101/js/es5-sham.min.js"></script>
+    <script src="//gcdncs.101.com/v0.1/static/edit_99/tmcms/class101/js/json3.min.js"></script>
+<![endif]-->
+
+
+
+    <meta property="og:url" content="https://class.101.com/tools/index.shtml">
+    <meta name="keyword" content="Edmodo Classroom, Mathematics tools, Physics tools,quiz maker">
+
+    <meta name="description" content="Get out from under your stack of paperwork with Edmodo Classroom, a new time-saving lesson plan creation tool with built-in subject tools and interactive exercises. Try it out to experience just how easy it is to create new activities on the fly. ">
+    <meta property="og:image" content="//gcdncs.101.com/v0.1/static/edit_99/tmcms/class101/images/pc/tools/post-all.jpg">
+
+    <title>Featured Tools_Edmodo Classroom</title>
+
+<script type="text/javascript" src="./pg2_files/getComponenets"></script><style type="text/css" data-fbcssmodules="css:fb.css.base css:fb.css.dialog css:fb.css.iframewidget">.fb_hidden{position:absolute;top:-10000px;z-index:10001}.fb_reposition{overflow:hidden;position:relative}.fb_invisible{display:none}.fb_reset{background:none;border:0px;border-spacing:0;color:#000;cursor:auto;direction:ltr;font-family:lucida grande,tahoma,verdana,arial,sans-serif;font-size:11px;font-style:normal;font-variant:normal;font-weight:400;letter-spacing:normal;line-height:1;margin:0;overflow:visible;padding:0;text-align:left;text-decoration:none;text-indent:0;text-shadow:none;text-transform:none;visibility:visible;white-space:normal;word-spacing:normal}.fb_reset>div{overflow:hidden}@keyframes fb_transform{0%{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}.fb_animate{animation:fb_transform .3s forwards}
+
+.fb_hidden{position:absolute;top:-10000px;z-index:10001}.fb_reposition{overflow:hidden;position:relative}.fb_invisible{display:none}.fb_reset{background:none;border:0px;border-spacing:0;color:#000;cursor:auto;direction:ltr;font-family:lucida grande,tahoma,verdana,arial,sans-serif;font-size:11px;font-style:normal;font-variant:normal;font-weight:400;letter-spacing:normal;line-height:1;margin:0;overflow:visible;padding:0;text-align:left;text-decoration:none;text-indent:0;text-shadow:none;text-transform:none;visibility:visible;white-space:normal;word-spacing:normal}.fb_reset>div{overflow:hidden}@keyframes fb_transform{0%{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}.fb_animate{animation:fb_transform .3s forwards}
+
+.fb_dialog{background:#525252b3;position:absolute;top:-10000px;z-index:10001}.fb_dialog_advanced{border-radius:8px;padding:10px}.fb_dialog_content{background:#fff;color:#373737}.fb_dialog_close_icon{background:url(https://connect.facebook.net/rsrc.php/v4/yq/r/IE9JII6Z1Ys.png) no-repeat scroll 0 0 transparent;cursor:pointer;display:block;height:15px;position:absolute;right:18px;top:17px;width:15px}.fb_dialog_mobile .fb_dialog_close_icon{left:5px;right:auto;top:5px}.fb_dialog_padding{background-color:transparent;position:absolute;width:1px;z-index:-1}.fb_dialog_close_icon:hover{background:url(https://connect.facebook.net/rsrc.php/v4/yq/r/IE9JII6Z1Ys.png) no-repeat scroll 0 -15px transparent}.fb_dialog_close_icon:active{background:url(https://connect.facebook.net/rsrc.php/v4/yq/r/IE9JII6Z1Ys.png) no-repeat scroll 0 -30px transparent}.fb_dialog_iframe{line-height:0}.fb_dialog_content .dialog_title{background:#6d84b4;border:1px solid #365899;color:#fff;font-size:14px;font-weight:700;margin:0}.fb_dialog_content .dialog_title>span{background:url(https://connect.facebook.net/rsrc.php/v4/yd/r/Cou7n-nqK52.gif) no-repeat 5px 50%;float:left;padding:5px 0 7px 26px}body.fb_hidden{height:100%;left:0;margin:0;overflow:visible;position:absolute;top:-10000px;transform:none;width:100%}.fb_dialog.fb_dialog_mobile.loading{background:url(https://connect.facebook.net/rsrc.php/v4/ya/r/3rhSv5V8j3o.gif) #fff no-repeat 50% 50%;min-height:100%;min-width:100%;overflow:hidden;position:absolute;top:0;z-index:10001}.fb_dialog.fb_dialog_mobile.loading.centered{background:none;height:auto;min-height:initial;min-width:initial;width:auto}.fb_dialog.fb_dialog_mobile.loading.centered #fb_dialog_loader_spinner{width:100%}.fb_dialog.fb_dialog_mobile.loading.centered .fb_dialog_content{background:none}.loading.centered #fb_dialog_loader_close{clear:both;color:#fff;display:block;font-size:18px;padding-top:20px}#fb-root #fb_dialog_ipad_overlay{background:#0006;inset:0;min-height:100%;position:absolute;width:100%;z-index:10000}#fb-root #fb_dialog_ipad_overlay.hidden{display:none}.fb_dialog.fb_dialog_mobile.loading iframe{visibility:hidden}.fb_dialog_mobile .fb_dialog_iframe{position:sticky;top:0}.fb_dialog_content .dialog_header{background:linear-gradient(from(#738aba),to(#2c4987));border-bottom:1px solid;border-color:#043b87;box-shadow:#fff 0 1px 1px -1px inset;color:#fff;font:700 14px Helvetica,sans-serif;text-overflow:ellipsis;text-shadow:rgba(0,30,84,.296875) 0px -1px 0px;vertical-align:middle;white-space:nowrap}.fb_dialog_content .dialog_header table{height:43px;width:100%}.fb_dialog_content .dialog_header td.header_left{font-size:12px;padding-left:5px;vertical-align:middle;width:60px}.fb_dialog_content .dialog_header td.header_right{font-size:12px;padding-right:5px;vertical-align:middle;width:60px}.fb_dialog_content .touchable_button{background:linear-gradient(from(#4267B2),to(#2a4887));background-clip:padding-box;border:1px solid #29487d;border-radius:3px;display:inline-block;line-height:18px;margin-top:3px;max-width:85px;padding:4px 12px;position:relative}.fb_dialog_content .dialog_header .touchable_button input{background:none;border:none;color:#fff;font:700 12px Helvetica,sans-serif;margin:2px -12px;padding:2px 6px 3px;text-shadow:rgba(0,30,84,.296875) 0px -1px 0px}.fb_dialog_content .dialog_header .header_center{color:#fff;font-size:16px;font-weight:700;line-height:18px;text-align:center;vertical-align:middle}.fb_dialog_content .dialog_content{background:url(https://connect.facebook.net/rsrc.php/v4/y9/r/jKEcVPZFk-2.gif) no-repeat 50% 50%;border:1px solid #4A4A4A;border-bottom:0;border-top:0;height:150px}.fb_dialog_content .dialog_footer{background:#f5f6f7;border:1px solid #4A4A4A;border-top-color:#ccc;height:40px}#fb_dialog_loader_close{float:left}.fb_dialog.fb_dialog_mobile .fb_dialog_close_icon{visibility:hidden}#fb_dialog_loader_spinner{animation:rotateSpinner 1.2s linear infinite;background-color:transparent;background-image:url(https://connect.facebook.net/rsrc.php/v4/y2/r/onuUJj0tCqE.png);background-position:50% 50%;background-repeat:no-repeat;height:24px;width:24px}@keyframes rotateSpinner{0%{transform:rotate(0)}to{transform:rotate(360deg)}}
+
+.fb_iframe_widget{display:inline-block;position:relative}.fb_iframe_widget span{display:inline-block;position:relative;text-align:justify}.fb_iframe_widget iframe{position:absolute}.fb_iframe_widget_fluid_desktop,.fb_iframe_widget_fluid_desktop span,.fb_iframe_widget_fluid_desktop iframe{max-width:100%}.fb_iframe_widget_fluid_desktop iframe{min-width:220px;position:relative}.fb_iframe_widget_lift{z-index:1}.fb_iframe_widget_fluid{display:inline}.fb_iframe_widget_fluid span{width:100%}
+</style></head>
+
+<body class="mod-tool">
+    <!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MF7JX24"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-N89CDQ9"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+<header class="com-header">
+    <div class="clearfix">
+        <a href="https://class.101.com/" data-md="全站-顶部" data-action="点击图标" data-label="点图标-回到首页" class="logo" title="logo">
+            <img alt="logo" src="./pg2_files/edmodoclassroom_logoM.png">
+        </a>
+        <nav>
+            <ul>
+                <li rel="home"><a href="https://class.101.com/" data-md="全站-顶部" data-action="点击图标" data-label="Home - 回到首页" title="Home">Home</a></li>
+                <li rel="tools" class="on"><a href="https://class.101.com/tools/index.shtml" data-md="全站-顶部" data-action="点击图标" data-label="Tools - 到工具页面" title="Featured Tools">Featured Tools</a></li>
+                <li rel="solution"><a href="https://class.101.com/solution/index.shtml" data-md="全站-顶部" data-action="点击图标" data-label="Solution - 到解决方案页面" title="Solution">Solution</a></li>
+                <li rel="news"><a href="https://class.101.com/newlist/index.shtml" data-md="全站-顶部" data-action="点击图标" data-label="News - 到新闻页面" title="Blogs">Blogs</a></li>
+                <li rel="download"><a href="https://class.101.com/download/v2/index.shtml" data-md="全站-顶部" data-action="点击图标" data-label="Download - 到下载页" title="Download">Download</a></li>
+                <li rel="about"><a href="https://class.101.com/about/index.shtml" data-md="全站-顶部" data-action="点击图标" data-label="About - 联系我们呢" title="About">About</a></li>
+            </ul>
+            <a class="line-btn" id="toResBtn" href="javascript:;" data-md="全站-顶部" data-action="点击图标" data-label="Try now for free - 登录注册" title="Sign up for free">Sign up for free</a>
+        </nav>
+
+    </div>
+
+</header>
+    <header class="com-banner">
+        <img class="bg" src="./pg2_files/banner.jpg">
+        <div class="text">
+            <h1>
+                Discover more solutions<br>
+                to transform your next class with<br>
+                revolutionary Edtech teaching mechanisms
+            </h1>
+        </div>
+    </header>
+    <nav class="com-tabNav">
+        <div class="com-wrap-sm">
+            <div class="item on" data-md="工具页" data-action="点击图标" data-label="学科工具 - 切换标签"><span><i class="ico-toolSub"></i>Subject tools</span></div>
+            <div class="item " data-md="工具页" data-action="点击图标" data-label="互动题型 - 切换标签"><span><i class="ico-toolExer"></i>Interactive Exercise</span></div>
+        </div>
+    </nav>
+    <div class="com-wrap-sm com-tabCnt">
+        <aside class="cnt sec-1 on" data-open="#subjectPop">
+        
+        <section class="item-list">
+                <h1><img src="./pg2_files/tool-math.png">Mathematics</h1>
+                <ul>
+                    
+                    <li class="item" data-index="0-0" data-source="subjectTools" data-lock="false">
+                        <div class="img">
+                            <img src="./pg2_files/icon_246x143.png">
+                            <div class="shade">                          
+                                    <i class="ico-locked"></i>
+                                    <p>Share to Facebook to unlock all tools </p>                                 
+                            </div>                         
+                        </div>
+                        <h6>
+                            <a href="javascript:;" rel="shareFb" data-type="Mathematics"><i></i>Share to Facebook </a>
+                            <span>Area Comparison </span>  
+                         </h6>
+                     </li>
+                     
+                    <li class="item" data-index="0-1" data-source="subjectTools" data-lock="false">
+                        <div class="img">
+                            <img src="./pg2_files/icon_246x143(1).png">
+                            <div class="shade">                          
+                                    <i class="ico-locked"></i>
+                                    <p>Share to Facebook to unlock all tools </p>                                 
+                            </div>                         
+                        </div>
+                        <h6>
+                            <a href="javascript:;" rel="shareFb" data-type="Mathematics"><i></i>Share to Facebook </a>
+                            <span>Scale </span>  
+                         </h6>
+                     </li>
+                     
+                    <li class="item forbid" data-index="0-2" data-source="subjectTools" data-lock="true">
+                        <div class="img">
+                            <img src="./pg2_files/icon_246x143(2).png">
+                            <div class="shade">                          
+                                    <i class="ico-locked"></i>
+                                    <p>Share to Facebook to unlock all tools </p>                                 
+                            </div>                         
+                        </div>
+                        <h6>
+                            <a href="javascript:;" rel="shareFb" data-type="Mathematics"><i></i>Share to Facebook </a>
+                            <span>Central Angle Theorem </span>  
+                         </h6>
+                     </li>
+                     
+                    <li class="item forbid" data-index="0-3" data-source="subjectTools" data-lock="true">
+                        <div class="img">
+                            <img src="./pg2_files/icon_246x143(3).png">
+                            <div class="shade">                          
+                                    <i class="ico-locked"></i>
+                                    <p>Share to Facebook to unlock all tools </p>                                 
+                            </div>                         
+                        </div>
+                        <h6>
+                            <a href="javascript:;" rel="shareFb" data-type="Mathematics"><i></i>Share to Facebook </a>
+                            <span>Cylindrical Volume Formula </span>  
+                         </h6>
+                     </li>
+                     
+                    <li class="item forbid" data-index="0-4" data-source="subjectTools" data-lock="true">
+                        <div class="img">
+                            <img src="./pg2_files/icon_246x143(4).png">
+                            <div class="shade">                          
+                                    <i class="ico-locked"></i>
+                                    <p>Share to Facebook to unlock all tools </p>                                 
+                            </div>                         
+                        </div>
+                        <h6>
+                            <a href="javascript:;" rel="shareFb" data-type="Mathematics"><i></i>Share to Facebook </a>
+                            <span>Radius Measurement </span>  
+                         </h6>
+                     </li>
+                     
+                    <li class="item forbid" data-index="0-5" data-source="subjectTools" data-lock="true">
+                        <div class="img">
+                            <img src="./pg2_files/icon_246x143(5).png">
+                            <div class="shade">                          
+                                    <i class="ico-locked"></i>
+                                    <p>Share to Facebook to unlock all tools </p>                                 
+                            </div>                         
+                        </div>
+                        <h6>
+                            <a href="javascript:;" rel="shareFb" data-type="Mathematics"><i></i>Share to Facebook </a>
+                            <span>Parallel Line Segment </span>  
+                         </h6>
+                     </li>
+                     
+                    <li class="item forbid" data-index="0-6" data-source="subjectTools" data-lock="true">
+                        <div class="img">
+                            <img src="./pg2_files/icon_246x143(6).png">
+                            <div class="shade">                          
+                                    <i class="ico-locked"></i>
+                                    <p>Share to Facebook to unlock all tools </p>                                 
+                            </div>                         
+                        </div>
+                        <h6>
+                            <a href="javascript:;" rel="shareFb" data-type="Mathematics"><i></i>Share to Facebook </a>
+                            <span>Shape Cutting </span>  
+                         </h6>
+                     </li>
+                     
+                    <li class="item forbid" data-index="0-7" data-source="subjectTools" data-lock="true">
+                        <div class="img">
+                            <img src="./pg2_files/icon_246x143(7).png">
+                            <div class="shade">                          
+                                    <i class="ico-locked"></i>
+                                    <p>Share to Facebook to unlock all tools </p>                                 
+                            </div>                         
+                        </div>
+                        <h6>
+                            <a href="javascript:;" rel="shareFb" data-type="Mathematics"><i></i>Share to Facebook </a>
+                            <span>Line and Circle Relationship </span>  
+                         </h6>
+                     </li>
+                     
+                </ul>
+        </section>
+        
+        <section class="item-list">
+                <h1><img src="./pg2_files/tool-wuli.png">Physics</h1>
+                <ul>
+                    
+                    <li class="item" data-index="1-0" data-source="subjectTools" data-lock="false">
+                        <div class="img">
+                            <img src="./pg2_files/icon_246x143(8).png">
+                            <div class="shade">                          
+                                    <i class="ico-locked"></i>
+                                    <p>Share to Facebook to unlock all tools </p>                                 
+                            </div>                         
+                        </div>
+                        <h6>
+                            <a href="javascript:;" rel="shareFb" data-type="Physics"><i></i>Share to Facebook </a>
+                            <span>Circuit Diagram </span>  
+                         </h6>
+                     </li>
+                     
+                    <li class="item" data-index="1-1" data-source="subjectTools" data-lock="false">
+                        <div class="img">
+                            <img src="./pg2_files/icon_246x143(9).png">
+                            <div class="shade">                          
+                                    <i class="ico-locked"></i>
+                                    <p>Share to Facebook to unlock all tools </p>                                 
+                            </div>                         
+                        </div>
+                        <h6>
+                            <a href="javascript:;" rel="shareFb" data-type="Physics"><i></i>Share to Facebook </a>
+                            <span>Collision </span>  
+                         </h6>
+                     </li>
+                     
+                    <li class="item forbid" data-index="1-2" data-source="subjectTools" data-lock="true">
+                        <div class="img">
+                            <img src="./pg2_files/icon_246x143(10).png">
+                            <div class="shade">                          
+                                    <i class="ico-locked"></i>
+                                    <p>Share to Facebook to unlock all tools </p>                                 
+                            </div>                         
+                        </div>
+                        <h6>
+                            <a href="javascript:;" rel="shareFb" data-type="Physics"><i></i>Share to Facebook </a>
+                            <span>Echo Principle </span>  
+                         </h6>
+                     </li>
+                     
+                    <li class="item forbid" data-index="1-3" data-source="subjectTools" data-lock="true">
+                        <div class="img">
+                            <img src="./pg2_files/icon_246x143(11).png">
+                            <div class="shade">                          
+                                    <i class="ico-locked"></i>
+                                    <p>Share to Facebook to unlock all tools </p>                                 
+                            </div>                         
+                        </div>
+                        <h6>
+                            <a href="javascript:;" rel="shareFb" data-type="Physics"><i></i>Share to Facebook </a>
+                            <span>Factors that influence elastic potential energy </span>  
+                         </h6>
+                     </li>
+                     
+                    <li class="item forbid" data-index="1-4" data-source="subjectTools" data-lock="true">
+                        <div class="img">
+                            <img src="./pg2_files/icon_246x143(12).png">
+                            <div class="shade">                          
+                                    <i class="ico-locked"></i>
+                                    <p>Share to Facebook to unlock all tools </p>                                 
+                            </div>                         
+                        </div>
+                        <h6>
+                            <a href="javascript:;" rel="shareFb" data-type="Physics"><i></i>Share to Facebook </a>
+                            <span>Friction Force </span>  
+                         </h6>
+                     </li>
+                     
+                    <li class="item forbid" data-index="1-5" data-source="subjectTools" data-lock="true">
+                        <div class="img">
+                            <img src="./pg2_files/icon_246x143(13).png">
+                            <div class="shade">                          
+                                    <i class="ico-locked"></i>
+                                    <p>Share to Facebook to unlock all tools </p>                                 
+                            </div>                         
+                        </div>
+                        <h6>
+                            <a href="javascript:;" rel="shareFb" data-type="Physics"><i></i>Share to Facebook </a>
+                            <span>Light Polarization </span>  
+                         </h6>
+                     </li>
+                     
+                    <li class="item forbid" data-index="1-6" data-source="subjectTools" data-lock="true">
+                        <div class="img">
+                            <img src="./pg2_files/icon_246x143(14).png">
+                            <div class="shade">                          
+                                    <i class="ico-locked"></i>
+                                    <p>Share to Facebook to unlock all tools </p>                                 
+                            </div>                         
+                        </div>
+                        <h6>
+                            <a href="javascript:;" rel="shareFb" data-type="Physics"><i></i>Share to Facebook </a>
+                            <span>Magnetic Line Simulator </span>  
+                         </h6>
+                     </li>
+                     
+                    <li class="item forbid" data-index="1-7" data-source="subjectTools" data-lock="true">
+                        <div class="img">
+                            <img src="./pg2_files/icon_246x143(15).png">
+                            <div class="shade">                          
+                                    <i class="ico-locked"></i>
+                                    <p>Share to Facebook to unlock all tools </p>                                 
+                            </div>                         
+                        </div>
+                        <h6>
+                            <a href="javascript:;" rel="shareFb" data-type="Physics"><i></i>Share to Facebook </a>
+                            <span>Motion of Charged Particles in a uniform magnetic field </span>  
+                         </h6>
+                     </li>
+                     
+                </ul>
+        </section>
+        
+    </aside>
+        <aside class="cnt sec-2 " data-open="#interactivePop">
+        
+        <section class="item-list">
+                <h1><img src="./pg2_files/tool-inter.png">Interactive</h1>
+                <ul>
+                    
+                    <li class="item" data-index="0-0" data-source="interactiveExercise" data-lock="false">
+                        <div class="img">
+                            <img src="./pg2_files/icon_image_only.png">
+                            <div class="shade">                          
+                                    <i class="ico-locked"></i>
+                                    <p>Share to Facebook to unlock all tools </p>                                 
+                            </div>                         
+                        </div>
+                        <h6>
+                            <a href="javascript:;" rel="shareFb" data-type="Interactive"><i></i>Share to Facebook </a>
+                            <span>Link-up </span>  
+                         </h6>
+                     </li>
+                     
+                    <li class="item" data-index="0-1" data-source="interactiveExercise" data-lock="false">
+                        <div class="img">
+                            <img src="./pg2_files/icon_image_only(1).png">
+                            <div class="shade">                          
+                                    <i class="ico-locked"></i>
+                                    <p>Share to Facebook to unlock all tools </p>                                 
+                            </div>                         
+                        </div>
+                        <h6>
+                            <a href="javascript:;" rel="shareFb" data-type="Interactive"><i></i>Share to Facebook </a>
+                            <span>Select Words </span>  
+                         </h6>
+                     </li>
+                     
+                    <li class="item" data-index="0-2" data-source="interactiveExercise" data-lock="false">
+                        <div class="img">
+                            <img src="./pg2_files/icon_image_only(2).png">
+                            <div class="shade">                          
+                                    <i class="ico-locked"></i>
+                                    <p>Share to Facebook to unlock all tools </p>                                 
+                            </div>                         
+                        </div>
+                        <h6>
+                            <a href="javascript:;" rel="shareFb" data-type="Interactive"><i></i>Share to Facebook </a>
+                            <span>Classification </span>  
+                         </h6>
+                     </li>
+                     
+                    <li class="item forbid" data-index="0-3" data-source="interactiveExercise" data-lock="true">
+                        <div class="img">
+                            <img src="./pg2_files/icon_image_only(3).png">
+                            <div class="shade">                          
+                                    <i class="ico-locked"></i>
+                                    <p>Share to Facebook to unlock all tools </p>                                 
+                            </div>                         
+                        </div>
+                        <h6>
+                            <a href="javascript:;" rel="shareFb" data-type="Interactive"><i></i>Share to Facebook </a>
+                            <span>Select Texts </span>  
+                         </h6>
+                     </li>
+                     
+                </ul>
+        </section>
+        
+        <section class="item-list">
+                <h1><img src="./pg2_files/tool-base.png">Basic</h1>
+                <ul>
+                    
+                    <li class="item" data-index="1-0" data-source="interactiveExercise" data-lock="false">
+                        <div class="img">
+                            <img src="./pg2_files/icon_image_only(4).png">
+                            <div class="shade">                          
+                                    <i class="ico-locked"></i>
+                                    <p>Share to Facebook to unlock all tools </p>                                 
+                            </div>                         
+                        </div>
+                        <h6>
+                            <a href="javascript:;" rel="shareFb" data-type="Basic"><i></i>Share to Facebook </a>
+                            <span>Single Choice </span>  
+                         </h6>
+                     </li>
+                     
+                    <li class="item" data-index="1-1" data-source="interactiveExercise" data-lock="false">
+                        <div class="img">
+                            <img src="./pg2_files/icon_image_only(5).png">
+                            <div class="shade">                          
+                                    <i class="ico-locked"></i>
+                                    <p>Share to Facebook to unlock all tools </p>                                 
+                            </div>                         
+                        </div>
+                        <h6>
+                            <a href="javascript:;" rel="shareFb" data-type="Basic"><i></i>Share to Facebook </a>
+                            <span>Multiple Choice </span>  
+                         </h6>
+                     </li>
+                     
+                    <li class="item" data-index="1-2" data-source="interactiveExercise" data-lock="false">
+                        <div class="img">
+                            <img src="./pg2_files/icon_image_only(6).png">
+                            <div class="shade">                          
+                                    <i class="ico-locked"></i>
+                                    <p>Share to Facebook to unlock all tools </p>                                 
+                            </div>                         
+                        </div>
+                        <h6>
+                            <a href="javascript:;" rel="shareFb" data-type="Basic"><i></i>Share to Facebook </a>
+                            <span>Fill in the Blank </span>  
+                         </h6>
+                     </li>
+                     
+                    <li class="item" data-index="1-3" data-source="interactiveExercise" data-lock="false">
+                        <div class="img">
+                            <img src="./pg2_files/icon_image_only(7).png">
+                            <div class="shade">                          
+                                    <i class="ico-locked"></i>
+                                    <p>Share to Facebook to unlock all tools </p>                                 
+                            </div>                         
+                        </div>
+                        <h6>
+                            <a href="javascript:;" rel="shareFb" data-type="Basic"><i></i>Share to Facebook </a>
+                            <span>True or False </span>  
+                         </h6>
+                     </li>
+                     
+                    <li class="item forbid" data-index="1-4" data-source="interactiveExercise" data-lock="true">
+                        <div class="img">
+                            <img src="./pg2_files/icon_image_only(8).png">
+                            <div class="shade">                          
+                                    <i class="ico-locked"></i>
+                                    <p>Share to Facebook to unlock all tools </p>                                 
+                            </div>                         
+                        </div>
+                        <h6>
+                            <a href="javascript:;" rel="shareFb" data-type="Basic"><i></i>Share to Facebook </a>
+                            <span>Matching </span>  
+                         </h6>
+                     </li>
+                     
+                    <li class="item forbid" data-index="1-5" data-source="interactiveExercise" data-lock="true">
+                        <div class="img">
+                            <img src="./pg2_files/icon_image_only(9).png">
+                            <div class="shade">                          
+                                    <i class="ico-locked"></i>
+                                    <p>Share to Facebook to unlock all tools </p>                                 
+                            </div>                         
+                        </div>
+                        <h6>
+                            <a href="javascript:;" rel="shareFb" data-type="Basic"><i></i>Share to Facebook </a>
+                            <span>Vote </span>  
+                         </h6>
+                     </li>
+                     
+                    <li class="item forbid" data-index="1-6" data-source="interactiveExercise" data-lock="true">
+                        <div class="img">
+                            <img src="./pg2_files/icon_image_only(10).png">
+                            <div class="shade">                          
+                                    <i class="ico-locked"></i>
+                                    <p>Share to Facebook to unlock all tools </p>                                 
+                            </div>                         
+                        </div>
+                        <h6>
+                            <a href="javascript:;" rel="shareFb" data-type="Basic"><i></i>Share to Facebook </a>
+                            <span>Question and Answer </span>  
+                         </h6>
+                     </li>
+                     
+                    <li class="item forbid" data-index="1-7" data-source="interactiveExercise" data-lock="true">
+                        <div class="img">
+                            <img src="./pg2_files/icon_image_only(11).png">
+                            <div class="shade">                          
+                                    <i class="ico-locked"></i>
+                                    <p>Share to Facebook to unlock all tools </p>                                 
+                            </div>                         
+                        </div>
+                        <h6>
+                            <a href="javascript:;" rel="shareFb" data-type="Basic"><i></i>Share to Facebook </a>
+                            <span>Survey </span>  
+                         </h6>
+                     </li>
+                     
+                </ul>
+        </section>
+        
+        <section class="item-list">
+                <h1><img src="./pg2_files/tool-zh.png">For Chinese</h1>
+                <ul>
+                    
+                    <li class="item" data-index="2-0" data-source="interactiveExercise" data-lock="false">
+                        <div class="img">
+                            <img src="./pg2_files/icon_image_only(12).png">
+                            <div class="shade">                          
+                                    <i class="ico-locked"></i>
+                                    <p>Share to Facebook to unlock all tools </p>                                 
+                            </div>                         
+                        </div>
+                        <h6>
+                            <a href="javascript:;" rel="shareFb" data-type="For Chinese"><i></i>Share to Facebook </a>
+                            <span>Crossword Puzzle </span>  
+                         </h6>
+                     </li>
+                     
+                </ul>
+        </section>
+        
+        <section class="item-list">
+                <h1><img src="./pg2_files/tool-en.png">For English</h1>
+                <ul>
+                    
+                    <li class="item" data-index="3-0" data-source="interactiveExercise" data-lock="false">
+                        <div class="img">
+                            <img src="./pg2_files/icon_image_only(12).png">
+                            <div class="shade">                          
+                                    <i class="ico-locked"></i>
+                                    <p>Share to Facebook to unlock all tools </p>                                 
+                            </div>                         
+                        </div>
+                        <h6>
+                            <a href="javascript:;" rel="shareFb" data-type="For English"><i></i>Share to Facebook </a>
+                            <span>Crossword Puzzle </span>  
+                         </h6>
+                     </li>
+                     
+                </ul>
+        </section>
+        
+    </aside>
+    </div>
+    <div class="download-layers">
+        <div class="com-wrap-sm">
+            <div class="img-left">
+                <img src="./pg2_files/downlayerImg.png">
+            </div>
+            <div class="txt-right">
+                <h1>Like it ?<br> Download all in ONE Package </h1>
+                <a class="com-btn white-btn" href="javascript:;" rel="downWin" data-md="工具页" data-action="点击图标" data-label="点击下载按钮 - 下载" id="downloadAsk">
+                    <i class="win"></i>Download
+                </a>
+            </div>
+        </div>
+         <!-- 问卷调查弹窗 -->
+ <section class="ask-dialog" style="display: none">
+    <div class="dialog-main">
+        <i class="close"></i>
+        <!-- start -->
+        <aside class="ask-inner ask-start" style="display:block">
+            <i class="ball-3"></i>
+            <div class="text">
+                <h2>Let us know your <br>
+                    download experience</h2>
+                <p>Hi, we would like to know how you feel about your download experience so that we could ensure
+                    that we are providing the best service. Please help us by answering the questions below</p>
+                <a class="btn-ask" id="btnAsk" href="javascript:;">Start</a>
+            </div>
+        </aside>
+        <aside class="ask-inner ask-ques1" style="display:none">
+            
+            <!-- <label class="label-num"><span>1</span></label> -->
+            <form class="formWrap" id="askQues1" autocomplete="off" novalidate="novalidate">
+                <h5>Which country are you from?</h5>
+                <div class="form-item-con">
+                    <input type="text" validate="" name="askFrom" id="askFrom" autocomplete="off" class="ipt" value="">
+                </div>
+                <h5>What's your operating system?</h5>
+                <div class="form-item-con form-item-checked">
+                    <span class="checkItem"><input type="checkbox" class="checkbox" name="askSystem" value="Windows"><i></i>Windows</span>
+                    <span class="checkItem"><input type="checkbox" class="checkbox" name="askSystem" value="iOS"><i></i>iOS</span>
+                    <span class="checkItem"><input type="checkbox" class="checkbox" name="askSystem" value="Android"><i></i>Android</span>
+                    <span class="checkItem"><input type="checkbox" class="checkbox" name="askSystem" value="mac"><i></i>mac</span>
+                    <span class="checkItem"><input type="checkbox" class="checkbox" name="askSystem" value="Linux"><i></i>Linux</span>
+                    <div class="otherItem">
+
+                        Others
+                        <input type="text" name="askSystemOther" id="askSystemOther" class="ipt">
+                    </div>
+                </div>
+                <h5>What browser are you using?</h5>
+                <div class="form-item-con form-item-checked">
+
+                    <span class="checkItem"><input type="checkbox" class="checkbox" name="askBrowser" value="Chrome"><i></i>Chrome</span>
+                    <span class="checkItem"><input type="checkbox" class="checkbox" name="askBrowser" value="Safari"><i></i>Safari</span>
+                    <span class="checkItem"><input type="checkbox" class="checkbox" name="askBrowser" value="Firefox"><i></i>Firefox</span>
+                    <span class="checkItem"><input type="checkbox" class="checkbox" name="askBrowser" value="Opera"><i></i>Opera</span>
+                    <span class="checkItem"><input type="checkbox" class="checkbox" name="askBrowser" value="IE"><i></i>IE</span>
+
+                    <div class="otherItem">
+                        Others
+                        <input type="text" name="askBrowserOther" id="askBrowserOther" class="ipt">
+                    </div>
+
+                </div>
+                <input class="btn-ask" type="submit" autocomplete="off" value="Next">
+                <div class="lead-tip"><i class="on"></i><i></i><i></i></div>
+            </form>
+        </aside>
+        <aside class="ask-inner ask-ques2" style="display:none">
+            <!-- <label class="label-num"><span>2</span></label> -->
+            <form class="formWrap" id="askQues2" autocomplete="off" novalidate="novalidate">
+                <h5>How would you describe your download speed of Edmodo Classroom?</h5>
+                <div class="form-item-con form-item-checked">
+                    <span class="checkItem"><input type="radio" class="checkbox" name="loadSeep" value="It is very fast. I believe it could be downloaded within 3 minutes"><i></i>It
+                        is very fast. I believe it could be downloaded within 3 minutes</span>
+                    <span class="checkItem"><input type="radio" class="checkbox" name="loadSeep" value="It looks not bad. I believe it could be downloaded within 5 minutes.">It
+                        looks not bad. I believe it could be downloaded within 5 minutes.<i></i></span>
+                    <span class="checkItem"><input type="radio" class="checkbox" name="loadSeep" value="It takes sometime (5-10 minutes) but it&#39;s acceptable.">It takes sometime
+                        (5-10 minutes) but it's acceptable.<i></i></span>
+                    <span class="checkItem"><input type="radio" class="checkbox" name="loadSeep" value="The download speed is too slow and it takes too much time loading. ">The
+                        download speed is too slow and it takes too much time loading. <i></i></span>
+
+                </div>
+                <input class="btn-ask" type="submit" autocomplete="off" value="Next">
+                <div class="lead-tip"><i></i><i class="on"></i><i></i></div>
+            </form>
+        </aside>
+        <aside class="ask-inner ask-ques3" style="display:none">
+            <!-- <label class="label-num"><span>3</span></label> -->
+            <form class="formWrap" id="askQues3" autocomplete="off" novalidate="novalidate">
+                <h5>Do you find it necessary to have a Web-based version of Edmodo Classroom for better
+                    experience?</h5>
+                <div class="form-item-con form-item-checked">
+                    <span class="checkItem"><input type="radio" class="checkbox" name="webBase" value="Yes, a web-based solution can save me time downloading and installing.">Yes,
+                        a web-based solution can save me time downloading and installing.<i></i></span>
+                    <span class="checkItem"><input type="radio" class="checkbox" name="webBase" value=" Yes, a web-based solution provides better experience."> Yes, a web-based
+                        solution provides better experience.<i></i></span>
+                    <span class="checkItem"><input type="radio" class="checkbox" name="webBase" value="No, I am fine with the PC software version.">No, I am fine with the PC
+                        software version.<i></i></span>
+                    <span class="checkItem"><input type="radio" class="checkbox" name="webBase" value="No, I am afraid I have limited Internet access to web-based version.">No, I
+                        am afraid I have limited Internet access to web-based version.<i></i></span>
+                </div>
+                <input class="btn-ask" type="submit" autocomplete="off" value="Next">
+                <div class="lead-tip"><i></i><i></i><i class="on"></i></div>
+            </form>
+        </aside>
+        <aside class="ask-inner ask-end" style="display:none">
+            
+            <!-- <img src="//gcdncs.101.com/v0.1/static/edit_99/tmcms/class101/images/pc/tools/LOGO.png"> -->
+            <div class="text">
+                <h4>Thank you for your feedback!</h4>
+                <p>
+                    We would give you regular updates on our <br>
+                    product if you are interested.
+                </p>
+               
+            </div>
+            <div class="sendWap">
+                <div class="emailSend">
+                    <form id="askQues4" autocomplete="off" novalidate="novalidate">
+                        <input class="ipt-text" id="askEmail" name="askEmail" placeholder="Leave your email here">
+                        <input class="btn" id="sendPost" type="submit" value="send">
+                    </form>
+
+                </div>
+                <a class="white-btn" href="javascript:;">No, thank you.</a>
+                <p class="fromError">submit failure!</p>
+
+            </div>
+            <img class="ball-3" src="./pg2_files/ball3.png">
+
+        </aside>
+        <aside class="ask-inner ask-success" style="display:none">
+            <img src="./pg2_files/LOGO.png">
+            <div class="successTip">
+                <img src="./pg2_files/successTip.png">
+                <h4>Send Successful!</h4>
+            </div>
+        </aside>
+
+
+    </div>
+</section>
+
+    </div>
+    <!-- 邮箱订阅 -->
+<div class="email-layers">
+    <div class="com-wrap-sm">
+        <h4>Stay in the loop for abundant teaching resources
+        </h4>
+        <div class="formWrap">
+            <form id="toolEmailForm" novalidate="novalidate">
+                <div class="form-item-con ">
+                    <input type="text" placeholder="Email address" validate="" name="touchEmail" id="touchEmail" autocomplete="off" class="ipt" value="" fdprocessedid="g1mvv">
+
+                </div>
+
+                <input class="line-btn" type="submit" autocomplete="off" value="Subscribe" fdprocessedid="eh572w">
+                <div class="commit-error">submit failure!</div>
+                <div class="successRes"><img src="./pg2_files/successIcon.png">Submitted
+                    successfully. </div>
+            </form>
+        </div>
+    </div>
+</div>
+    <!-- <nav class="tool-asideDown">
+        <h6>free Download </h6>
+        <a rel='downWin'  data-md='工具页' data-action="点击下载" data-label='Windows - 下载' >
+            <img src="//gcdncs.101.com/v0.1/static/edit_99/tmcms/class101/images/edmodoclassroom_logo2.png">
+        </a>
+    </nav> -->
+    <nav class="tool-asideDown">
+        <a rel="downWin" data-md="工具页" data-action="点击下载" data-label="Windows - 下载">
+            <img src="./pg2_files/edmodoclassroom_logo2.png">
+            <p>Windows</p>
+            <h6>Download</h6>
+        </a>
+    </nav>
+    <!-- 弹窗：学科工具 -->
+    <div class="com-pop modal-tool " id="subjectPop">
+        <div class="bg"></div>
+        <div class="pop-toolMain">
+            <i class="close"></i>
+            <aside class="iframe-box">
+                <div class="iframeWrap">
+                    <iframe src="./pg2_files/saved_resource.html"></iframe>
+                    <div class="shareWrap">
+                        <div class="shareInner">
+                            <section class="ct">
+                                <h3>Share to Facebook to unlock all tools </h3>
+                                <a href="javascript:;" rel="shareFb"><i></i>Share to Facebook </a>
+                            </section>
+                            <section class="dl">
+                                <img src="./pg2_files/LOGO.png">
+                                <h4>Download Edmodo Classroom <br> to get a brand new class experience!</h4>
+                                <a class="line-btn" href="javascript:;" rel="downWin">Download</a>
+
+                            </section>
+                        </div>
+
+                    </div>
+                </div>
+
+            </aside>
+            <aside class="iframe-list" id="iframe1">
+        
+            <h1>Mathematics</h1>
+            
+                <div class="item" title="0-0" data-source="subjectTools" data-lock="false">
+                    <div class="img">
+                        <img src="./pg2_files/icon_246x143.png">
+                        <div class="shade">   <i class="ico-locked"></i> </div> 
+                    </div>
+                    <h6>
+                        <span>Area Comparison</span>
+                        <a href="javascript:;" rel="shareFb" data-type="Mathematics">Share to Facebook </a>
+                     </h6>
+                </div>
+            
+                <div class="item" title="0-1" data-source="subjectTools" data-lock="false">
+                    <div class="img">
+                        <img src="./pg2_files/icon_246x143(1).png">
+                        <div class="shade">   <i class="ico-locked"></i> </div> 
+                    </div>
+                    <h6>
+                        <span>Scale</span>
+                        <a href="javascript:;" rel="shareFb" data-type="Mathematics">Share to Facebook </a>
+                     </h6>
+                </div>
+            
+                <div class="item forbid" title="0-2" data-source="subjectTools" data-lock="true">
+                    <div class="img">
+                        <img src="./pg2_files/icon_246x143(2).png">
+                        <div class="shade">   <i class="ico-locked"></i> </div> 
+                    </div>
+                    <h6>
+                        <span>Central Angle Theorem</span>
+                        <a href="javascript:;" rel="shareFb" data-type="Mathematics">Share to Facebook </a>
+                     </h6>
+                </div>
+            
+                <div class="item forbid" title="0-3" data-source="subjectTools" data-lock="true">
+                    <div class="img">
+                        <img src="./pg2_files/icon_246x143(3).png">
+                        <div class="shade">   <i class="ico-locked"></i> </div> 
+                    </div>
+                    <h6>
+                        <span>Cylindrical Volume Formula</span>
+                        <a href="javascript:;" rel="shareFb" data-type="Mathematics">Share to Facebook </a>
+                     </h6>
+                </div>
+            
+                <div class="item forbid" title="0-4" data-source="subjectTools" data-lock="true">
+                    <div class="img">
+                        <img src="./pg2_files/icon_246x143(4).png">
+                        <div class="shade">   <i class="ico-locked"></i> </div> 
+                    </div>
+                    <h6>
+                        <span>Radius Measurement</span>
+                        <a href="javascript:;" rel="shareFb" data-type="Mathematics">Share to Facebook </a>
+                     </h6>
+                </div>
+            
+                <div class="item forbid" title="0-5" data-source="subjectTools" data-lock="true">
+                    <div class="img">
+                        <img src="./pg2_files/icon_246x143(5).png">
+                        <div class="shade">   <i class="ico-locked"></i> </div> 
+                    </div>
+                    <h6>
+                        <span>Parallel Line Segment</span>
+                        <a href="javascript:;" rel="shareFb" data-type="Mathematics">Share to Facebook </a>
+                     </h6>
+                </div>
+            
+                <div class="item forbid" title="0-6" data-source="subjectTools" data-lock="true">
+                    <div class="img">
+                        <img src="./pg2_files/icon_246x143(6).png">
+                        <div class="shade">   <i class="ico-locked"></i> </div> 
+                    </div>
+                    <h6>
+                        <span>Shape Cutting</span>
+                        <a href="javascript:;" rel="shareFb" data-type="Mathematics">Share to Facebook </a>
+                     </h6>
+                </div>
+            
+                <div class="item forbid" title="0-7" data-source="subjectTools" data-lock="true">
+                    <div class="img">
+                        <img src="./pg2_files/icon_246x143(7).png">
+                        <div class="shade">   <i class="ico-locked"></i> </div> 
+                    </div>
+                    <h6>
+                        <span>Line and Circle Relationship</span>
+                        <a href="javascript:;" rel="shareFb" data-type="Mathematics">Share to Facebook </a>
+                     </h6>
+                </div>
+            
+        
+            <h1>Physics</h1>
+            
+                <div class="item" title="1-0" data-source="subjectTools" data-lock="false">
+                    <div class="img">
+                        <img src="./pg2_files/icon_246x143(8).png">
+                        <div class="shade">   <i class="ico-locked"></i> </div> 
+                    </div>
+                    <h6>
+                        <span>Circuit Diagram</span>
+                        <a href="javascript:;" rel="shareFb" data-type="Physics">Share to Facebook </a>
+                     </h6>
+                </div>
+            
+                <div class="item" title="1-1" data-source="subjectTools" data-lock="false">
+                    <div class="img">
+                        <img src="./pg2_files/icon_246x143(9).png">
+                        <div class="shade">   <i class="ico-locked"></i> </div> 
+                    </div>
+                    <h6>
+                        <span>Collision</span>
+                        <a href="javascript:;" rel="shareFb" data-type="Physics">Share to Facebook </a>
+                     </h6>
+                </div>
+            
+                <div class="item forbid" title="1-2" data-source="subjectTools" data-lock="true">
+                    <div class="img">
+                        <img src="./pg2_files/icon_246x143(10).png">
+                        <div class="shade">   <i class="ico-locked"></i> </div> 
+                    </div>
+                    <h6>
+                        <span>Echo Principle</span>
+                        <a href="javascript:;" rel="shareFb" data-type="Physics">Share to Facebook </a>
+                     </h6>
+                </div>
+            
+                <div class="item forbid" title="1-3" data-source="subjectTools" data-lock="true">
+                    <div class="img">
+                        <img src="./pg2_files/icon_246x143(11).png">
+                        <div class="shade">   <i class="ico-locked"></i> </div> 
+                    </div>
+                    <h6>
+                        <span>Factors that influence elastic potential energy</span>
+                        <a href="javascript:;" rel="shareFb" data-type="Physics">Share to Facebook </a>
+                     </h6>
+                </div>
+            
+                <div class="item forbid" title="1-4" data-source="subjectTools" data-lock="true">
+                    <div class="img">
+                        <img src="./pg2_files/icon_246x143(12).png">
+                        <div class="shade">   <i class="ico-locked"></i> </div> 
+                    </div>
+                    <h6>
+                        <span>Friction Force</span>
+                        <a href="javascript:;" rel="shareFb" data-type="Physics">Share to Facebook </a>
+                     </h6>
+                </div>
+            
+                <div class="item forbid" title="1-5" data-source="subjectTools" data-lock="true">
+                    <div class="img">
+                        <img src="./pg2_files/icon_246x143(13).png">
+                        <div class="shade">   <i class="ico-locked"></i> </div> 
+                    </div>
+                    <h6>
+                        <span>Light Polarization</span>
+                        <a href="javascript:;" rel="shareFb" data-type="Physics">Share to Facebook </a>
+                     </h6>
+                </div>
+            
+                <div class="item forbid" title="1-6" data-source="subjectTools" data-lock="true">
+                    <div class="img">
+                        <img src="./pg2_files/icon_246x143(14).png">
+                        <div class="shade">   <i class="ico-locked"></i> </div> 
+                    </div>
+                    <h6>
+                        <span>Magnetic Line Simulator</span>
+                        <a href="javascript:;" rel="shareFb" data-type="Physics">Share to Facebook </a>
+                     </h6>
+                </div>
+            
+                <div class="item forbid" title="1-7" data-source="subjectTools" data-lock="true">
+                    <div class="img">
+                        <img src="./pg2_files/icon_246x143(15).png">
+                        <div class="shade">   <i class="ico-locked"></i> </div> 
+                    </div>
+                    <h6>
+                        <span>Motion of Charged Particles in a uniform magnetic field</span>
+                        <a href="javascript:;" rel="shareFb" data-type="Physics">Share to Facebook </a>
+                     </h6>
+                </div>
+            
+        
+    </aside>
+        </div>
+    </div>
+    <!-- 弹窗：交互工具 -->
+    <div class="com-pop modal-tool  interactive-tool  " id="interactivePop">
+        <div class="bg"></div>
+        <div class="pop-toolMain">
+            <i class="close"></i>
+            <aside class="iframe-box">
+                <div class="iframeWrap">
+                    <iframe src="./pg2_files/saved_resource(1).html"></iframe>
+                    <div class="shareWrap">
+                        <div class="shareInner">
+                            <section class="ct">
+                                <h3>Share to Facebook to unlock all tools </h3>
+                                <a href="javascript:;" rel="shareFb"><i></i>Share to Facebook </a>
+                            </section>
+                            <section class="dl">
+                                <img src="./pg2_files/LOGO.png">
+                                <h4>Download Edmodo Classroom <br> to get a brand new class experience!</h4>
+                                <a class="line-btn" href="javascript:;" rel="downWin">Download</a>
+
+                            </section>
+                        </div>
+
+                    </div>
+                </div>
+            </aside>
+            <aside class="iframe-list" id="iframe2">
+        
+            <h1>Interactive</h1>
+            
+                <div class="item" title="0-0" data-source="interactiveExercise" data-lock="false">
+                    <div class="img">
+                        <img src="./pg2_files/icon_image_only.png">
+                        <div class="shade">   <i class="ico-locked"></i> </div> 
+                    </div>
+                    <h6>
+                        <span>Link-up</span>
+                        <a href="javascript:;" rel="shareFb" data-type="Interactive">Share to Facebook </a>
+                     </h6>
+                </div>
+            
+                <div class="item" title="0-1" data-source="interactiveExercise" data-lock="false">
+                    <div class="img">
+                        <img src="./pg2_files/icon_image_only(1).png">
+                        <div class="shade">   <i class="ico-locked"></i> </div> 
+                    </div>
+                    <h6>
+                        <span>Select Words</span>
+                        <a href="javascript:;" rel="shareFb" data-type="Interactive">Share to Facebook </a>
+                     </h6>
+                </div>
+            
+                <div class="item" title="0-2" data-source="interactiveExercise" data-lock="false">
+                    <div class="img">
+                        <img src="./pg2_files/icon_image_only(2).png">
+                        <div class="shade">   <i class="ico-locked"></i> </div> 
+                    </div>
+                    <h6>
+                        <span>Classification</span>
+                        <a href="javascript:;" rel="shareFb" data-type="Interactive">Share to Facebook </a>
+                     </h6>
+                </div>
+            
+                <div class="item forbid" title="0-3" data-source="interactiveExercise" data-lock="true">
+                    <div class="img">
+                        <img src="./pg2_files/icon_image_only(3).png">
+                        <div class="shade">   <i class="ico-locked"></i> </div> 
+                    </div>
+                    <h6>
+                        <span>Select Texts</span>
+                        <a href="javascript:;" rel="shareFb" data-type="Interactive">Share to Facebook </a>
+                     </h6>
+                </div>
+            
+        
+            <h1>Basic</h1>
+            
+                <div class="item" title="1-0" data-source="interactiveExercise" data-lock="false">
+                    <div class="img">
+                        <img src="./pg2_files/icon_image_only(4).png">
+                        <div class="shade">   <i class="ico-locked"></i> </div> 
+                    </div>
+                    <h6>
+                        <span>Single Choice</span>
+                        <a href="javascript:;" rel="shareFb" data-type="Basic">Share to Facebook </a>
+                     </h6>
+                </div>
+            
+                <div class="item" title="1-1" data-source="interactiveExercise" data-lock="false">
+                    <div class="img">
+                        <img src="./pg2_files/icon_image_only(5).png">
+                        <div class="shade">   <i class="ico-locked"></i> </div> 
+                    </div>
+                    <h6>
+                        <span>Multiple Choice</span>
+                        <a href="javascript:;" rel="shareFb" data-type="Basic">Share to Facebook </a>
+                     </h6>
+                </div>
+            
+                <div class="item" title="1-2" data-source="interactiveExercise" data-lock="false">
+                    <div class="img">
+                        <img src="./pg2_files/icon_image_only(6).png">
+                        <div class="shade">   <i class="ico-locked"></i> </div> 
+                    </div>
+                    <h6>
+                        <span>Fill in the Blank</span>
+                        <a href="javascript:;" rel="shareFb" data-type="Basic">Share to Facebook </a>
+                     </h6>
+                </div>
+            
+                <div class="item" title="1-3" data-source="interactiveExercise" data-lock="false">
+                    <div class="img">
+                        <img src="./pg2_files/icon_image_only(7).png">
+                        <div class="shade">   <i class="ico-locked"></i> </div> 
+                    </div>
+                    <h6>
+                        <span>True or False</span>
+                        <a href="javascript:;" rel="shareFb" data-type="Basic">Share to Facebook </a>
+                     </h6>
+                </div>
+            
+                <div class="item forbid" title="1-4" data-source="interactiveExercise" data-lock="true">
+                    <div class="img">
+                        <img src="./pg2_files/icon_image_only(8).png">
+                        <div class="shade">   <i class="ico-locked"></i> </div> 
+                    </div>
+                    <h6>
+                        <span>Matching</span>
+                        <a href="javascript:;" rel="shareFb" data-type="Basic">Share to Facebook </a>
+                     </h6>
+                </div>
+            
+                <div class="item forbid" title="1-5" data-source="interactiveExercise" data-lock="true">
+                    <div class="img">
+                        <img src="./pg2_files/icon_image_only(9).png">
+                        <div class="shade">   <i class="ico-locked"></i> </div> 
+                    </div>
+                    <h6>
+                        <span>Vote</span>
+                        <a href="javascript:;" rel="shareFb" data-type="Basic">Share to Facebook </a>
+                     </h6>
+                </div>
+            
+                <div class="item forbid" title="1-6" data-source="interactiveExercise" data-lock="true">
+                    <div class="img">
+                        <img src="./pg2_files/icon_image_only(10).png">
+                        <div class="shade">   <i class="ico-locked"></i> </div> 
+                    </div>
+                    <h6>
+                        <span>Question and Answer</span>
+                        <a href="javascript:;" rel="shareFb" data-type="Basic">Share to Facebook </a>
+                     </h6>
+                </div>
+            
+                <div class="item forbid" title="1-7" data-source="interactiveExercise" data-lock="true">
+                    <div class="img">
+                        <img src="./pg2_files/icon_image_only(11).png">
+                        <div class="shade">   <i class="ico-locked"></i> </div> 
+                    </div>
+                    <h6>
+                        <span>Survey</span>
+                        <a href="javascript:;" rel="shareFb" data-type="Basic">Share to Facebook </a>
+                     </h6>
+                </div>
+            
+        
+            <h1>For Chinese</h1>
+            
+                <div class="item" title="2-0" data-source="interactiveExercise" data-lock="false">
+                    <div class="img">
+                        <img src="./pg2_files/icon_image_only(12).png">
+                        <div class="shade">   <i class="ico-locked"></i> </div> 
+                    </div>
+                    <h6>
+                        <span>Crossword Puzzle</span>
+                        <a href="javascript:;" rel="shareFb" data-type="For Chinese">Share to Facebook </a>
+                     </h6>
+                </div>
+            
+        
+            <h1>For English</h1>
+            
+                <div class="item" title="3-0" data-source="interactiveExercise" data-lock="false">
+                    <div class="img">
+                        <img src="./pg2_files/icon_image_only(12).png">
+                        <div class="shade">   <i class="ico-locked"></i> </div> 
+                    </div>
+                    <h6>
+                        <span>Crossword Puzzle</span>
+                        <a href="javascript:;" rel="shareFb" data-type="For English">Share to Facebook </a>
+                     </h6>
+                </div>
+            
+        
+    </aside>
+        </div>
+    </div>
+
+    <script id="newItem" type="text/html">
+        {{ each items as item i }}
+        <section class="item-list">
+                <h1><img src="{{item.titleIcon}}">{{item.titleName}}</h1>
+                <ul>
+                    {{ each item.data as subItem j }}
+                    <li class='item' data-index="{{i}}-{{j}}" data-source={{source}} data-lock={{subItem.locked}} >
+                        <div class="img">
+                            <img src="{{subItem.imgSrc}}">
+                            <div class='shade'>                          
+                                    <i class='ico-locked'></i>
+                                    <p>Share to Facebook to unlock all tools </p>                                 
+                            </div>                         
+                        </div>
+                        <h6>
+                            <a href="javascript:;" rel='shareFb' data-type='{{item.titleName}}'><i></i>Share to Facebook </a>
+                            <span>{{subItem.title}} </span>  
+                         </h6>
+                     </li>
+                     {{/each}}
+                </ul>
+        </section>
+        {{/each}}
+    </script>
+    <script id="popItem" type="text/html">
+        {{ each items as item i }}
+            <h1>{{item.titleName}}</h1>
+            {{ each item.data as subItem j }}
+                <div class='item'  title="{{i}}-{{j}}"  data-source={{source}} data-lock={{subItem.locked}}>
+                    <div class="img">
+                        <img src="{{subItem.imgSrc}}">
+                        <div class='shade'>   <i class='ico-locked'></i> </div> 
+                    </div>
+                    <h6>
+                        <span>{{subItem.title}}</span>
+                        <a href="javascript:;" rel='shareFb' data-type='{{item.titleName}}'>Share to Facebook </a>
+                     </h6>
+                </div>
+            {{/each}}
+        {{/each}}
+    </script>
+    <footer class="com-footer">
+    <div class="com-wrap">
+        <div class="footer-contact clearfix">
+            <section class="col-1">
+                <a href="https://class.101.com/" class="logo" title="logo" data-md="全站 - 底部" data-action="点击图标" data-label="点图标-回到首页">
+                    <img alt="logo" src="./pg2_files/edmodoclassroom_logoM.png">
+                </a>
+                <p>Follow us on</p>
+                <a class="icon facebook" target="_blank" data-md="全站 - 底部" data-action="点击图标" data-label="点图标-访问Facebook" href="https://www.facebook.com/edmodoclassroom/" title="facebook"><i class="icon icon-facebook"></i></a>
+                <!-- <a class="icon twitter" target="_blank" data-md='全站 - 底部' data-action="点击图标" data-label='点图标-访问twitter'
+                    href="https://twitter.com/Sayeah13" title="twitter"><i class="icon icon-twitter"></i></a> -->
+                <a class="icon linkedin" target="_blank" data-md="全站 - 底部" data-action="点击图标" data-label="点图标-访问linkedin" href="https://www.linkedin.com/company/edmodoclassroom/" title="linkedin"><i class="icon icon-linkedin"></i></a>
+                <a class="icon pinterest" target="_blank" data-md="全站 - 底部" data-action="点击图标" data-label="点图标-访问pinterest" href="https://www.pinterest.com/edmodoclassroom/" title="pinterest"><i class="icon icon-pinterest"></i></a>
+            </section>
+            <section class="col-2">
+                <h6>Links</h6>
+                <a class="link" href="https://class.101.com/" data-md="全站 - 底部" data-action="点击访问" data-label="Home - 回到首页" title="Home">Home</a>
+                <a class="link" href="https://class.101.com/solution/index.shtml" data-md="全站 - 底部" data-action="点击访问" data-label="Solution - 到解决方案页面" title="Solution">Solution</a>
+                <a class="link" href="https://class.101.com/newlist/index.shtml" data-md="全站 - 底部" data-action="点击访问" data-label="News - 到新闻页面" title="Blogs">Blogs</a>
+                <a class="link" href="https://class.101.com/download/v2/index.shtml" data-md="全站 - 底部" data-action="点击访问" data-label="Download - 到下载页" title="Download">Download</a>
+            </section>
+            <section class="col-2">
+                <h6>About us</h6>
+                <!-- <a class="link" href="/about/index.shtml" data-md='全站 - 底部' data-action="点击访问" data-label='跳转到联系页面'
+                    title="Contact Us"> Contact Us</a> -->
+                <a class="link" href="https://class.101.com/privacy_policy/" target="_balck" data-md="全站 - 底部" data-action="点击访问" data-label="跳转到EULA面" title="EULA">Privacy Policy</a>
+                <a class="link" href="https://class.101.com/about/agreement.html" style="white-space:nowrap;" target="_balck" data-md="全站 - 底部" data-action="点击访问" data-label="跳转到Terms of Use页面" title="Terms of Use">Terms of
+                    Use</a>
+                <a class="link" target="_black" href="https://gcdncs.101.com/v0.1/static/edit_99/tmcms/class101/images/pc/EdmodoClassroomUserGuide.pdf" data-md="全站 - 底部" data-action="点击访问" data-label="User Guide下载" title="User Guide">User Guide</a>
+
+            </section>
+            <section class="col-3">
+                <h6>Customer Service</h6>
+                <a class="icon support" target="_blank" data-md="全站 - 底部" data-action="点击图标" data-label="点图标-Support " href="http://help.101.com/edu/en/index.html?s=2" title="support"><i class="icon icon-support"></i></a>
+                <h6>Contact us</h6>
+                <a class="link" href="mailto:hysupport@101.com" data-md="全站 - 底部" data-action="点击图标" data-label="发送邮件">hysupport@101.com</a>
+            </section>
+            <section class="col-4">
+                <a class="down-item" rel="downWin" href="javascript:;" data-md="全站 - 底部" title="Windows download" data-action="点击下载" data-label="Windows - 下载">
+                    <div class="icon-warp"> <i class="icon icon-win"></i> </div>
+                    <div class="text" id="downWinText">Windows</div>
+                </a>
+                <a class="down-item" rel="downAndroid" href="javascript:;" data-md="全站 - 底部" title="Android download" data-action="点击下载" data-label="Android - 下载">
+                    <div class="icon-warp"><i class="icon icon-android"></i></div>
+                    <div class="text" id="downAndroidText">Android</div>
+                </a>
+                <a class="down-item" rel="downIos" href="javascript:;" data-md="全站 - 底部" style="cursor: not-allowed;" title="coming soon" data-action="点击下载" data-label="iOS - 下载">
+                    <div class="icon-warp"><i class="icon icon-iOS"></i></div>
+                    <div class="text" id="downIosText">iOS</div>
+                </a>
+            </section>
+
+        </div>
+        <div class="copyright clearfix">
+
+            Copyright ©
+            
+            2026 Elernity
+        </div>
+    </div>
+</footer>
+<div class="com-pop modal-register ">
+    <div class="bg"></div>
+    <div class="pop-main">
+        <i class="icon icon-pop-close"></i>
+        <!-- 注册表单 -->
+        <section class="register-from">
+            <div class="icon-logo-h">
+                <img alt="logo" src="./pg2_files/edmodoclassroom_logoM.png">
+            </div>
+            <p class="text">Sign up to experience the Full Version</p>
+            <form class="formWrap" id="registerForm" autocomplete="off" method="POST" novalidate="novalidate">
+                <div class="form-item">
+                    <div class="form-item-con">
+                        <input id="email" type="text" validate="" name="email" value="" autocomplete="off" class="ipt" placeholder="Email">
+                        <i></i>
+                    </div>
+                </div>
+                <div class="form-item ">
+                    <div class="form-item-con">
+                        <input id="password" validate="" type="password" value="" name="password" autocomplete="new-password" class="ipt" placeholder="Password">
+                        <i></i>
+                    </div>
+                </div>
+                <div class="form-item ">
+                    <div class="form-item-con">
+                        <input id="rpassword" type="password" validate="" name="passwordrepeat" autocomplete="new-password" value="" class="ipt" placeholder="Confirm password">
+                        <i></i>
+                    </div>
+                </div>
+                <p class="tip">
+                    <i class="icon icon-check " id="isChecked"></i>I have read and agreed
+                    <a href="https://class.101.com/about/agreement.html" target="_blank">User Registration Agreement </a> &amp;
+                    <a href="https://class.101.com/privacy_policy/" target="_blank">Privacy Policy</a>
+                </p>
+                <div class="form-item form-item-btn">
+                    <input class="com-btn" id="submitRegBtn" type="submit" autocomplete="off" value="Register">
+                </div>
+                <p class="checkError"></p>
+            </form>
+        </section>
+        <section class="register-success">
+            <div class="successTip">
+                <img src="./pg2_files/successTip.png">
+                <h4>Successful!</h4>
+            </div>
+            <p>Sign up to experience the Full Version</p>
+            <a class="com-btn" href="javascript:;" rel="downWin" data-md="注册成功" data-action="点击下载" data-label="Windows - 下载"><i class="icon icon-btn-win"></i>Windows<span>(25M)</span></a>
+            <a class="com-btn com-btn-yellow" href="javascript:;" rel="downAndroid" data-md="注册成功" data-action="点击下载" data-label="Android - 下载"><i class="icon icon-btn-android"></i>Android<span>(48.7M)</span></a>
+            <a class="com-btn  not-allowed" href="javascript:;" rel="downIos" data-md="注册成功" data-action="点击下载" title="coming soon" data-label="iOS - 下载"><i class="icon icon-btn-iOS"></i>iOS<span></span>
+            </a>
+        </section>
+    </div>
+</div>
+<!--[if lt IE 9]>
+    <div class="lowie-main">
+        <img src="//gcdncs.101.com/v0.1/static/edit_99/tmcms/images/cf/forieEn.png" alt="ie tip">
+    </div>
+<![endif]-->
+<script src="./pg2_files/jquery.min.js.download"></script>
+<script src="./pg2_files/validate.min.js.download"></script>
+<script src="./pg2_files/ucManager.min.v0.11.js.download"></script>
+<script src="./pg2_files/fingerprint2.min.js.download"></script>
+<script src="./pg2_files/template-web.js.download"></script>
+<script src="./pg2_files/common.js.download"></script>
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async="" src="./pg2_files/js(4)"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'UA-118297918-2');
+</script>
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window,document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '172518563694893'); 
+fbq('track', 'PageView');
+</script>
+<script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?6c701986ce706da55869f1410932ab8e";
+      var s = document.getElementsByTagName("script")[0]; 
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+    <script>
+        window.fbAsyncInit = function () {
+            FB.init({
+                appId: '690102461448490',
+                autoLogAppEvents: true,
+                xfbml: true,
+                version: 'v3.3',
+                display: 'popup'
+            });
+        };
+    </script>
+    <script async="" defer="" src="./pg2_files/sdk(1).js.download"></script>
+    <script src="./pg2_files/toolsData.js.download"></script>
+    <script src="./pg2_files/subjectTool.js.download"></script>
+
+
+
+<div id="fb-root" class=" fb_reset"><div style="position: absolute; top: -10000px; width: 0px; height: 0px;"><div></div></div></div><span id="PING_IFRAME_FORM_DETECTION" style="display: none;"></span></body></html>
